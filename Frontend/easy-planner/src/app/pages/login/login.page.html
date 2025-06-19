@@ -1,0 +1,39 @@
+<ion-content [fullscreen]="true">
+  <div class="login-background">
+    <div class="login-form">
+      <div class="login-header flex">
+        <ion-img class="w-5rem h-5rem mr-2" src="../../../assets/logo.png" alt="logo"></ion-img>
+        <h1 class="login-title">EasyPlanner</h1>
+      </div>
+
+      <h2 class="login-subtitle mb-5">Se connecter</h2>
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="login-form-group">
+          <input
+            type="text"
+            pInputText
+            placeholder="Adresse mail"
+            [(ngModel)]="email"
+            name="email"
+          />
+        </div>
+        <div class="login-form-group">
+          <input
+            type="password"
+            pInputText
+            placeholder="Mot de passe"
+            [(ngModel)]="password"
+            name="password"
+          />
+        </div>
+        <ion-button class="mt-5" mode="ios" expand="block" type="submit">Connexion</ion-button>
+      </form>
+
+      <div class="text-center text-md text-gray-600 mt-6">
+        Vous n’avez pas de compte ?
+        <a href="/register" class="text-blue-600 hover:underline">S’inscrire</a>
+      </div>
+    </div>
+  </div>
+</ion-content>

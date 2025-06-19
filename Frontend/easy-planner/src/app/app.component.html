@@ -3,7 +3,10 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header class="mb-5">EasyPlanner</ion-list-header>
+          <div class="flex align-items-center">
+            <ion-img class="w-4rem h-4rem" src="../../../assets/logo.png" alt="logo"></ion-img>
+            <ion-list-header>EasyPlanner</ion-list-header>
+          </div>
 
           @for (p of appPages; track p; let i = $index) {
             <ion-menu-toggle auto-hide="false">

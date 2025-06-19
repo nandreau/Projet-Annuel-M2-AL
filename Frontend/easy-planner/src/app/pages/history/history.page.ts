@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderComponent } from 'src/app/components/header/header.component';
 import { IonicModule } from 'src/app/shared/ionic.module';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
-  selector: 'app-admin',
-  templateUrl: './admin.page.html',
-  styleUrls: ['./admin.page.scss'],
+  selector: 'app-history',
+  templateUrl: './history.page.html',
+  styleUrls: ['./history.page.scss'],
   standalone: true,
   imports: [IonicModule, HeaderComponent]
 })
-export class AdminPage implements OnInit {
+export class HistoryPage implements OnInit {
 
   constructor() { }
 
