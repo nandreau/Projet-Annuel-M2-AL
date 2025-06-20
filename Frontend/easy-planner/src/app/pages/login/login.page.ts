@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 
@@ -8,7 +9,7 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [FormsModule, IonicModule, PrimengModule]
+  imports: [FormsModule, RouterLink, IonicModule, PrimengModule]
 })
 export class LoginPage {
   email: string = '';
