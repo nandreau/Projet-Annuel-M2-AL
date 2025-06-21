@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Frontend
+        working-directory: ./Frontend/easy-planner
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -20,10 +20,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.14.0
+          node-version: '22'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Vérifier le formatage (Prettier)
         run: npm run format:check
@@ -47,10 +47,10 @@ jobs:
   #     - name: Setup Node.js
   #       uses: actions/setup-node@v3
   #       with:
-  #         node-version: 16.x
+  #         node-version: '22'
   #
   #     - name: Install dependencies
-  #       run: npm ci
+  #       run: npm install
   #
   #     - name: Lancer le lint
   #       run: npm run lint
@@ -70,18 +70,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.14.0
+          node-version: '22'
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: ./Frontend
+        run: npm install
+        working-directory: ./Frontend/easy-planner
 
       - name: Build production
         run: npm run build
-        working-directory: ./Frontend
+        working-directory: ./Frontend/easy-planner
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Frontend/dist
+          publish_dir: ./Frontend/easy-planner/dist
