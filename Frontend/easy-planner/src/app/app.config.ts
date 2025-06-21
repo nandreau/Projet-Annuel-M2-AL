@@ -1,14 +1,15 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+// src/app/app.config.ts
+import { ApplicationConfig } from '@angular/core';
+import { provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { RouteReuseStrategy } from '@angular/router';
-import { IonicRouteStrategy } from '@ionic/angular';
-
+import { IonicRouteStrategy } from '@ionic/angular/standalone'; 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
+
+import { CustomAura } from './themes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,11 +20,11 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: CustomAura,
         options: {
-            darkModeSelector: false || 'none'
+          darkModeSelector: false    // or your class/selector for dark mode
         }
-      },
+      }
     }),
   ],
 };

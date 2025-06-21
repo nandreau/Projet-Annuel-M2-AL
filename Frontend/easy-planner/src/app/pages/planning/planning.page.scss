@@ -1,0 +1,38 @@
+.planning-grid {
+  display: grid;
+  grid-template-columns: 200px repeat(7, minmax(80px, 1fr));
+}
+
+.planning-grid > * {
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.planning-grid > *:nth-child(8n) {
+  border-right: none;
+}
+
+.planning-header {
+  border-top: 1px solid var(--border-color);
+  background: #ffffff;
+  min-height: 65px;
+}
+.planning-header-cell {
+    display: grid;
+}
+
+.planning-project {
+  background: #f7fafc;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+}
+
+.planning-task {
+  background: #ffffff;
+}
+
+.planning-task-cell {
+    display: flex;
+    padding: 5px 10px;
+    align-items: center;
+}

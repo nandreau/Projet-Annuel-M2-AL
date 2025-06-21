@@ -70,3 +70,74 @@
         </div>
     </div>
 </ion-content>
+
+<!-- ✅ Modal Ajouter -->
+<p-dialog header="Ajouter un utilisateur" [(visible)]="visibleAdd" [modal]="true" [style]="{ width: '30rem' }">
+  <span class="p-text-secondary block mb-5">Veuillez remplir les informations de l'utilisateur.</span>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Nom</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.name" />
+  </div>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Email</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.mail" />
+  </div>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Date</label>
+    <p-calendar class="w-full" [(ngModel)]="userForm.date" dateFormat="yy-mm-dd" showIcon />
+  </div>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Rôle</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.role" />
+  </div>
+  <div class="flex align-items-center gap-4 mb-5">
+    <label class="font-semibold w-2">Droit</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.droit" />
+  </div>
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Annuler" severity="secondary" (click)="visibleAdd = false" />
+    <p-button label="Ajouter" (click)="visibleAdd = false" />
+  </div>
+</p-dialog>
+
+
+<!-- ✅ Modal Modifier -->
+<p-dialog header="Modifier un utilisateur" [(visible)]="visibleEdit" [modal]="true" [style]="{ width: '30rem' }">
+  <span class="p-text-secondary block mb-5">Modifier les informations de l'utilisateur sélectionné.</span>
+  <!-- les mêmes champs que ci-dessus -->
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Nom</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.name" />
+  </div>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Email</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.mail" />
+  </div>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Date</label>
+    <p-calendar class="w-full" [(ngModel)]="userForm.date" dateFormat="yy-mm-dd" showIcon />
+  </div>
+  <div class="flex align-items-center gap-4 mb-3">
+    <label class="font-semibold w-2">Rôle</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.role" />
+  </div>
+  <div class="flex align-items-center gap-4 mb-5">
+    <label class="font-semibold w-2">Droit</label>
+    <input class="w-full" pInputText [(ngModel)]="userForm.droit" />
+  </div>
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Annuler" severity="secondary" (click)="visibleEdit = false" />
+    <p-button label="Enregistrer" (click)="visibleEdit = false" />
+  </div>
+</p-dialog>
+
+
+<!-- ✅ Modal Supprimer -->
+<p-dialog header="Supprimer" [(visible)]="visibleDelete" [modal]="true" [style]="{ width: '25rem' }">
+  <p class="mt-1">Confirmer la suppression de <strong>{{ selectedUsers?.length }}</strong> utilisateur(s) ?</p>
+  <div class="flex justify-content-end gap-2 mt-5">
+    <p-button label="Annuler" severity="secondary" (click)="visibleDelete = false" />
+    <p-button label="Supprimer" severity="danger" (click)="visibleDelete = false" />
+  </div>
+</p-dialog>
+

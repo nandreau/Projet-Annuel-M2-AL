@@ -46,9 +46,13 @@ export class AdminPage implements OnInit {
   selectedUser!: User | null;
   selectedUsers!: User[] | null;
   initialValues!: User[];
+  userForm!: User;
   isSorted: boolean | null = null;
+  visibleAdd = false;
+  visibleEdit = false;
+  visibleDelete = false;
 
-  constructor() { }
+  constructor() {this.resetUserForm(); }
 
   ngOnInit() {
     this.initialValues = [...this.users];
@@ -94,11 +98,56 @@ export class AdminPage implements OnInit {
     });
   }
 
-  openAdd() {}
+  openAdd() {
+    this.resetUserForm();
+    this.visibleAdd = true;
+  }
 
-  openEdit() {}
+  openEdit() {
+    if (this.selectedUsers?.length) {
+      this.userForm = { ...this.selectedUsers[0] }; // ou gestion multi
+      this.visibleEdit = true;
+    }
+  }
 
-  openDelete() {}
+  openDelete() {
+    this.visibleDelete = true;
+  }
+
+  confirm(modal: any, action: 'add' | 'edit' | 'delete') {
+    if (action === 'add') {
+      // todo
+    }
+
+    if (action === 'edit' && this.selectedUsers?.length) {
+      const editedUser = { ...this.userForm };
+      this.users = this.users.map(user =>
+        user.id === this.selectedUsers![0].id ? { ...user, ...editedUser } : user
+      );
+    }
+
+    if (action === 'delete' && this.selectedUsers?.length) {
+      const idsToDelete = this.selectedUsers.map(user => user.id);
+      this.users = this.users.filter(user => !idsToDelete.includes(user.id));
+      this.selectedUsers = [];
+    }
+
+    this.resetUserForm();
+
+    modal.dismiss();
+  }
+
+
+  resetUserForm() {
+    this.userForm = {
+      id: 0,
+      name: '',
+      mail: '',
+      date: '',
+      role: '',
+      droit: ''
+    };
+  }
 }
 
 

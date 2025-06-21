@@ -1,8 +1,90 @@
 <app-header></app-header>
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">planning</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="p-4">
+
+    <!-- Filtres & recherches -->
+    <div class="planning-project p-2 flex gap-2 items-center mb-2">
+      <p-dropdown [options]="sites" [(ngModel)]="selectedSite" optionLabel="label"></p-dropdown>
+      <p-dropdown [options]="views" [(ngModel)]="selectedView" optionLabel="label"></p-dropdown>
+      <p-dropdown [options]="groupBy" [(ngModel)]="selectedGroup" optionLabel="label"></p-dropdown>
+    </div>
+
+    <!-- Navigation de semaine -->
+    <div class="flex gap-2 align-items-center mb-2">
+      <p-button severity="contrast" [rounded]="true" variant="text" icon="pi pi-chevron-left" (click)="prev()"></p-button>
+      <span class="font-medium">{{ weekRange }}</span>
+      <p-button severity="contrast" [rounded]="true" variant="text" icon="pi pi-chevron-right" (click)="next()"></p-button>
+      <p-button severity="contrast"  variant="text" label="Aujourd'hui" class="ml-2" (click)="today()"></p-button>
+    </div>
+
+
+      <!-- Header jours -->
+      <div class="planning-grid planning-header">
+        <div
+          class="planning-header-cell px-2 py-2 font-semibold text-center sticky left-0 bg-white z-20"
+        >
+          Chantier / Tâche
+        </div>
+        <ng-container *ngFor="let d of days">
+          <div class="planning-header-cell px-3 py-2 text-center">
+            <div class="text-md text-gray-500">{{ d.label | titlecase }}</div>
+            <div class="text-xl text-gray-700">{{ d.day }}</div>
+          </div>
+        </ng-container>
+      </div>
+
+    <!-- Projets -->
+    <ng-container *ngFor="let proj of projects">
+      <!-- Ligne projet -->
+      <div class="planning-project align-items-center justify-content-between px-4 py-2 w-full sticky left-0">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold">{{ proj.name }}</span>
+          <span class="text-sm text-gray-600">({{ proj.tasks.length }} tâches)</span>
+        </div>
+        <div class="w-3 flex">
+          <p-progressBar
+            [value]="proj.progress" 
+            [showValue]="false"
+            class="w-full"
+            [style]="{ height: '12px' }"
+          ></p-progressBar>
+          <span class="text-sm ml-2">
+            {{ proj.progress }}%
+          </span>
+        </div>
+      </div>
+
+      <!-- Lignes tâches -->
+          <div
+            *ngFor="let task of proj.tasks"
+            class="planning-grid planning-task-row"
+          >
+            <!-- Sticky task cell -->
+            <div
+              class="planning-task-cell px-4 py-2 sticky left-0 bg-white z-10 flex items-center gap-2"
+            >
+              <i *ngIf="task.status === 'notStarted'" class="pi pi-hourglass text-grey-400"></i>
+              <i *ngIf="task.status === 'inProgress'" class="pi pi-clock pi-spin text-yellow-500"></i>
+              <i *ngIf="task.status === 'finished'"  class="pi pi-check-circle text-green-500"></i>
+              <span>{{ task.name }}</span>
+            </div>
+
+            <!-- cellules jours -->
+            <ng-container *ngFor="let d of days">
+              <div class="planning-task-cell p-1 cursor-pointer">
+                <ng-container
+                  *ngFor="let e of getSchedulesForDay(task, d.date)"
+                >
+                  <div
+                    class="bg-gray-50 flex items-center justify-between px-2 py-1 rounded border border-gray-200"
+                  >
+                    <span class="text-sm">{{ e.time }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+    </ng-container>
+
+  </div>
 </ion-content>

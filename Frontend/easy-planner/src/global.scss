@@ -42,8 +42,6 @@
 @import "primeflex/primeflex.css";
 
 :root {
-    --p-button-primary-background: #2563eb !important;
-    --p-button-primary-border-color: #2563eb !important;
     --ion-color-primary: #2563eb;
     --ion-color-primary-hover: #1d4ed8;
     --border-color: #dddddd;
@@ -73,7 +71,6 @@ ion-badge {
   min-width: min-content;
 }
 
-
 // global
 
 .form {
@@ -85,6 +82,17 @@ ion-badge {
 
 .container {
   padding: 1.5rem 1rem;
+}
+
+.p-datepicker {
+  width: 100%;
+}
+
+.absolute-center{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 // table
@@ -102,6 +110,10 @@ ion-badge {
   border: 1px solid var(--border-color) !important;
   border-radius: 10px 10px 0 0;
   transition: 0.2s all linear !important;
+}
+.p-accordionpanel {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  border-radius: 10px !important;
 }
 
 .p-accordioncontent  {

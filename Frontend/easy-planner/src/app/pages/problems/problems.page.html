@@ -2,7 +2,7 @@
 <ion-content [fullscreen]="true">
   <div class="container">
     <p-accordion [(activeIndex)]="activeProblem" [multiple]="false">
-      <p-accordion-panel *ngFor="let problem of problems" [value]="problem.id">
+      <p-accordion-panel class="mb-3" *ngFor="let problem of problems" [value]="problem.id">
         <p-accordion-header>
           <div class="flex align-items-center w-full justify-content-between">
             <div class="flex flex-column">
@@ -18,7 +18,7 @@
           </div>
         </p-accordion-header>
 
-        <p-accordion-content class="mb-3">
+        <p-accordion-content>
           <div class="pt-3">
 
             <div class="problem-description">{{ problem.description }}</div>
