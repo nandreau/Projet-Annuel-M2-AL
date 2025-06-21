@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Auto-format code (Prettier)
+        run: npm run format
+
       - name: Vérifier le formatage (Prettier)
         run: npm run format:check
 
