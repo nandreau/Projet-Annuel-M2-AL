@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 
@@ -9,11 +9,8 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
   standalone: true,
   imports: [IonicModule, HeaderComponent]
 })
-export class HistoryPage implements OnInit {
+export class HistoryPage {
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

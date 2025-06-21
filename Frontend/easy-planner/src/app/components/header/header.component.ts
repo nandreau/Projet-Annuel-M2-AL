@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicModule } from 'src/app/shared/ionic.module';
 
 @Component({
@@ -7,10 +7,8 @@ import { IonicModule } from 'src/app/shared/ionic.module';
   styleUrls: ['./header.component.scss'],
   imports: [ IonicModule ]
 })
-export class HeaderComponent  implements OnInit {
+export class HeaderComponent {
 
   constructor() { }
-
-  ngOnInit() {}
 
 }
