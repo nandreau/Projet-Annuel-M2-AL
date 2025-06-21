@@ -31,6 +31,9 @@ jobs:
       - name: Vérifier le formatage (Prettier)
         run: npm run format:check
 
+      - name: Auto-fix lint errors
+        run: npm run lint -- --fix
+
       - name: Lancer le lint
         run: npm run lint
 
