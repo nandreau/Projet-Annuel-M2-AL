@@ -1,0 +1,37 @@
+.global-progress-bar {
+    min-width: 120px;
+    width: 10vw;
+    max-width: 150px;
+}
+
+.phase-progress-bar {
+    min-width: 70px;
+    width: 7vw;
+    max-width: 100px;
+}
+
+::ng-deep .global-progress-bar  .p-progressbar {
+  height: 14px !important;
+}
+
+.phase {
+  margin: 0;
+  height: 100%;
+  background-color: #F9FAFB;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  position: relative;
+}
+
+.phase-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.phase-add:hover {
+  background-color: #e9ebef;
+}
