@@ -5,10 +5,8 @@ import { IonicModule } from 'src/app/shared/ionic.module';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  imports: [ IonicModule ]
+  imports: [IonicModule],
 })
 export class HeaderComponent {
-
-  constructor() { }
-
+  constructor() {}
 }

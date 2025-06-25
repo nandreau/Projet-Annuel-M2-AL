@@ -9,7 +9,7 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [FormsModule, RouterLink, IonicModule, PrimengModule]
+  imports: [FormsModule, RouterLink, IonicModule, PrimengModule],
 })
 export class RegisterPage {
   fullName: string = '';

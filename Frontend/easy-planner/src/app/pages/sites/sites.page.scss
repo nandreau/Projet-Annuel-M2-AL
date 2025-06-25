@@ -1,23 +1,23 @@
 .global-progress-bar {
-    min-width: 120px;
-    width: 10vw;
-    max-width: 150px;
+  min-width: 120px;
+  width: 10vw;
+  max-width: 150px;
 }
 
 .phase-progress-bar {
-    min-width: 70px;
-    width: 7vw;
-    max-width: 100px;
+  min-width: 70px;
+  width: 7vw;
+  max-width: 100px;
 }
 
-::ng-deep .global-progress-bar  .p-progressbar {
+::ng-deep .global-progress-bar .p-progressbar {
   height: 14px !important;
 }
 
 .phase {
   margin: 0;
   height: 100%;
-  background-color: #F9FAFB;
+  background-color: #f9fafb;
   padding: 1rem;
   border: 1px solid var(--border-color);
   border-radius: 0.25rem;

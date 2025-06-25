@@ -3,7 +3,7 @@
   <div class="container">
     <div class="header-container">
       <div class="header-container-title">Liste des chantiers</div>
-      <p-button 
+      <p-button
         label="Nouveau chantier"
         icon="pi pi-plus"
         (click)="openAddChantier()"
@@ -13,7 +13,7 @@
       <!-- Encadré chantier -->
       <div class="form p-4 mb-4">
         <!-- En-tête du chantier -->
-        <div class="w-fu flex justify-content-between  mb-6">
+        <div class="w-fu flex justify-content-between mb-6">
           <div class="flex items-start">
             <ion-img
               src="assets/chantier-icon.png"
@@ -27,11 +27,13 @@
               </div>
             </div>
           </div>
-          <div class="md:mt-0 text-right  flex flex-column">
+          <div class="md:mt-0 text-right flex flex-column">
             <div class="flex align-items-center justify-content-end">
               <div>
                 <div class="text-sm text-gray-600">Début : {{ ct.start }}</div>
-                <div class="text-sm text-gray-600 mt-1">Fin estimée : {{ ct.end }}</div>
+                <div class="text-sm text-gray-600 mt-1">
+                  Fin estimée : {{ ct.end }}
+                </div>
               </div>
               <p-button
                 icon="pi pi-times"
@@ -62,7 +64,9 @@
           <div class="col-6" *ngFor="let ph of ct.phases; index as j;">
             <div class="phase justify-content-between flex flex-column">
               <div>
-                <div class="flex justify-content-between mb-4 align-items-center">
+                <div
+                  class="flex justify-content-between mb-4 align-items-center"
+                >
                   <div class="flex text-base font-semibold">
                     <i class="pi pi-layer-group"></i>
                     <span>{{ ph.label }}</span>
@@ -79,11 +83,21 @@
                   </div>
                 </div>
 
-
-                <div *ngFor="let t of ph.tasks; index as k" class="flex justify-content-between align-items-center mb-1">
+                <div
+                  *ngFor="let t of ph.tasks; index as k"
+                  class="flex justify-content-between align-items-center mb-1"
+                >
                   <div class="flex items-center">
-                    <p-checkbox binary="true" [(ngModel)]="t.done" class="p-checkbox-sm" readonly></p-checkbox>
-                    <span class="ml-2 text-sm" [ngClass]="{ 'line-through text-gray-500': t.done }">
+                    <p-checkbox
+                      binary="true"
+                      [(ngModel)]="t.done"
+                      class="p-checkbox-sm"
+                      readonly
+                    ></p-checkbox>
+                    <span
+                      class="ml-2 text-sm"
+                      [ngClass]="{ 'line-through text-gray-500': t.done }"
+                    >
                       {{ t.label }}
                     </span>
                   </div>
@@ -110,7 +124,9 @@
                   + Ajouter une tâche
                 </p-button>
               </div>
-              <div class="mt-3 flex gap-2 align-items-center justify-content-end">
+              <div
+                class="mt-3 flex gap-2 align-items-center justify-content-end"
+              >
                 <span class="mr-0 text-sm text-gray-600">Avancement</span>
                 <p-progressBar
                   [value]="ph.progress"
@@ -146,7 +162,6 @@
   </div>
 </ion-content>
 
-
 <!-- Modal : Ajouter un Chantier -->
 <p-dialog
   header="Ajouter un nouveau chantier"
@@ -157,15 +172,30 @@
 >
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Titre</label>
-    <input class="w-full" pInputText class="flex-1" [(ngModel)]="newChantier.title" />
+    <input
+      class="w-full"
+      pInputText
+      class="flex-1"
+      [(ngModel)]="newChantier.title"
+    />
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Client</label>
-    <input class="w-full" pInputText class="flex-1" [(ngModel)]="newChantier.client" />
+    <input
+      class="w-full"
+      pInputText
+      class="flex-1"
+      [(ngModel)]="newChantier.client"
+    />
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Adresse</label>
-    <input class="w-full" pInputText class="flex-1" [(ngModel)]="newChantier.address" />
+    <input
+      class="w-full"
+      pInputText
+      class="flex-1"
+      [(ngModel)]="newChantier.address"
+    />
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Début</label>
@@ -201,7 +231,12 @@
 >
   <div class="flex align-items-center gap-4 mb-3 mb-5">
     <label class="font-semibold w-2">Nom phase</label>
-    <input class="w-full" pInputText class="flex-1" [(ngModel)]="newPhase.label" />
+    <input
+      class="w-full"
+      pInputText
+      class="flex-1"
+      [(ngModel)]="newPhase.label"
+    />
   </div>
   <div class="flex justify-content-end gap-2">
     <p-button label="Annuler" severity="secondary" (click)="cancelPhase()" />
@@ -219,7 +254,12 @@
 >
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Libellé</label>
-    <input class="w-full" pInputText class="flex-1" [(ngModel)]="newTask.label" />
+    <input
+      class="w-full"
+      pInputText
+      class="flex-1"
+      [(ngModel)]="newTask.label"
+    />
   </div>
   <div class="flex align-items-center gap-4 mb-5">
     <label class="font-semibold w-2">Date cible</label>
@@ -236,7 +276,6 @@
   </div>
 </p-dialog>
 
-
 <!-- MODAL : Supprimer Chantier -->
 <p-dialog
   header="Confirmer la suppression"
@@ -245,11 +284,19 @@
   [style]="{ width: '24rem' }"
   appendTo="body"
 >
-  <p>Voulez-vous vraiment supprimer le chantier "<strong>{{ projets[selectedChantierIndex].title }}</strong>" ?</p>
+  <p>
+    Voulez-vous vraiment supprimer le chantier "<strong
+      >{{ projets[selectedChantierIndex].title }}</strong
+    >" ?
+  </p>
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button label="Annuler" (click)="cancelDeleteChantier()"></p-button>
-      <p-button label="Supprimer" severity="danger" (click)="confirmDeleteChantier()"></p-button>
+      <p-button
+        label="Supprimer"
+        severity="danger"
+        (click)="confirmDeleteChantier()"
+      ></p-button>
     </div>
   </ng-template>
 </p-dialog>
@@ -263,13 +310,19 @@
   appendTo="body"
 >
   <p>
-    Supprimer la phase
-    "<strong>{{ projets[selectedChantierIndex].phases[selectedPhaseIndex].label }}</strong>" ?
+    Supprimer la phase "<strong
+      >{{ projets[selectedChantierIndex].phases[selectedPhaseIndex].label
+      }}</strong
+    >" ?
   </p>
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button label="Annuler" (click)="cancelDeletePhase()"></p-button>
-      <p-button label="Supprimer" severity="danger" (click)="confirmDeletePhase()"></p-button>
+      <p-button
+        label="Supprimer"
+        severity="danger"
+        (click)="confirmDeletePhase()"
+      ></p-button>
     </div>
   </ng-template>
 </p-dialog>
@@ -283,16 +336,21 @@
   appendTo="body"
 >
   <p>
-    Supprimer la tâche
-    "<strong>
-      {{ projets[selectedChantierIndex].phases[selectedPhaseIndex].tasks[selectedTaskIndex].label }}
+    Supprimer la tâche "<strong>
+      {{
+      projets[selectedChantierIndex].phases[selectedPhaseIndex].tasks[selectedTaskIndex].label
+      }}
     </strong>
     " ?
   </p>
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button label="Annuler" (click)="cancelDeleteTask()"></p-button>
-      <p-button label="Supprimer" severity="danger" (click)="confirmDeleteTask()"></p-button>
+      <p-button
+        label="Supprimer"
+        severity="danger"
+        (click)="confirmDeleteTask()"
+      ></p-button>
     </div>
   </ng-template>
 </p-dialog>

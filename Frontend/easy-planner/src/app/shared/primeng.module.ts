@@ -37,7 +37,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupModule } from 'primeng/inputgroup';
 import { ImageModule } from 'primeng/image';
 import { KnobModule } from 'primeng/knob';
 import { ListboxModule } from 'primeng/listbox';
@@ -91,7 +91,7 @@ import { MessageService } from 'primeng/api';
 
 @NgModule({
   exports: [
-   AvatarModule,
+    AvatarModule,
     AvatarGroupModule,
     AccordionModule,
     AutoCompleteModule,

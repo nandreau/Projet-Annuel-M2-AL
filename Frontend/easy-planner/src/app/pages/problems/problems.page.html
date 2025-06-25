@@ -5,11 +5,17 @@
       <div class="header-container-title">Liste des problèmes</div>
     </div>
     <p-accordion [(activeIndex)]="activeProblem" [multiple]="false">
-      <p-accordion-panel class="mb-3" *ngFor="let problem of problems" [value]="problem.id">
+      <p-accordion-panel
+        class="mb-3"
+        *ngFor="let problem of problems"
+        [value]="problem.id"
+      >
         <p-accordion-header>
           <div class="flex align-items-center w-full justify-content-between">
             <div class="flex flex-column">
-              <div class="flex bold">{{ problem.id }} — {{ problem.title }} {{ problem.urgency }}</div>
+              <div class="flex bold">
+                {{ problem.id }} — {{ problem.title }} {{ problem.urgency }}
+              </div>
               <div class="problem-meta font-normal">
                 <span>Chantier: {{ problem.chantier }}</span>
                 <span>Phase: {{ problem.phase }}</span>
@@ -17,17 +23,22 @@
                 <span>Signalé le {{ problem.date }}</span>
               </div>
             </div>
-            <ion-badge [color]="problem.status !== 'En cours' ? 'danger' : 'warning'" class="mr-3">{{ problem.status }}</ion-badge>
+            <ion-badge
+              [color]="problem.status !== 'En cours' ? 'danger' : 'warning'"
+              class="mr-3"
+              >{{ problem.status }}</ion-badge
+            >
           </div>
         </p-accordion-header>
 
         <p-accordion-content>
           <div class="pt-3">
-
             <div class="problem-description">{{ problem.description }}</div>
 
             <div class="problem-photos" *ngIf="problem.photos.length">
-              <div class="photo-card" *ngFor="let photo of problem.photos">{{ photo }}</div>
+              <div class="photo-card" *ngFor="let photo of problem.photos">
+                {{ photo }}
+              </div>
             </div>
 
             <div class="problem-messages" *ngIf="problem.messages.length">
@@ -40,20 +51,28 @@
               >
                 <div class="message-header">
                   <ng-container *ngIf="group.side === 'left'">
-                    <strong>{{ group.sender }}</strong> · <span>{{ group.date }}</span>
+                    <strong>{{ group.sender }}</strong> ·
+                    <span>{{ group.date }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">
-                    <span>{{ group.date }}</span> · <strong>{{ group.sender }}</strong>
+                    <span>{{ group.date }}</span> ·
+                    <strong>{{ group.sender }}</strong>
                   </ng-container>
                 </div>
 
-                <div class="flex flex-column w-full" [ngClass]="{ 'align-items-end': group.side === 'right' }">
-                  <div *ngFor="let content of group.contents" class="message-body">{{ content }}</div>
+                <div
+                  class="flex flex-column w-full"
+                  [ngClass]="{ 'align-items-end': group.side === 'right' }"
+                >
+                  <div
+                    *ngFor="let content of group.contents"
+                    class="message-body"
+                  >
+                    {{ content }}
+                  </div>
                 </div>
               </div>
             </div>
-
-
 
             <form class="problem-comment-box" (ngSubmit)="onComment()">
               <textarea
@@ -67,9 +86,9 @@
                   ><ion-icon name="camera-outline"></ion-icon
                 ></ion-button>
                 <div class="spacer"></div>
-                  <ion-button size="small" fill="outline">Assigner</ion-button>
-                  <ion-button type="submit" size="small">Commenter</ion-button>
-                </div>
+                <ion-button size="small" fill="outline">Assigner</ion-button>
+                <ion-button type="submit" size="small">Commenter</ion-button>
+              </div>
             </form>
           </div>
         </p-accordion-content>

@@ -4,13 +4,12 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 
-
 @Component({
   selector: 'app-problems',
   templateUrl: './problems.page.html',
   styleUrls: ['./problems.page.scss'],
   standalone: true,
-  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule]
+  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
 })
 export class ProblemsPage {
   problems = [
@@ -29,22 +28,22 @@ export class ProblemsPage {
         {
           sender: 'Michel Dupont',
           date: '28 Mai 2025, 14:30',
-          content: "J'ai constaté la fuite ce matin..."
+          content: "J'ai constaté la fuite ce matin...",
         },
         {
           sender: 'Sophie Martin',
           date: '28 Mai 2025, 16:45',
-          content: "J'ai fermé l'arrivée d'eau principale..."
+          content: "J'ai fermé l'arrivée d'eau principale...",
         },
         {
           sender: 'Sophie Martin',
           date: '28 Mai 2025, 16:46',
-          content: "Et J'ai également coupé l'electricité"
+          content: "Et J'ai également coupé l'electricité",
         },
         {
           sender: 'Pierre Leroy',
           date: '29 Mai 2025, 09:15',
-          content: "Je vais passer avec l'équipe de plomberie..."
+          content: "Je vais passer avec l'équipe de plomberie...",
         },
       ],
     },
@@ -65,7 +64,7 @@ export class ProblemsPage {
   comment: string = '';
   activeProblem: number = 0;
 
-  constructor() { }
+  constructor() {}
 
   onComment() {
     console.log('Commentaire envoyé :', this.comment);
@@ -98,5 +97,4 @@ export class ProblemsPage {
 
     return grouped;
   }
-
 }

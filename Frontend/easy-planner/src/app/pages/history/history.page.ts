@@ -12,7 +12,7 @@ import { SortEvent } from 'primeng/api';
   templateUrl: './history.page.html',
   styleUrls: ['./history.page.scss'],
   standalone: true,
-  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule]
+  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
 })
 export class HistoryPage implements OnInit {
   @ViewChild('dt') dt!: Table;
@@ -27,9 +27,9 @@ export class HistoryPage implements OnInit {
       executant: {
         name: 'Martin Dupont',
         role: 'Chef de chantier',
-        avatar: 'assets/avatars/AV1.png'
+        avatar: 'assets/avatars/AV1.png',
       },
-      date: '2019-02-09'
+      date: '2019-02-09',
     },
     {
       description: 'Livraison de matériaux de construction',
@@ -40,9 +40,9 @@ export class HistoryPage implements OnInit {
       executant: {
         name: 'Sophie Laurent',
         role: 'Responsable logistique',
-        avatar: 'assets/avatars/AV51.png'
+        avatar: 'assets/avatars/AV51.png',
       },
-      date: '2017-05-13'
+      date: '2017-05-13',
     },
     {
       description: 'Mise à jour du planning de fondation',
@@ -53,9 +53,9 @@ export class HistoryPage implements OnInit {
       executant: {
         name: 'Pierre Moreau',
         role: 'Responsable sécurité',
-        avatar: 'assets/avatars/AV2.png'
+        avatar: 'assets/avatars/AV2.png',
       },
-      date: '2020-09-15'
+      date: '2020-09-15',
     },
     {
       description: 'Inspection de sécurité hebdomadaire',
@@ -66,9 +66,9 @@ export class HistoryPage implements OnInit {
       executant: {
         name: 'Julie Mercier',
         role: 'Architecte',
-        avatar: 'assets/avatars/AV52.png'
+        avatar: 'assets/avatars/AV52.png',
       },
-      date: '2016-05-20'
+      date: '2016-05-20',
     },
     {
       description: 'Mise à jour du budget trimestriel',
@@ -79,9 +79,9 @@ export class HistoryPage implements OnInit {
       executant: {
         name: 'Thomas Bernard',
         role: 'Directeur financier',
-        avatar: 'assets/avatars/AV3.png'
+        avatar: 'assets/avatars/AV3.png',
       },
-      date: '2018-02-16'
+      date: '2018-02-16',
     },
     {
       description: 'Réunion de coordination hebdomadaire',
@@ -92,10 +92,10 @@ export class HistoryPage implements OnInit {
       executant: {
         name: 'Lucie Petit',
         role: 'Chef de projet',
-        avatar: 'assets/avatars/AV53.png'
+        avatar: 'assets/avatars/AV53.png',
       },
-      date: '2015-09-13'
-    }
+      date: '2015-09-13',
+    },
   ];
   initialValues!: HistoriqueItem[];
   isSorted: boolean | null = null;
@@ -111,11 +111,16 @@ export class HistoryPage implements OnInit {
    */
   severity(etat: string): 'danger' | 'warning' | 'info' | 'success' {
     switch (etat) {
-      case 'En retard': return 'danger';
-      case 'A faire':   return 'warning';
-      case 'En cours':  return 'info';
-      case 'Complété':  return 'success';
-      default:          return 'info';
+      case 'En retard':
+        return 'danger';
+      case 'A faire':
+        return 'warning';
+      case 'En cours':
+        return 'info';
+      case 'Complété':
+        return 'success';
+      default:
+        return 'info';
     }
   }
 
@@ -130,7 +135,7 @@ export class HistoryPage implements OnInit {
       this.historique,
       this.initialValues,
       this.isSorted,
-      this.dt
+      this.dt,
     );
   }
 }

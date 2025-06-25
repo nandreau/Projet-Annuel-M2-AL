@@ -14,7 +14,14 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
   standalone: true,
-  imports: [IonicModule, HeaderComponent, PrimengModule, IconField, InputIcon, FormsModule]
+  imports: [
+    IonicModule,
+    HeaderComponent,
+    PrimengModule,
+    IconField,
+    InputIcon,
+    FormsModule,
+  ],
 })
 export class AdminPage implements OnInit {
   @ViewChild('dt') dt!: Table;
@@ -25,7 +32,7 @@ export class AdminPage implements OnInit {
       mail: 'James@gmail.com',
       date: '2015-09-13',
       role: 'PDG',
-      droit: 'Admin'
+      droit: 'Admin',
     },
     {
       id: 2,
@@ -33,7 +40,7 @@ export class AdminPage implements OnInit {
       mail: 'Josephine@gmail.com',
       date: '2019-02-09',
       role: 'Ressource Humaine',
-      droit: 'Manager'
+      droit: 'Manager',
     },
     {
       id: 3,
@@ -41,8 +48,8 @@ export class AdminPage implements OnInit {
       mail: 'Donette@gmail.com',
       date: '2016-05-20',
       role: 'Plombier',
-      droit: 'Artisan'
-    }
+      droit: 'Artisan',
+    },
   ];
   selectedUser!: User | null;
   selectedUsers!: User[] | null;
@@ -53,7 +60,9 @@ export class AdminPage implements OnInit {
   visibleEdit = false;
   visibleDelete = false;
 
-  constructor(private tableService: TableService) {this.resetUserForm(); }
+  constructor(private tableService: TableService) {
+    this.resetUserForm();
+  }
 
   ngOnInit() {
     this.initialValues = [...this.users];
@@ -70,7 +79,7 @@ export class AdminPage implements OnInit {
       this.users,
       this.initialValues,
       this.isSorted,
-      this.dt
+      this.dt,
     );
   }
 
@@ -97,14 +106,16 @@ export class AdminPage implements OnInit {
 
     if (action === 'edit' && this.selectedUsers?.length) {
       const editedUser = { ...this.userForm };
-      this.users = this.users.map(user =>
-        user.id === this.selectedUsers![0].id ? { ...user, ...editedUser } : user
+      this.users = this.users.map((user) =>
+        user.id === this.selectedUsers![0].id
+          ? { ...user, ...editedUser }
+          : user,
       );
     }
 
     if (action === 'delete' && this.selectedUsers?.length) {
-      const idsToDelete = this.selectedUsers.map(user => user.id);
-      this.users = this.users.filter(user => !idsToDelete.includes(user.id));
+      const idsToDelete = this.selectedUsers.map((user) => user.id);
+      this.users = this.users.filter((user) => !idsToDelete.includes(user.id));
       this.selectedUsers = [];
     }
 
@@ -113,7 +124,6 @@ export class AdminPage implements OnInit {
     modal.dismiss();
   }
 
-
   resetUserForm() {
     this.userForm = {
       id: 0,
@@ -121,17 +131,16 @@ export class AdminPage implements OnInit {
       mail: '',
       date: '',
       role: '',
-      droit: ''
+      droit: '',
     };
   }
 }
 
-
 interface User {
-  id: number,
-  name: string,
-  mail: string,
-  date: string,
-  role: string,
-  droit: string
+  id: number;
+  name: string;
+  mail: string;
+  date: string;
+  role: string;
+  droit: string;
 }

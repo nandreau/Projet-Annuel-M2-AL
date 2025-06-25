@@ -6,7 +6,7 @@ export class AdminGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    const userRole = localStorage.getItem('role'); 
+    const userRole = localStorage.getItem('role');
 
     if (userRole !== 'admin') {
       this.router.navigate(['/not-authorized']);

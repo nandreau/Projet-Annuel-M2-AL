@@ -3,14 +3,29 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <div class="flex align-items-center mb-3">
-          <ion-img class="w-3rem h-3rem" src="assets/logo.png" alt="logo"></ion-img>
+          <ion-img
+            class="w-3rem h-3rem"
+            src="assets/logo.png"
+            alt="logo"
+          ></ion-img>
           <div class="ml-2 font-bold text-xl">EasyPlanner</div>
         </div>
 
         @for (p of appPages; track p; let i = $index) {
           <ion-menu-toggle auto-hide="false">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-              <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+            <ion-item
+              routerDirection="root"
+              [routerLink]="[p.url]"
+              lines="none"
+              detail="false"
+              routerLinkActive="selected"
+            >
+              <ion-icon
+                aria-hidden="true"
+                slot="start"
+                [ios]="p.icon + '-outline'"
+                [md]="p.icon + '-sharp'"
+              ></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
           </ion-menu-toggle>

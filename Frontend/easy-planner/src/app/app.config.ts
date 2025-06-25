@@ -5,7 +5,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { RouteReuseStrategy } from '@angular/router';
-import { IonicRouteStrategy } from '@ionic/angular/standalone'; 
+import { IonicRouteStrategy } from '@ionic/angular/standalone';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 
@@ -22,9 +22,9 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: CustomAura,
         options: {
-          darkModeSelector: false    // or your class/selector for dark mode
-        }
-      }
+          darkModeSelector: false, // or your class/selector for dark mode
+        },
+      },
     }),
   ],
 };

@@ -7,10 +7,8 @@ import { IonicModule } from 'src/app/shared/ionic.module';
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule, HeaderComponent]
+  imports: [IonicModule, HeaderComponent],
 })
 export class DashboardPage {
-
-  constructor() { }
-
+  constructor() {}
 }

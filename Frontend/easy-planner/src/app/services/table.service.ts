@@ -3,7 +3,7 @@ import { SortEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TableService {
   /**
@@ -31,7 +31,7 @@ export class TableService {
     data: any[],
     initialData: any[],
     isSorted: boolean | null,
-    dt: Table
+    dt: Table,
   ): boolean | null {
     if (isSorted == null) {
       isSorted = true;
@@ -49,8 +49,8 @@ export class TableService {
     return isSorted;
   }
 
-  /** 
-   * Implémentation concrète du tri, utilitaire interne 
+  /**
+   * Implémentation concrète du tri, utilitaire interne
    */
   private sortTableData(event: SortEvent) {
     // Si data est absent, on sort de la méthode
@@ -68,11 +68,9 @@ export class TableService {
       else if (v1 == null && v2 == null) res = 0;
       else if (typeof v1 === 'string' && typeof v2 === 'string')
         res = v1.localeCompare(v2);
-      else
-        res = v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
+      else res = v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
 
       return (event.order ?? 1) * res;
     });
   }
-
 }

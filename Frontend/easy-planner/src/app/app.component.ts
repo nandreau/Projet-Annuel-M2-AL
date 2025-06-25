@@ -1,8 +1,20 @@
-
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { archiveOutline, archiveSharp, businessOutline, businessSharp, calendarOutline, calendarSharp, homeOutline, homeSharp, peopleOutline, peopleSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import {
+  archiveOutline,
+  archiveSharp,
+  businessOutline,
+  businessSharp,
+  calendarOutline,
+  calendarSharp,
+  homeOutline,
+  homeSharp,
+  peopleOutline,
+  peopleSharp,
+  warningOutline,
+  warningSharp,
+} from 'ionicons/icons';
 import { IonicModule } from './shared/ionic.module';
 
 @Component({
@@ -23,6 +35,19 @@ export class AppComponent {
     { title: 'Register', url: '/register', icon: 'people' },
   ];
   constructor() {
-    addIcons({ homeSharp, businessSharp, calendarSharp, archiveSharp, warningSharp, peopleSharp, homeOutline, businessOutline, calendarOutline, archiveOutline, warningOutline, peopleOutline });
+    addIcons({
+      homeSharp,
+      businessSharp,
+      calendarSharp,
+      archiveSharp,
+      warningSharp,
+      peopleSharp,
+      homeOutline,
+      businessOutline,
+      calendarOutline,
+      archiveOutline,
+      warningOutline,
+      peopleOutline,
+    });
   }
 }
