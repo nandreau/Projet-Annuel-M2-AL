@@ -1,6 +1,9 @@
 <app-header></app-header>
 <ion-content [fullscreen]="true">
   <div class="container">
+    <div class="header-container">
+      <div class="header-container-title">Liste des problèmes</div>
+    </div>
     <p-accordion [(activeIndex)]="activeProblem" [multiple]="false">
       <p-accordion-panel class="mb-3" *ngFor="let problem of problems" [value]="problem.id">
         <p-accordion-header>

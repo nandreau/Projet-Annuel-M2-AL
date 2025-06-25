@@ -88,6 +88,18 @@ ion-badge {
   padding: 2rem 1.5rem;
 }
 
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.header-container-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 .p-datepicker {
   width: 100%;
 }

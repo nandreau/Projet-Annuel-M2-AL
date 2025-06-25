@@ -5,6 +5,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Table } from 'primeng/table';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { TableService } from 'src/app/services/table.service';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 
@@ -52,50 +53,25 @@ export class AdminPage implements OnInit {
   visibleEdit = false;
   visibleDelete = false;
 
-  constructor() {this.resetUserForm(); }
+  constructor(private tableService: TableService) {this.resetUserForm(); }
 
   ngOnInit() {
     this.initialValues = [...this.users];
   }
 
   applyGlobalFilter(event: any) {
-    const value = (event.target as HTMLInputElement).value;
-    this.dt.filterGlobal(value, 'contains');
-  }
-
-  getFieldValue(data: any, field: string) {
-    return field.split('.').reduce((value, key) => value && value[key], data);
+    const filter = (event.target as HTMLInputElement).value;
+    this.tableService.applyGlobalFilter(this.dt, filter);
   }
 
   customSort(event: SortEvent) {
-    if (this.isSorted == null || this.isSorted === undefined) {
-      this.isSorted = true;
-      this.sortTableData(event);
-    } else if (this.isSorted === true) {
-      this.isSorted = false;
-      this.sortTableData(event);
-    } else if (this.isSorted === false) {
-      this.isSorted = null;
-      this.users = [...this.initialValues];
-      this.dt.reset();
-    }
-  }
-
-  sortTableData(event: any) {
-    event.data.sort((data1: any, data2: any) => {
-      let value1 = this.getFieldValue(data1, event.field);
-      let value2 = this.getFieldValue(data2, event.field);
-      let result = null;
-
-      if (value1 == null && value2 != null) result = -1;
-      else if (value1 != null && value2 == null) result = 1;
-      else if (value1 == null && value2 == null) result = 0;
-      else if (typeof value1 === 'string' && typeof value2 === 'string')
-        result = value1.localeCompare(value2);
-      else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
-
-      return event.order * result;
-    });
+    this.isSorted = this.tableService.customSort(
+      event,
+      this.users,
+      this.initialValues,
+      this.isSorted,
+      this.dt
+    );
   }
 
   openAdd() {
