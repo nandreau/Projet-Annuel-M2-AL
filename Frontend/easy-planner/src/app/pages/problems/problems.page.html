@@ -23,11 +23,12 @@
                 <span>Signalé le {{ problem.date }}</span>
               </div>
             </div>
-            <ion-badge
-              [color]="problem.status !== 'En cours' ? 'danger' : 'warning'"
+            <p-tag
+              [value]="problem.status"
+              [severity]="problem.status !== 'En cours' ? 'danger' : 'warning'"
               class="mr-3"
-              >{{ problem.status }}</ion-badge
-            >
+              rounded="true"
+            ></p-tag>
           </div>
         </p-accordion-header>
 

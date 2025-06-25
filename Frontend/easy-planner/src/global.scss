@@ -52,24 +52,6 @@
   --gray-100: #f9f9fa;
 }
 
-ion-menu {
-  border-right: 1.5px solid var(--border-color);
-}
-
-ion-header {
-  border-bottom: 1.5px solid var(--border-color);
-}
-
-ion-button {
-  --padding-top: 10px !important;
-  --padding-bottom: 10px !important;
-  min-height: 40px;
-}
-
-ion-badge {
-  min-width: min-content;
-}
-
 // global
 
 .form {
@@ -101,6 +83,29 @@ ion-badge {
   font-weight: 600;
 }
 
+//Ionic
+
+ion-menu {
+  border-right: 1.5px solid var(--border-color);
+}
+
+ion-header {
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+ion-button {
+  --padding-top: 10px !important;
+  --padding-bottom: 10px !important;
+  min-height: 40px;
+}
+
+ion-badge {
+  min-width: min-content;
+}
+
+
+//primeng 
+
 .p-datepicker {
   width: 100%;
 }
@@ -114,6 +119,11 @@ ion-badge {
 
 .p-progressbar {
   height: 10px !important;
+}
+
+.p-tag {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 // table
