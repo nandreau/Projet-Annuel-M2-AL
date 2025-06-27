@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { Problem } from 'src/app/models/global.model';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 
@@ -12,9 +13,9 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
 })
 export class ProblemsPage {
-  problems = [
+  problems: Problem = [
     {
-      id: 'PRB-001',
+      id:1,
       title: "Fuite d'eau au niveau du 2ème étage",
       urgency: 'Urgent',
       chantier: 'Résidence Bellevue',
@@ -23,7 +24,7 @@ export class ProblemsPage {
       date: '29 Mai 2025',
       status: 'En cours',
       description: `Une fuite d'eau importante a été détectée...`,
-      photos: ['Photo de la fuite', 'Photo des dégâts'],
+      images: ['Photo de la fuite', 'Photo des dégâts'],
       messages: [
         {
           sender: 'Michel Dupont',
@@ -48,7 +49,7 @@ export class ProblemsPage {
       ],
     },
     {
-      id: 'PRB-002',
+      id:2,
       title: "Problème d'installation électrique - Appartement 105",
       urgency: 'Moyen',
       chantier: 'Résidence Bellevue',
@@ -57,7 +58,7 @@ export class ProblemsPage {
       date: '27 Mai 2025',
       status: 'Non résolu',
       description: `Un problème d'installation a été détecté dans l'appartement 105...`,
-      photos: [],
+      images: [],
       messages: [],
     },
   ];

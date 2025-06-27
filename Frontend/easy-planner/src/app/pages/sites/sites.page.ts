@@ -3,6 +3,7 @@ import { IonicModule } from 'src/app/shared/ionic.module';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 import { FormsModule } from '@angular/forms';
+import { Chantier } from 'src/app/models/global.model';
 
 @Component({
   selector: 'app-sites',
@@ -14,56 +15,80 @@ import { FormsModule } from '@angular/forms';
 export class SitesPage {
   projets: Chantier[] = [
     {
+      id: 1,
       title: 'Rénovation Appartement Paris 16',
       client: 'Dupont SARL',
       address: '25 rue de la Pompe, Paris',
       start: '14/04/2025',
       end: '18/06/2025',
-      globalProgress: 57,
+      progress: 57,
       phases: [
         {
-          label: 'Phase 1 : Démolition',
+          id: 1,
+          name: 'Phase 1 : Démolition',
           progress: 100,
           tasks: [
             {
-              label: 'Dépose des cloisons',
+              id: 1,
+              name: 'Dépose des cloisons',
               done: true,
               doneDate: '18 avril 2025',
+              tasks: [],
             },
             {
-              label: 'Enlèvement des gravats',
+              id: 2,
+              name: 'Enlèvement des gravats',
               done: true,
               doneDate: '17 avril 2025',
+              tasks: [],
             },
           ],
         },
         {
-          label: 'Phase 2 : Electricité',
+          id: 2,
+          name: 'Phase 2 : Electricité',
           progress: 30,
-          statusLabel: 'En cours',
           tasks: [
             {
-              label: 'Pose des gaines électriques',
+              id: 3,
+              name: 'Pose des gaines électriques',
               done: false,
               dueDate: '18 avril 2025',
+              tasks: [],
             },
-            { label: 'Pose des tableaux électriques', done: false },
-            { label: 'Raccordements', done: false, dueDate: '18 avril 2025' },
+            {
+              id: 4,
+              name: 'Pose des tableaux électriques',
+              done: false,
+              tasks: [],
+            },
+            {
+              id: 5,
+              name: 'Raccordements',
+              done: false,
+              dueDate: '18 avril 2025',
+              tasks: [],
+            },
           ],
         },
         {
-          label: 'Phase 3 : Peinture',
+          id: 3,
+          name: 'Phase 3 : Peinture',
           progress: 0,
           tasks: [
             {
-              label: 'Préparation des murs',
+              id: 6,
+              name: 'Préparation des murs',
               done: false,
               dueDate: '25 avril 2025',
+              tasks: [],
             },
             {
-              label: 'Mise en peinture',
+              id: 7,
+              name: 'Mise en peinture',
               done: false,
               dueDate: '27 avril 2025',
+              tasks: [],
             },
           ],
         },
@@ -75,39 +100,52 @@ export class SitesPage {
       ],
     },
     {
+      id: 2,
       title: 'Extension Maison Saint-Cloud',
       client: 'Martin Bâtiment',
       address: '8 avenue des Acacias, Saint-Cloud',
       start: '01/05/2025',
       end: '20/09/2025',
-      globalProgress: 18,
+      progress: 18,
       phases: [
         {
-          label: 'Phase 1 : Terrassement',
+          id: 4,
+          name: 'Phase 1 : Terrassement',
           progress: 40,
-          statusLabel: 'En cours',
           tasks: [
             {
-              label: 'Décapage du terrain',
+              id: 8,
+              name: 'Décapage du terrain',
               done: true,
               doneDate: '21 avril 2025',
+              tasks: [],
             },
-            { label: 'Creusement des fondations', done: false },
+            {
+              id: 9,
+              name: 'Creusement des fondations',
+              done: false,
+              tasks: [],
+            },
           ],
         },
         {
-          label: 'Phase 2 : Maçonnerie',
+          id: 5,
+          name: 'Phase 2 : Maçonnerie',
           progress: 0,
           tasks: [
             {
-              label: 'Élévation des murs porteurs',
+              id: 10,
+              name: 'Élévation des murs porteurs',
               done: false,
               dueDate: '28 avril 2025',
+              tasks: [],
             },
             {
-              label: 'Coulage de la dalle',
+              id: 11,
+              name: 'Coulage de la dalle',
               done: false,
               dueDate: '24 avril 2025',
+              tasks: [],
             },
           ],
         },
@@ -118,6 +156,7 @@ export class SitesPage {
       ],
     },
   ];
+
   newChantier = {
     title: '',
     client: '',
@@ -125,8 +164,8 @@ export class SitesPage {
     start: null as Date | null,
     end: null as Date | null,
   };
-  newPhase = { label: '' };
-  newTask = { label: '', dueDate: null as Date | null };
+  newPhase = { name: '' };
+  newTask = { name: '', dueDate: null as Date | null };
   visibleAddChantier: boolean = false;
   visibleAddPhase: boolean = false;
   visibleAddTask: boolean = false;
@@ -147,12 +186,13 @@ export class SitesPage {
   }
   confirmChantier() {
     this.projets.push({
+      id:0,
       title: this.newChantier.title,
       client: this.newChantier.client,
       address: this.newChantier.address,
       start: this.formatDate(this.newChantier.start),
       end: this.formatDate(this.newChantier.end),
-      globalProgress: 0,
+      progress: 0,
       phases: [],
       intervenants: [],
     });
@@ -174,11 +214,11 @@ export class SitesPage {
   }
   confirmPhase() {
     this.projets[this.selectedChantierIndex].phases.push({
-      label: this.newPhase.label,
+      name: this.newPhase.name,
       progress: 0,
       tasks: [],
     });
-    this.newPhase = { label: '' };
+    this.newPhase = { name: '' };
     this.visibleAddPhase = false;
   }
   openAddTask(ci: number, pi: number) {
@@ -193,11 +233,11 @@ export class SitesPage {
     this.projets[this.selectedChantierIndex].phases[
       this.selectedPhaseIndex
     ].tasks.push({
-      label: this.newTask.label,
+      name: this.newTask.name,
       done: false,
       dueDate: this.formatDate(this.newTask.dueDate),
     });
-    this.newTask = { label: '', dueDate: null };
+    this.newTask = { name: '', dueDate: null };
     this.visibleAddTask = false;
   }
 
@@ -253,29 +293,4 @@ export class SitesPage {
     ].tasks.splice(this.selectedTaskIndex, 1);
     this.visibleDeleteTask = false;
   }
-}
-
-interface Task {
-  label: string;
-  done: boolean;
-  dueDate?: string; // date à faire
-  doneDate?: string; // date de fin
-}
-
-interface Phase {
-  label: string;
-  progress: number; // 0–100
-  statusLabel?: string; // "En cours", "Retard", etc.
-  tasks: Task[];
-}
-
-interface Chantier {
-  title: string;
-  client: string;
-  address: string;
-  start: string;
-  end: string;
-  globalProgress: number;
-  phases: Phase[];
-  intervenants: { avatar: string }[];
 }

@@ -3,6 +3,7 @@ import { IonicModule } from 'src/app/shared/ionic.module';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 import { FormsModule } from '@angular/forms';
+import { Phase, Task } from 'src/app/models/global.model';
 
 @Component({
   selector: 'app-planning',
@@ -12,80 +13,110 @@ import { FormsModule } from '@angular/forms';
   imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
 })
 export class PlanningPage implements OnInit {
-  days: { date: Date; label: string; day: string }[] = [];
+  days: { date: Date; name: string; day: string }[] = [];
 
-  // dummy data
   projects: Phase[] = [
     {
+      id:0,
       name: 'Phase 1 : Démolition',
       progress: 65,
       tasks: [
-        { name: 'Démolition cloisons', status: 'notStarted', schedule: [] },
         {
+          id:0,
+          name: 'Démolition cloisons',
+          done: false,
+          dueDate: '2025-06-24',
+          doneDate: '2025-06-24',
+          tasks: [
+            { id:0, startDate: '2025-06-24T08:00:00', endDate: '2025-06-24T12:00:00' }
+          ]
+        },
+        {
+          id:0,
           name: 'Installation plomberie',
-          status: 'finished',
-          schedule: [
-            {
-              start: 1750233610,
-              end: 1750266010,
-            },
-          ],
+          done: true,
+          dueDate: '2025-06-15',
+          doneDate: '2025-06-24',
+          tasks: [
+            { id:0, startDate: '2025-06-24T13:00:00', endDate: '2025-06-24T17:00:00' }
+          ]
         },
         {
+          id:0,
           name: 'Installation électricité',
-          status: 'inProgress',
-          schedule: [
-            {
-              start: 1750233610,
-              end: 1750266010,
-            },
-          ],
-        },
-      ],
+          done: false,
+          dueDate: '2025-07-02',
+          doneDate: '2025-06-24',
+          tasks: [
+            { id:0, startDate: '2025-06-24T09:00:00', endDate: '2025-06-24T12:00:00' }
+          ]
+        }
+      ]
     },
     {
+      id:0,
       name: 'Phase 2 : Electricité',
       progress: 30,
       tasks: [
         {
+          id:0,
           name: 'Coulage fondations',
-          status: 'finished',
-          schedule: [{ start: 1750233610, end: 1750266010 }],
+          done: true,
+          dueDate: '2025-06-10',
+          doneDate: '2025-06-24',
+          tasks: [
+            { id:0, startDate: '2025-06-24T08:00:00', endDate: '2025-06-24T10:30:00' }
+          ]
         },
-        { name: 'Élévation murs', status: 'inProgress', schedule: [] },
-      ],
+        {
+          id:0,
+          name: 'Élévation murs',
+          done: false,
+          dueDate: '2025-07-05',
+          doneDate: '2025-06-24',
+          tasks: [
+            { id:0, startDate: '2025-06-24T10:30:00', endDate: '2025-06-24T15:00:00' }
+          ]
+        }
+      ]
     },
     {
+      id:0,
       name: 'Phase 3 : Peinture',
       progress: 10,
       tasks: [
         {
+          id:0,
           name: 'Dépose ancienne toiture',
-          status: 'notStarted',
-          schedule: [{ start: 1750233610, end: 1750266010 }],
-        },
-      ],
-    },
+          done: false,
+          dueDate: '2025-07-10',
+          doneDate: '2025-06-24',
+          tasks: [
+            { id:0, startDate: '2025-06-24T08:00:00', endDate: '2025-06-24T11:00:00' }
+          ]
+        }
+      ]
+    }
   ];
 
   // header controls
-  views = [{ label: 'Semaine' }, { label: 'Mois' }];
+  views = [{ name: 'Semaine' }, { name: 'Mois' }];
   sites = [
-    { label: 'Construction Maison Martin' },
-    { label: 'Réfection Toiture Dubois' },
+    { name: 'Construction Maison Martin' },
+    { name: 'Réfection Toiture Dubois' },
   ];
-  groupBy = [{ label: 'Par artisan' }];
+  groupBy = [{ name: 'Par artisan' }];
   selectedView = this.views[0];
   selectedSite = this.sites[0];
   selectedGroup = this.groupBy[0];
   weekRange = '';
+  today: Date = new Date();
 
   ngOnInit() {
-    const today = new Date();
-    const dow = today.getDay();
+    const dow = this.today.getDay();
     const diffToMon = (dow + 6) % 7;
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - diffToMon);
+    const monday = new Date(this.today);
+    monday.setDate(this.today.getDate() - diffToMon);
 
     const weekdayFmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'long' });
     const dayNumFmt = new Intl.DateTimeFormat('fr-FR', { day: '2-digit' });
@@ -96,7 +127,7 @@ export class PlanningPage implements OnInit {
       d.setDate(monday.getDate() + i);
       this.days.push({
         date: d,
-        label: weekdayFmt.format(d),
+        name: weekdayFmt.format(d),
         day: dayNumFmt.format(d),
       });
     }
@@ -109,22 +140,44 @@ export class PlanningPage implements OnInit {
     this.weekRange = `${startStr} – ${endStr} ${monthStr} ${this.days[0].date.getFullYear()}`;
   }
 
-  getSchedulesForDay(task: Task, day: Date) {
-    const dayStart = Math.floor(
-      new Date(day.setHours(0, 0, 0, 0)).getTime() / 1000,
-    );
-    const dayEnd = dayStart + 86400;
+  getSchedulesForDay(task: Task, day: Date): { time: string }[] {
+    const results: { time: string }[] = [];
 
-    return task.schedule
-      .filter((e) => e.start < dayEnd && e.end > dayStart)
-      .map((e) => {
-        const s = new Date(e.start * 1000);
-        const t = new Date(e.end * 1000);
+    // Define start and end of the target day
+    const dayStart = new Date(day);
+    dayStart.setHours(0, 0, 0, 0);
+
+    const dayEnd = new Date(day);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    for (const planning of task.tasks) {
+      if (!planning.startDate || !planning.endDate) continue;
+
+      const start = new Date(planning.startDate);
+      const end = new Date(planning.endDate);
+
+      // Check overlap with this day
+      if (start <= dayEnd && end >= dayStart) {
         const pad = (n: number) => n.toString().padStart(2, '0');
-        return {
-          time: `${pad(s.getHours())}h${pad(s.getMinutes())} – ${pad(t.getHours())}h${pad(t.getMinutes())}`,
-        };
-      });
+        const s = `${pad(start.getHours())}h${pad(start.getMinutes())}`;
+        const e = `${pad(end.getHours())}h${pad(end.getMinutes())}`;
+        results.push({ time: `${s} – ${e}` });
+      }
+    }
+
+    return results;
+  }
+  
+  isOverdue(task: Task): boolean {
+    return !task.done && !!task.dueDate && new Date(task.dueDate) <= this.today;
+  }
+
+  isOngoing(task: Task): boolean {
+    return !task.done && !!task.dueDate && new Date(task.dueDate) > this.today;
+  }
+
+  isTodo(task: Task): boolean {
+    return !task.done && !task.dueDate;
   }
 
   prev() {
@@ -133,26 +186,7 @@ export class PlanningPage implements OnInit {
   next() {
     /* avance la semaine */
   }
-  today() {
+  naviguateToday() {
     /* revient à aujourd'hui */
   }
-}
-
-type Status = 'notStarted' | 'inProgress' | 'finished';
-
-interface Details {
-  start: number;
-  end: number;
-}
-
-interface Task {
-  name: string;
-  status: Status;
-  schedule: Details[];
-}
-
-interface Phase {
-  name: string;
-  tasks: Task[];
-  progress: number;
 }

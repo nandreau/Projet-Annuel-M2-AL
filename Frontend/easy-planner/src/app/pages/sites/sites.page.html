@@ -48,12 +48,12 @@
             <div class="flex align-items-center mt-3">
               <span class="mr-2 text-sm text-gray-600">Avancement global</span>
               <p-progressBar
-                [value]="ct.globalProgress"
+                [value]="ct.progress"
                 [showValue]="false"
                 class="global-progress-bar"
               ></p-progressBar>
               <span class="ml-2 text-sm font-semibold">
-                {{ ct.globalProgress }}%
+                {{ ct.progress }}%
               </span>
             </div>
           </div>
@@ -69,7 +69,7 @@
                 >
                   <div class="flex text-base font-semibold">
                     <i class="pi pi-layer-group"></i>
-                    <span>{{ ph.label }}</span>
+                    <span>{{ ph.name }}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <p-button
@@ -98,7 +98,7 @@
                       class="ml-2 text-sm"
                       [ngClass]="{ 'line-through text-gray-500': t.done }"
                     >
-                      {{ t.label }}
+                      {{ t.name }}
                     </span>
                   </div>
                   <div class="flex align-items-center">
@@ -311,7 +311,7 @@
 >
   <p>
     Supprimer la phase "<strong
-      >{{ projets[selectedChantierIndex].phases[selectedPhaseIndex].label
+      >{{ projets[selectedChantierIndex].phases[selectedPhaseIndex].name
       }}</strong
     >" ?
   </p>
@@ -338,7 +338,7 @@
   <p>
     Supprimer la tâche "<strong>
       {{
-      projets[selectedChantierIndex].phases[selectedPhaseIndex].tasks[selectedTaskIndex].label
+      projets[selectedChantierIndex].phases[selectedPhaseIndex].tasks[selectedTaskIndex].name
       }}
     </strong>
     " ?

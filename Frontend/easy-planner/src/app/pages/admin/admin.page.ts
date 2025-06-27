@@ -5,6 +5,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Table } from 'primeng/table';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { User } from 'src/app/models/global.model';
 import { TableService } from 'src/app/services/table.service';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
@@ -90,7 +91,7 @@ export class AdminPage implements OnInit {
 
   openEdit() {
     if (this.selectedUsers?.length) {
-      this.userForm = { ...this.selectedUsers[0] }; // ou gestion multi
+      this.userForm = { ...this.selectedUsers[0] };
       this.visibleEdit = true;
     }
   }
@@ -134,13 +135,4 @@ export class AdminPage implements OnInit {
       droit: '',
     };
   }
-}
-
-interface User {
-  id: number;
-  name: string;
-  mail: string;
-  date: string;
-  role: string;
-  droit: string;
 }
