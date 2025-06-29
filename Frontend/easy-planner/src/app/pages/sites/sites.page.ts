@@ -214,6 +214,7 @@ export class SitesPage {
   }
   confirmPhase() {
     this.projets[this.selectedChantierIndex].phases.push({
+      id: 0,
       name: this.newPhase.name,
       progress: 0,
       tasks: [],
@@ -233,9 +234,11 @@ export class SitesPage {
     this.projets[this.selectedChantierIndex].phases[
       this.selectedPhaseIndex
     ].tasks.push({
+      id: 0,
       name: this.newTask.name,
       done: false,
       dueDate: this.formatDate(this.newTask.dueDate),
+      tasks: []
     });
     this.newTask = { name: '', dueDate: null };
     this.visibleAddTask = false;

@@ -1,11 +1,13 @@
 export interface User {
   id: number;
+  firstname: string;
   name: string;
   mail: string;
   date: string;
   role: string[];
   droit: string;
-  avatar: string;
+  avatar?: string;
+  password?: string;
 }
 
 export interface TaskPlanning {
@@ -47,7 +49,7 @@ export interface Chantier {
 
 export interface ProblemMessage {
   id: number;
-  sender: string;
+  sender: User;
   date: string;
   content: string;
 }
@@ -58,7 +60,7 @@ export interface Problem {
   urgency: 'Urgent' | 'Moyen' | 'Faible';
   chantier: string;
   phase: string;
-  tache: string;
+  task: string;
   date: string;
   status: 'En cours' | 'Non résolu' | 'Résolu';
   description: string;

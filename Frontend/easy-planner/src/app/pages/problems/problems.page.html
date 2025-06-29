@@ -19,7 +19,7 @@
               <div class="problem-meta font-normal">
                 <span>Chantier: {{ problem.chantier }}</span>
                 <span>Phase: {{ problem.phase }}</span>
-                <span>Tâche: {{ problem.tache }}</span>
+                <span>Tâche: {{ problem.task }}</span>
                 <span>Signalé le {{ problem.date }}</span>
               </div>
             </div>
@@ -36,9 +36,9 @@
           <div class="pt-3">
             <div class="problem-description">{{ problem.description }}</div>
 
-            <div class="problem-photos" *ngIf="problem.photos.length">
-              <div class="photo-card" *ngFor="let photo of problem.photos">
-                {{ photo }}
+            <div class="problem-images" *ngIf="problem.images.length">
+              <div class="image-card" *ngFor="let image of problem.images">
+                {{ image }}
               </div>
             </div>
 
@@ -52,7 +52,7 @@
               >
                 <div class="message-header">
                   <ng-container *ngIf="group.side === 'left'">
-                    <strong>{{ group.sender }}</strong> ·
+                    <strong>{{ group.sender.firstname }} {{ group.sender.name }}</strong> ·
                     <span>{{ group.date }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">

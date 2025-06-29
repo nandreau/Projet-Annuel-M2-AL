@@ -26,32 +26,39 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
 })
 export class AdminPage implements OnInit {
   @ViewChild('dt') dt!: Table;
-  users = [
+  users: User[] = [
     {
       id: 1,
-      name: 'James Butt',
+      firstname: 'James',
+      name: 'Butt',
       mail: 'James@gmail.com',
       date: '2015-09-13',
-      role: 'PDG',
+      role: ['PDG'],
       droit: 'Admin',
+      avatar: "AV1.png"
     },
     {
       id: 2,
-      name: 'Josephine Darakjy',
+      firstname: 'Josephine',
+      name: 'Darakjy',
       mail: 'Josephine@gmail.com',
       date: '2019-02-09',
-      role: 'Ressource Humaine',
+      role: ['Ressource Humaine'],
       droit: 'Manager',
+      avatar: "AV1.png"
     },
     {
       id: 3,
-      name: 'Donette Foller',
+      firstname: 'Donette',
+      name: 'Foller',
       mail: 'Donette@gmail.com',
       date: '2016-05-20',
-      role: 'Plombier',
+      role: ['Plombier'],
       droit: 'Artisan',
+      avatar: "AV1.png"
     },
   ];
+  availableRoles!: string[];
   selectedUser!: User | null;
   selectedUsers!: User[] | null;
   initialValues!: User[];
@@ -128,11 +135,13 @@ export class AdminPage implements OnInit {
   resetUserForm() {
     this.userForm = {
       id: 0,
+      firstname: '',
       name: '',
       mail: '',
       date: '',
-      role: '',
+      role: [''],
       droit: '',
+      avatar: ''
     };
   }
 }

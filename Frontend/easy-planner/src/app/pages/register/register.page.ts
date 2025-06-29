@@ -12,7 +12,8 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   imports: [FormsModule, RouterLink, IonicModule, PrimengModule],
 })
 export class RegisterPage {
-  fullName: string = '';
+  name: string = '';
+  firstname: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -20,7 +21,8 @@ export class RegisterPage {
   constructor() {}
 
   onSubmit() {
-    console.log('Nom:', this.fullName);
+    console.log('Nom:', this.name);
+    console.log('Nom:', this.firstname);
     console.log('Email:', this.email);
     console.log('Mot de passe:', this.password);
     console.log('Confirmation:', this.confirmPassword);

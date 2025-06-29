@@ -79,12 +79,12 @@
         <ng-template pTemplate="body" let-user>
           <tr>
             <td><p-tableCheckbox [value]="user" /></td>
-            <td>{{ user.name }}</td>
+            <td>{{ user.firstname }} {{ user.name }}</td>
             <td>{{ user.mail }}</td>
             <td>{{ user.date }}</td>
             <td>
-              <span class="p-tag p-tag-rounded p-tag-info"
-                >{{ user.role }}</span
+              <span *ngofor="let role of user.role" class="p-tag p-tag-rounded p-tag-info"
+                >{{ role }}</span
               >
             </td>
             <td>
@@ -136,7 +136,14 @@
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Rôle</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.role" />
+    <p-multiSelect
+      class="w-full"
+      [options]="availableRoles"
+      [(ngModel)]="userForm.role"
+      optionLabel="label"
+      display="chip"
+      placeholder="Sélectionner les rôles"
+    ></p-multiSelect>
   </div>
   <div class="flex align-items-center gap-4 mb-5">
     <label class="font-semibold w-2">Droit</label>
@@ -183,7 +190,14 @@
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Rôle</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.role" />
+    <p-multiSelect
+      class="w-full"
+      [options]="availableRoles"
+      [(ngModel)]="userForm.role"
+      optionLabel="label"
+      display="chip"
+      placeholder="Sélectionner les rôles"
+    ></p-multiSelect>
   </div>
   <div class="flex align-items-center gap-4 mb-5">
     <label class="font-semibold w-2">Droit</label>

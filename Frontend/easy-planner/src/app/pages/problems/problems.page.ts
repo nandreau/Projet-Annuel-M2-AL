@@ -13,36 +13,76 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
 })
 export class ProblemsPage {
-  problems: Problem = [
+  problems: Problem[] = [
     {
       id:1,
       title: "Fuite d'eau au niveau du 2ème étage",
       urgency: 'Urgent',
       chantier: 'Résidence Bellevue',
       phase: 'Plomberie',
-      tache: 'Réparation de canalisation',
+      task: 'Réparation de canalisation',
       date: '29 Mai 2025',
       status: 'En cours',
       description: `Une fuite d'eau importante a été détectée...`,
       images: ['Photo de la fuite', 'Photo des dégâts'],
       messages: [
         {
-          sender: 'Michel Dupont',
+          id:1,
+          sender:  {
+            id: 1,
+            firstname: 'Michel',
+            name: 'Dupont',
+            mail: 'Michel@gmail.com',
+            date: '2015-09-13',
+            role: ['PDG'],
+            droit: 'Admin',
+            avatar: "AV1.png"
+          },
           date: '28 Mai 2025, 14:30',
           content: "J'ai constaté la fuite ce matin...",
         },
         {
-          sender: 'Sophie Martin',
+          id:2,
+          sender:  {
+            id: 1,
+            firstname: 'Sophie',
+            name: 'Dupont',
+            mail: 'Martin@gmail.com',
+            date: '2015-09-13',
+            role: ['PDG'],
+            droit: 'Admin',
+            avatar: "AV1.png"
+          },
           date: '28 Mai 2025, 16:45',
           content: "J'ai fermé l'arrivée d'eau principale...",
         },
         {
-          sender: 'Sophie Martin',
+          id:3,
+          sender:  {
+            id: 1,
+            firstname: 'Sophie',
+            name: 'Sauvage',
+            mail: 'Sophie@gmail.com',
+            date: '2015-09-13',
+            role: ['PDG'],
+            droit: 'Admin',
+            avatar: "AV1.png"
+          },
           date: '28 Mai 2025, 16:46',
           content: "Et J'ai également coupé l'electricité",
         },
         {
-          sender: 'Pierre Leroy',
+          id:4,
+          sender:  {
+            id: 1,
+            firstname: 'Pierre',
+            name: 'Leroy',
+            mail: 'Pierre@gmail.com',
+            date: '2015-09-13',
+            role: ['PDG'],
+            droit: 'Admin',
+            avatar: "AV1.png"
+          },
           date: '29 Mai 2025, 09:15',
           content: "Je vais passer avec l'équipe de plomberie...",
         },
@@ -54,7 +94,7 @@ export class ProblemsPage {
       urgency: 'Moyen',
       chantier: 'Résidence Bellevue',
       phase: 'Électricité',
-      tache: 'Vérification du disjoncteur',
+      task: 'Vérification du disjoncteur',
       date: '27 Mai 2025',
       status: 'Non résolu',
       description: `Un problème d'installation a été détecté dans l'appartement 105...`,
