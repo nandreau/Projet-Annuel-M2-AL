@@ -24,6 +24,16 @@ export class ProblemsPage {
       date: '29 Mai 2025',
       status: 'En cours',
       description: `Une fuite d'eau importante a été détectée...`,
+      user: {
+        id: 1,
+        firstname: 'Michel',
+        name: 'Dupont',
+        mail: 'Michel@gmail.com',
+        date: '2015-09-13',
+        role: ['PDG'],
+        droit: 'Admin',
+        avatar: "AV1.png"
+      },
       images: ['Photo de la fuite', 'Photo des dégâts'],
       messages: [
         {
@@ -98,6 +108,16 @@ export class ProblemsPage {
       date: '27 Mai 2025',
       status: 'Non résolu',
       description: `Un problème d'installation a été détecté dans l'appartement 105...`,
+      user: {
+        id: 1,
+        firstname: 'Michel',
+        name: 'Dupont',
+        mail: 'Michel@gmail.com',
+        date: '2015-09-13',
+        role: ['PDG'],
+        droit: 'Admin',
+        avatar: "AV1.png"
+      },
       images: [],
       messages: [],
     },

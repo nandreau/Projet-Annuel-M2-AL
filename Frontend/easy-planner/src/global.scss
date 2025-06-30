@@ -44,11 +44,11 @@
   --ion-color-primary: #2563eb;
   --ion-color-primary-hover: #1d4ed8;
   --border-color: #dddddd;
+  --background-color: #f3f5f6;
   --white: #ffffff;
   --blue-700: #1d4ed8;
   --gray-800: #1f2937;
   --gray-700: #374151;
-  --border-color: #d1d5db;
   --gray-100: #f9f9fa;
 }
 
@@ -61,6 +61,17 @@
   box-shadow:
     rgba(0, 0, 0, 0.12) 0px 1px 3px,
     rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.card {
+  background-color: var(--background-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .border {

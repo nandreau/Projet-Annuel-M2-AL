@@ -22,7 +22,7 @@
             <div class="ml-4 flex flex-column justify-content-evenly">
               <div class="text-xl font-semibold mb-2">{{ ct.title }}</div>
               <div class="text-sm text-gray-600">
-                <div>Client : {{ ct.client }}</div>
+                <div>Client : {{ ct.client.firstname }}</div>
                 <div class="mt-1">Adresse : {{ ct.address }}</div>
               </div>
             </div>
@@ -181,12 +181,7 @@
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Client</label>
-    <input
-      class="w-full"
-      pInputText
-      class="flex-1"
-      [(ngModel)]="newChantier.client"
-    />
+    // todo select
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Adresse</label>

@@ -3,7 +3,7 @@ import { IonicModule } from 'src/app/shared/ionic.module';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 import { FormsModule } from '@angular/forms';
-import { Chantier } from 'src/app/models/global.model';
+import { Chantier, User } from 'src/app/models/global.model';
 
 @Component({
   selector: 'app-sites',
@@ -13,11 +13,21 @@ import { Chantier } from 'src/app/models/global.model';
   imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
 })
 export class SitesPage {
+  user: User = {
+    id: 1,
+    firstname: 'Michael',
+    name: 'youn',
+    mail: 'm@r',
+    date: '2025-06-01',
+    role: ['Chef'],
+    droit: 'full'
+  };
+
   projets: Chantier[] = [
     {
       id: 1,
       title: 'Rénovation Appartement Paris 16',
-      client: 'Dupont SARL',
+      client: this.user,
       address: '25 rue de la Pompe, Paris',
       start: '14/04/2025',
       end: '18/06/2025',
@@ -102,7 +112,7 @@ export class SitesPage {
     {
       id: 2,
       title: 'Extension Maison Saint-Cloud',
-      client: 'Martin Bâtiment',
+      client: this.user,
       address: '8 avenue des Acacias, Saint-Cloud',
       start: '01/05/2025',
       end: '20/09/2025',
@@ -159,7 +169,7 @@ export class SitesPage {
 
   newChantier = {
     title: '',
-    client: '',
+    client: this.user as User,
     address: '',
     start: null as Date | null,
     end: null as Date | null,
@@ -198,7 +208,7 @@ export class SitesPage {
     });
     this.newChantier = {
       title: '',
-      client: '',
+      client: this.user,
       address: '',
       start: null,
       end: null,

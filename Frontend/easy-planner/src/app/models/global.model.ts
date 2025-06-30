@@ -37,15 +37,15 @@ export interface Phase {
 export interface Chantier {
   id: number;
   title: string;
-  client: string;
+  client: User;
   address: string;
   start: string;
   end: string;
   progress: number;
   phases: Phase[];
+  images?: string[];
   intervenants: { avatar: string }[];
 }
-
 
 export interface ProblemMessage {
   id: number;
@@ -64,6 +64,7 @@ export interface Problem {
   date: string;
   status: 'En cours' | 'Non résolu' | 'Résolu';
   description: string;
+  user: User;
   images: string[];
   messages: ProblemMessage[];
 }
