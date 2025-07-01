@@ -30,143 +30,158 @@
         </div>
       </div>
     </div>
-    <!-- LISTE DES CHANTIERS -->
-    <div class="card">
-      <div class="card-title">
-        Tout les chantier
+    <div class="grid">
+      <!-- CHART 1: Tâches par statut -->
+      <div class="mt-2 xl:col-6 col-12">
+        <div class="card">
+          <div class="card-title">Tâches par statut</div>
+          <p-chart
+            type="bar"
+            [data]="tasksData"
+            [options]="tasksOptions"
+          ></p-chart>
+        </div>
       </div>
-      <div class="flex flex-wrap mt-1">
-        <div class="mt-2 col-12 xl:col-6 p-md-4 flex border-round-lg bg-white" *ngFor="let ct of chantiers">
-          <img [src]="ct.images?.[0]" alt="img" class="border-round-left-lg h-6rem w-8rem" />
-          <div class="pl-3 p-2 pr-1 justify-content-evenly flex flex-column">
-            <div>
-              <div class="text-lg font-bold">{{ ct.title }}</div>
-              <div class="text-sm">Client: {{ ct.client }}</div>
-            </div>
-            <div class="flex mt-2">
-              <div class="text-center pr-2" *ngFor="let ph of ct.phases">
-                <p-progressBar
-                  [value]="ph.progress"
-                  [showValue]="false"
-                ></p-progressBar>
-                <div class="text-xs mt-1">{{ ph.name }}</div>
+
+      <!-- CHART 2: Problèmes par statut -->
+      <div class="mt-2 xl:col-6 col-12">
+        <div class="card">
+          <div class="card-title">Problèmes par statut</div>
+          <p-chart
+            type="bar"
+            [data]="problemsData"
+            [options]="problemsOptions"
+          ></p-chart>
+        </div>
+      </div>
+
+            <!-- LISTE DES CHANTIERS -->
+      <div class="mt-2 col-12">
+        <div class="card">
+          <div class="card-title">
+            Tout les chantier
+          </div>
+          <div class="flex flex-wrap mt-1">
+            <div class="mt-2 col-12 xl:col-6 p-md-4 flex border-round-lg bg-white" *ngFor="let ct of chantiers">
+              <img [src]="ct.images?.[0]" alt="img" class="border-round-lg h-6rem w-8rem" />
+              <div class="pl-3 p-2 pr-1 justify-content-evenly flex flex-column w-full">
+                <div>
+                  <div class="text-lg font-bold">{{ ct.title }}</div>
+                  <div class="text-sm">Client: {{ ct.client.firstname }} {{ ct.client.name }}</div>
+                </div>
+                <div class="flex mt-2">
+                  <div class="text-center pr-2 w-full" *ngFor="let ph of ct.phases">
+                    <p-progressBar
+                      [value]="ph.progress"
+                      [showValue]="false"
+                    ></p-progressBar>
+                    <div class="text-xs mt-1">{{ ph.name }}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- TÂCHES PAR STATUT (CSS BAR-CHART) -->
-    <div class="status-chart p-card p-m-3">
-      <div class="card-title">Tâches par statut</div>
-      <div *ngFor="let s of statuses" class="bar-row">
-        <div class="bar-label">{{ s.label }}</div>
-        <div class="bar-track">
-          <div
-            class="bar-fill {{ s.key }}"
-            [style.width.%]="(s.count / maxStatusCount) * 100"
-          ></div>
+      <!-- HISTORIQUE DES MISSIONS -->
+      <div class="mt-2 xl:col-6 col-12">
+        <div class="card">
+          <div class="card-title">Liste des Tâches</div>
+          <div class="flex gap-2">
+            <p-dropdown
+              [options]="chantierOptions"
+              [(ngModel)]="historyChantierId"
+              placeholder="Chantier"
+            ></p-dropdown>
+          </div>
+          <div class="mt-3">
+            <p-table [value]="historyTasks">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Description</th>
+                  <th>Responsable</th>
+                  <th>Date de fin</th>
+                  <th>État</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-task>
+                <tr>
+                  <td>{{ task.name }}</td>
+                  <td>{{ task.tasks[0]?.attribution?.[0]?.firstname || '—' }}</td>
+                  <td>{{ task.doneDate || task.dueDate }}</td>
+                  <td>
+                    <span
+                      [ngClass]="{
+                        'badge-done': task.done,
+                        'badge-late': isLate(task),
+                        'badge-todo': !task.done && !isLate(task)
+                      }"
+                    >
+                      {{ task.done
+                          ? 'Terminée'
+                          : (isLate(task) ? 'En retard' : 'À faire')
+                      }}
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
         </div>
-        <div class="bar-count">{{ s.count }}</div>
       </div>
-    </div>
 
-    <!-- HISTORIQUE DES MISSIONS -->
-    <div class="p-grid p-m-3">
-      <div class="p-col-12 p-md-4">
-        <p-dropdown
-          [options]="chantierOptions"
-          [(ngModel)]="historyChantierId"
-          placeholder="Chantier"
-        ></p-dropdown>
-      </div>
-      <div class="p-col-12">
-        <p-table [value]="historyTasks">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Description</th>
-              <th>Responsable</th>
-              <th>Date de fin</th>
-              <th>État</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-task>
-            <tr>
-              <td>{{ task.name }}</td>
-              <td>{{ task.tasks[0]?.attribution?.[0]?.firstname || '—' }}</td>
-              <td>{{ task.doneDate || task.dueDate }}</td>
-              <td>
-                <span
-                  [ngClass]="{
-                    'badge-done': task.done,
-                    'badge-late': isLate(task),
-                    'badge-todo': !task.done && !isLate(task)
-                  }"
-                >
-                  {{ task.done
-                      ? 'Terminée'
-                      : (isLate(task) ? 'En retard' : 'À faire')
-                  }}
-                </span>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    </div>
-
-    <!-- PROBLÈMES EN COURS -->
-    <div class="p-grid p-m-3">
-      <div class="p-col-12 p-md-3">
-        <p-dropdown
-          [options]="chantierOptions"
-          [(ngModel)]="problemChantierId"
-          placeholder="Chantier"
-        ></p-dropdown>
-      </div>
-      <div class="p-col-12 p-md-3">
-        <p-dropdown
-          [options]="statusOptions"
-          [(ngModel)]="problemStatus"
-          placeholder="Statut"
-        ></p-dropdown>
-      </div>
-      <div class="p-col-12 p-md-3">
-        <p-dropdown
-          [options]="priorityOptions"
-          [(ngModel)]="problemPriority"
-          placeholder="Priorité"
-        ></p-dropdown>
-      </div>
-      <div class="p-col-12">
-        <p-table [value]="filteredProblems">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Problème</th>
-              <th>Émetteur</th>
-              <th>Date</th>
-              <th>Priorité</th>
-              <th>Statut</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-p>
-            <tr>
-              <td>{{ p.title }}</td>
-              <td>{{ p.user.firstname }}</td>
-              <td>{{ p.date }}</td>
-              <td>
-                <span
-                  class="badge-priority"
-                  [ngClass]="p.urgency.toLowerCase()"
-                >
-                  {{ p.urgency }}
-                </span>
-              </td>
-              <td>{{ p.status }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
+      <!-- PROBLÈMES EN COURS -->
+      <div class="mt-2 xl:col-6 col-12">
+        <div class="card">
+          <div class="card-title">Liste des problèmes</div>
+          <div class="flex gap-2">
+            <p-dropdown
+              [options]="chantierOptions"
+              [(ngModel)]="problemChantierId"
+              placeholder="Chantier"
+            ></p-dropdown>
+            <p-dropdown
+              [options]="statusOptions"
+              [(ngModel)]="problemStatus"
+              placeholder="Statut"
+            ></p-dropdown>
+            <p-dropdown
+              [options]="priorityOptions"
+              [(ngModel)]="problemPriority"
+              placeholder="Priorité"
+            ></p-dropdown>
+          </div>
+          <div class="mt-3">
+            <p-table [value]="filteredProblems">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Problème</th>
+                  <th>Émetteur</th>
+                  <th>Date</th>
+                  <th>Priorité</th>
+                  <th>Statut</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-p>
+                <tr>
+                  <td>{{ p.title }}</td>
+                  <td>{{ p.user.firstname }}</td>
+                  <td>{{ p.date }}</td>
+                  <td>
+                    <span
+                      class="badge-priority"
+                      [ngClass]="p.urgency.toLowerCase()"
+                    >
+                      {{ p.urgency }}
+                    </span>
+                  </td>
+                  <td>{{ p.status }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
