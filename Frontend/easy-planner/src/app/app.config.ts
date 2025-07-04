@@ -11,6 +11,9 @@ import { providePrimeNG } from 'primeng/config';
 
 import { CustomAura } from './themes';
 
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -21,10 +24,14 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: CustomAura,
-        options: {
-          darkModeSelector: false, // or your class/selector for dark mode
-        },
+        options: { darkModeSelector: false },
       },
     }),
+
+    provideHttpClient(
+      withInterceptorsFromDi()
+    ),
+    
+    MessageService,
   ],
 };

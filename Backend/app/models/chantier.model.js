@@ -27,8 +27,6 @@ module.exports = (sequelize, Sequelize) => {
     intervenants: {
       type: Sequelize.JSON
     }
-  }, {
-    timestamps: false
   });
   return Chantier;
 };

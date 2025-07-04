@@ -72,6 +72,7 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
+  IonAvatar
 } from '@ionic/angular/standalone';
 
 @NgModule({
@@ -146,6 +147,7 @@ import {
     IonApp,
     IonRouterLink,
     IonRouterOutlet,
+    IonAvatar
   ],
   exports: [
     IonAccordion,
@@ -218,6 +220,7 @@ import {
     IonApp,
     IonRouterLink,
     IonRouterOutlet,
+    IonAvatar
   ],
 })
 export class IonicModule {}

@@ -11,8 +11,6 @@ module.exports = (sequelize, Sequelize) => {
     progress: {
       type: Sequelize.FLOAT
     }
-  }, {
-    timestamps: false
   });
   return Phase;
 };

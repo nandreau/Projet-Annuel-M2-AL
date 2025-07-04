@@ -1,23 +1,22 @@
-export interface User {
+export interface User extends WithTimestamps  {
   id: number;
   firstname: string;
   name: string;
-  mail: string;
-  date: string;
+  email: string;
   role: string[];
-  droit: string;
+  job: string[];
   avatar?: string;
   password?: string;
 }
 
-export interface TaskPlanning {
+export interface TaskPlanning extends WithTimestamps  {
   id: number;
   startDate?: string;
   endDate?: string;
   attribution?: User[];
 }
 
-export interface Task {
+export interface Task extends WithTimestamps  {
   id: number;
   name: string;
   done: boolean;
@@ -27,14 +26,14 @@ export interface Task {
   tasks: TaskPlanning[];
 }
 
-export interface Phase {
+export interface Phase extends WithTimestamps  {
   id: number;
   name: string;
   progress: number;
   tasks: Task[];
 }
 
-export interface Chantier {
+export interface Chantier extends WithTimestamps  {
   id: number;
   title: string;
   client: User;
@@ -47,24 +46,41 @@ export interface Chantier {
   intervenants: { avatar: string }[];
 }
 
-export interface ProblemMessage {
+export interface ProblemMessage extends WithTimestamps  {
   id: number;
-  sender: User;
-  date: string;
+  user: User;
   content: string;
 }
 
-export interface Problem {
+export interface Problem extends WithTimestamps  {
   id: number;
   title: string;
   urgency: 'Urgent' | 'Moyen' | 'Faible';
   chantier: string;
   phase: string;
   task: string;
-  date: string;
   status: 'En cours' | 'Non résolu' | 'Résolu';
   description: string;
   user: User;
   images: string[];
   messages: ProblemMessage[];
+}
+
+export interface WithTimestamps {
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AuthResponse {
+  id: number;
+  firstname: string;
+  name: string;
+  email: string;
+  roles: string[];
+  avatar: string|null;
+  accessToken: string;
+}
+
+export interface ApiResponse {
+  message: string;
 }

@@ -1,7 +1,8 @@
 FROM node:22
 
-WORKDIR /Backend
+WORKDIR /Frontend/easy-planner
 COPY package.json .
 RUN npm install
 COPY . .
+
 CMD npm start

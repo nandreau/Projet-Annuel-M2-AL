@@ -15,10 +15,15 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sync database and seed roles
-db.sequelize.sync({ force: true }).then(() => {
+// Sync database and load roles
+db.sequelize.sync({ force: true }).then(async () => {
   console.log("✔️  Database dropped & re-synced with { force: true }");
-  seedRoles();
+  const loadFakeData = require('./loadFakeData');
+  try {
+    await loadFakeData();
+  } catch (err) {
+    console.error("❌ Fake data loading failed:", err);
+  }
 });
 
 // Simple health-check route
@@ -41,16 +46,3 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}.`);
 });
-
-// Seed initial roles into the `roles` table
-function seedRoles() {
-  const roles = [
-    { id: 1, name: "user" },
-    { id: 2, name: "moderator" },
-    { id: 3, name: "admin" }
-  ];
-
-  roles.forEach(role =>
-    Role.findOrCreate({ where: { id: role.id }, defaults: role })
-  );
-}

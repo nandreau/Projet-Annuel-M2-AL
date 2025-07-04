@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ApiResponse } from 'src/app/models/global.model';
+import { RequestService } from 'src/app/services/request.service';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 
@@ -12,19 +15,49 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   imports: [FormsModule, RouterLink, IonicModule, PrimengModule],
 })
 export class RegisterPage {
-  name: string = '';
-  firstname: string = '';
-  email: string = '';
-  password: string = '';
-  confirmPassword: string = '';
+  firstname = '';
+  name      = '';
+  email     = '';
+  password  = '';
+  confirmPassword = '';  
+  job = '' ;
 
-  constructor() {}
+  constructor(
+    private request: RequestService,
+    private router:  Router,
+    private messageService: MessageService
+  ) {}
 
   onSubmit() {
-    console.log('Nom:', this.name);
-    console.log('Nom:', this.firstname);
-    console.log('Email:', this.email);
-    console.log('Mot de passe:', this.password);
-    console.log('Confirmation:', this.confirmPassword);
+    if (this.password && this.password !== this.confirmPassword) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Passwords do not match',
+      });
+      return;
+    }
+
+    const payload = {
+      firstname: this.firstname,
+      name:      this.name,
+      email:     this.email,
+      job:       [this.job],
+      avatar:    null,
+      password:  this.password
+    };
+
+    this.request
+      .post<ApiResponse>('api/auth/signup', payload, true)
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: err => {
+          console.error(err);
+        },
+      });
   }
 }
+
+

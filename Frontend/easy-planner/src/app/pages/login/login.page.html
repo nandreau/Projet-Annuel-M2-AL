@@ -20,6 +20,7 @@
             placeholder="Adresse mail"
             [(ngModel)]="email"
             name="email"
+            autocomplete="email"
           />
         </div>
         <div class="login-form-group">
@@ -29,6 +30,7 @@
             placeholder="Mot de passe"
             [(ngModel)]="password"
             name="password"
+            autocomplete="current-password"
           />
         </div>
         <ion-button class="mt-5" mode="ios" expand="block" type="submit"

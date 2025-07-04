@@ -29,11 +29,21 @@
         </div> 
         <div class="login-form-group">
           <input
+            type="text"
+            pInputText
+            placeholder="Métier"
+            [(ngModel)]="job"
+            name="job"
+          />
+        </div> 
+        <div class="login-form-group">
+          <input
             type="email"
             pInputText
             placeholder="Adresse mail"
             [(ngModel)]="email"
             name="email"
+            autocomplete="email"
           />
         </div>
         <div class="login-form-group">
@@ -43,6 +53,7 @@
             placeholder="Mot de passe"
             [(ngModel)]="password"
             name="password"
+            autocomplete="new-password"
           />
         </div>
         <div class="login-form-group">
@@ -52,6 +63,7 @@
             placeholder="Confirmer le mot de passe"
             [(ngModel)]="confirmPassword"
             name="confirmPassword"
+            autocomplete="new-password"
           />
         </div>
         <ion-button class="mt-5" mode="ios" expand="block" type="submit">S’inscrire</ion-button>

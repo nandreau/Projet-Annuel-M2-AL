@@ -21,79 +21,69 @@ export class ProblemsPage {
       chantier: 'Résidence Bellevue',
       phase: 'Plomberie',
       task: 'Réparation de canalisation',
-      date: '29 Mai 2025',
       status: 'En cours',
       description: `Une fuite d'eau importante a été détectée...`,
       user: {
         id: 1,
         firstname: 'Michel',
         name: 'Dupont',
-        mail: 'Michel@gmail.com',
-        date: '2015-09-13',
-        role: ['PDG'],
-        droit: 'Admin',
+        email: 'Michel@gmail.com',
+        role: ['admin'],
+        job: ['PDG'],
         avatar: "AV1.png"
       },
       images: ['Photo de la fuite', 'Photo des dégâts'],
       messages: [
         {
           id:1,
-          sender:  {
+          user:  {
             id: 1,
             firstname: 'Michel',
             name: 'Dupont',
-            mail: 'Michel@gmail.com',
-            date: '2015-09-13',
-            role: ['PDG'],
-            droit: 'Admin',
+            email: 'Michel@gmail.com',
+            role: ['admin'],
+            job: ['PDG'],
             avatar: "AV1.png"
           },
-          date: '28 Mai 2025, 14:30',
           content: "J'ai constaté la fuite ce matin...",
         },
         {
           id:2,
-          sender:  {
+          user:  {
             id: 1,
             firstname: 'Sophie',
             name: 'Dupont',
-            mail: 'Martin@gmail.com',
-            date: '2015-09-13',
-            role: ['PDG'],
-            droit: 'Admin',
+            email: 'Martin@gmail.com',
+            role: ['admin'],
+            job: ['PDG'],
             avatar: "AV1.png"
           },
-          date: '28 Mai 2025, 16:45',
           content: "J'ai fermé l'arrivée d'eau principale...",
         },
         {
           id:3,
-          sender:  {
+          user:  {
             id: 1,
             firstname: 'Sophie',
             name: 'Sauvage',
-            mail: 'Sophie@gmail.com',
-            date: '2015-09-13',
-            role: ['PDG'],
-            droit: 'Admin',
+            email: 'Sophie@gmail.com',
+            role: ['admin'],
+            job: ['PDG'],
             avatar: "AV1.png"
           },
-          date: '28 Mai 2025, 16:46',
           content: "Et J'ai également coupé l'electricité",
         },
         {
           id:4,
-          sender:  {
+          user:  {
             id: 1,
             firstname: 'Pierre',
             name: 'Leroy',
-            mail: 'Pierre@gmail.com',
-            date: '2015-09-13',
-            role: ['PDG'],
-            droit: 'Admin',
+            email: 'Pierre@gmail.com',
+            role: ['admin'],
+            job: ['PDG'],
             avatar: "AV1.png"
           },
-          date: '29 Mai 2025, 09:15',
           content: "Je vais passer avec l'équipe de plomberie...",
         },
       ],
@@ -105,17 +95,15 @@ export class ProblemsPage {
       chantier: 'Résidence Bellevue',
       phase: 'Électricité',
       task: 'Vérification du disjoncteur',
-      date: '27 Mai 2025',
       status: 'Non résolu',
       description: `Un problème d'installation a été détecté dans l'appartement 105...`,
       user: {
         id: 1,
         firstname: 'Michel',
         name: 'Dupont',
-        mail: 'Michel@gmail.com',
-        date: '2015-09-13',
-        role: ['PDG'],
-        droit: 'Admin',
+        email: 'Michel@gmail.com',
+        role: ['admin'],
+        job: ['PDG'],
         avatar: "AV1.png"
       },
       images: [],
@@ -139,18 +127,18 @@ export class ProblemsPage {
     let nextSide = 'right';
 
     for (const msg of messages) {
-      if (msg.sender !== lastSender) {
+      if (msg.user !== lastSender) {
         nextSide = nextSide === 'left' ? 'right' : 'left';
 
         currentGroup = {
-          sender: msg.sender,
-          date: msg.date,
+          sender: msg.user,
+          createdAt: "11 juillet 2021",
           side: nextSide,
           contents: [msg.content],
         };
 
         grouped.push(currentGroup);
-        lastSender = msg.sender;
+        lastSender = msg.user;
       } else if (currentGroup) {
         currentGroup.contents.push(msg.content);
       }

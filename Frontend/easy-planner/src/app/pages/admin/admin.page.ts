@@ -21,7 +21,7 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
     PrimengModule,
     IconField,
     InputIcon,
-    FormsModule,
+    FormsModule
   ],
 })
 export class AdminPage implements OnInit {
@@ -31,30 +31,27 @@ export class AdminPage implements OnInit {
       id: 1,
       firstname: 'James',
       name: 'Butt',
-      mail: 'James@gmail.com',
-      date: '2015-09-13',
+      email: 'James@gmail.com',
       role: ['PDG'],
-      droit: 'Admin',
+      job: ['Admin'],
       avatar: "AV1.png"
     },
     {
       id: 2,
       firstname: 'Josephine',
       name: 'Darakjy',
-      mail: 'Josephine@gmail.com',
-      date: '2019-02-09',
+      email: 'Josephine@gmail.com',
       role: ['Ressource Humaine'],
-      droit: 'Manager',
+      job: ['Manager'],
       avatar: "AV1.png"
     },
     {
       id: 3,
       firstname: 'Donette',
       name: 'Foller',
-      mail: 'Donette@gmail.com',
-      date: '2016-05-20',
+      email: 'Donette@gmail.com',
       role: ['Plombier'],
-      droit: 'Artisan',
+      job: ['Artisan'],
       avatar: "AV1.png"
     },
   ];
@@ -137,10 +134,9 @@ export class AdminPage implements OnInit {
       id: 0,
       firstname: '',
       name: '',
-      mail: '',
-      date: '',
+      email: '',
       role: [''],
-      droit: '',
+      job: [''],
       avatar: ''
     };
   }

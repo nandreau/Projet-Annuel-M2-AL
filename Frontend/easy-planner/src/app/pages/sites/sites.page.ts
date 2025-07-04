@@ -17,10 +17,9 @@ export class SitesPage {
     id: 1,
     firstname: 'Michael',
     name: 'youn',
-    mail: 'm@r',
-    date: '2025-06-01',
-    role: ['Chef'],
-    droit: 'full'
+    email: 'm@r',
+    role: ['admin'],
+    job: ['Chef']
   };
 
   projets: Chantier[] = [

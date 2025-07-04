@@ -20,7 +20,7 @@
                 <span>Chantier: {{ problem.chantier }}</span>
                 <span>Phase: {{ problem.phase }}</span>
                 <span>Tâche: {{ problem.task }}</span>
-                <span>Signalé le {{ problem.date }}</span>
+                <span>Signalé le {{ problem.createdAt }}</span>
               </div>
             </div>
             <p-tag
@@ -53,11 +53,11 @@
                 <div class="message-header">
                   <ng-container *ngIf="group.side === 'left'">
                     <strong>{{ group.sender.firstname }} {{ group.sender.name }}</strong> ·
-                    <span>{{ group.date }}</span>
+                    <span>{{ group.createdAt }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">
-                    <span>{{ group.date }}</span> ·
-                    <strong>{{ group.sender }}</strong>
+                    <span>{{ group.createdAt }}</span> ·
+                    <strong>{{ group.sender.firstname }} {{ group.sender.name }}</strong>
                   </ng-container>
                 </div>
 

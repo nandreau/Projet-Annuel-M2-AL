@@ -11,7 +11,7 @@
         [rows]="10"
         [paginator]="true"
         [rowsPerPageOptions]="[10, 25, 50]"
-        [globalFilterFields]="['name', 'mail', 'role', 'droit']"
+        [globalFilterFields]="['name', 'email', 'role', 'job']"
         [(selection)]="selectedUsers"
         dataKey="id"
         [customSort]="true"
@@ -69,9 +69,9 @@
               Nom prénom <p-sortIcon field="name" />
             </th>
             <th pSortableColumn="mail">Email <p-sortIcon field="mail" /></th>
-            <th pSortableColumn="date">Adhérent <p-sortIcon field="date" /></th>
+            <th pSortableColumn="createdAt">Adhérent <p-sortIcon field="createdAt" /></th>
             <th pSortableColumn="role">Rôle <p-sortIcon field="role" /></th>
-            <th pSortableColumn="droit">Droit <p-sortIcon field="droit" /></th>
+            <th pSortableColumn="job">Droit <p-sortIcon field="job" /></th>
           </tr>
         </ng-template>
 
@@ -80,16 +80,16 @@
           <tr>
             <td><p-tableCheckbox [value]="user" /></td>
             <td>{{ user.firstname }} {{ user.name }}</td>
-            <td>{{ user.mail }}</td>
-            <td>{{ user.date }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.createdAt }}</td>
             <td>
-              <span *ngofor="let role of user.role" class="p-tag p-tag-rounded p-tag-info"
+              <span *ngFor="let role of user.role" class="p-tag p-tag-rounded p-tag-info"
                 >{{ role }}</span
               >
             </td>
             <td>
               <span class="p-tag p-tag-rounded p-tag-primary"
-                >{{ user.droit }}</span
+                >{{ user.job }}</span
               >
             </td>
           </tr>
@@ -123,16 +123,7 @@
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Email</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.mail" />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Date</label>
-    <p-calendar
-      class="w-full"
-      [(ngModel)]="userForm.date"
-      dateFormat="yy-mm-dd"
-      showIcon
-    />
+    <input class="w-full" pInputText [(ngModel)]="userForm.email" />
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Rôle</label>
@@ -147,7 +138,7 @@
   </div>
   <div class="flex align-items-center gap-4 mb-5">
     <label class="font-semibold w-2">Droit</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.droit" />
+    <input class="w-full" pInputText [(ngModel)]="userForm.job" />
   </div>
   <div class="flex justify-content-end gap-2">
     <p-button
@@ -177,16 +168,7 @@
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Email</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.mail" />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Date</label>
-    <p-calendar
-      class="w-full"
-      [(ngModel)]="userForm.date"
-      dateFormat="yy-mm-dd"
-      showIcon
-    />
+    <input class="w-full" pInputText [(ngModel)]="userForm.email" />
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Rôle</label>
@@ -201,7 +183,7 @@
   </div>
   <div class="flex align-items-center gap-4 mb-5">
     <label class="font-semibold w-2">Droit</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.droit" />
+    <input class="w-full" pInputText [(ngModel)]="userForm.job" />
   </div>
   <div class="flex justify-content-end gap-2">
     <p-button

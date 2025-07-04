@@ -122,10 +122,9 @@ export class DashboardPage implements OnInit {
       id: 1,
       firstname: 'Michael',
       name: 'youn',
-      mail: 'm@r',
-      date: '2025-06-01',
-      role: ['Chef'],
-      droit: 'full'
+      email: 'm@r',
+      role: ['admin'],
+      job: ['admin']
     };
 
     this.chantiers = [
@@ -202,7 +201,6 @@ export class DashboardPage implements OnInit {
         chantier: 'Chantier A',
         phase: 'Plomberie',
         task: 'Tuyaux sanitaires',
-        date: '2025-07-19',
         status: 'En cours',
         description: '',
         user: user,
@@ -210,8 +208,7 @@ export class DashboardPage implements OnInit {
         messages: [
           {
             id: 1,
-            sender: user,
-            date: '2025-07-19',
+            user: user,
             content: 'Attention !'
           }
         ]

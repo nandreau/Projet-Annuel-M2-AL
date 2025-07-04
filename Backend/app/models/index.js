@@ -76,6 +76,8 @@ db.ProblemMessage.belongsTo(db.Problem, { foreignKey: 'problemId' });
 db.ProblemMessage.belongsTo(db.User, { as: 'sender', foreignKey: 'senderId' });
 db.User.hasMany(db.ProblemMessage, { foreignKey: 'senderId' });
 
+db.RefreshToken = require('./refreshToken.model.js')(sequelize, Sequelize);
+
 db.ROLES = ['user', 'moderator', 'admin'];
 
 module.exports = db;

@@ -1,20 +1,3 @@
-/*
-module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("users", {
-    username: {
-      type: Sequelize.STRING
-    },
-    email: {
-      type: Sequelize.STRING
-    },
-    password: {
-      type: Sequelize.STRING
-    }
-  });
-
-  return User;
-};*/
-
 module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define('users', {
     id: {
@@ -28,17 +11,12 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING
     },
-    mail: {
+    email: {
       type: Sequelize.STRING
     },
-    date: {
-      type: Sequelize.DATE
-    },
-    role: {
-      type: Sequelize.JSON
-    },
-    droit: {
-      type: Sequelize.STRING
+    job: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      allowNull: true
     },
     avatar: {
       type: Sequelize.STRING,
@@ -48,8 +26,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: true
     }
-  }, {
-    timestamps: false
   });
   return User;
 };

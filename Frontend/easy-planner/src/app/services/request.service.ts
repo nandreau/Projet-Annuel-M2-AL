@@ -33,8 +33,14 @@ export class RequestService {
     });
   }
 
+  private getAuthOptions(): { headers: HttpHeaders } {
+    const token = localStorage.getItem('accessToken') || '';
+    return { headers: new HttpHeaders({ 'x-access-token': token }) };
+  }
+
+
   get<T>(endpoint: string, showSuccessToast: boolean = false): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`).pipe(
+    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, this.getAuthOptions()).pipe(
       tap((_) => showSuccessToast && this.log('Fetched data')),
       catchError(this.handleError.bind(this)),
     );
@@ -52,50 +58,62 @@ export class RequestService {
       );
   }
 
-  post<T extends ApiResponse>(
+  post<T>(
     endpoint: string,
     data: any,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, data).pipe(
-      tap((response) => showSuccessToast && this.log(response.message)),
+    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions()).pipe(
+      tap((response: any) => {
+        if (showSuccessToast && response?.message) {
+          this.log(response.message);
+        }
+      }),
       catchError(this.handleError.bind(this)),
     );
   }
 
-  put<T extends ApiResponse>(
+  put<T>(
     endpoint: string,
     data: any,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, data).pipe(
-      tap((response) => showSuccessToast && this.log(response.message)),
+    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions()).pipe(
+      tap((response: any) => {
+        if (showSuccessToast && response?.message) {
+          this.log(response.message);
+        }
+      }),
       catchError(this.handleError.bind(this)),
     );
   }
 
-  patch<T extends ApiResponse>(
+  patch<T>(
     endpoint: string,
     data: any,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.patch<T>(`${this.apiUrl}/${endpoint}`, data).pipe(
-      tap((response) => showSuccessToast && this.log(response.message)),
+    return this.http.patch<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions()).pipe(
+      tap((response: any) => {
+        if (showSuccessToast && response?.message) {
+          this.log(response.message);
+        }
+      }),
       catchError(this.handleError.bind(this)),
     );
   }
 
-  delete<T extends ApiResponse>(
+  delete<T>(
     endpoint: string,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`).pipe(
-      tap((response) => showSuccessToast && this.log(response.message)),
+    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, this.getAuthOptions()).pipe(
+      tap((response: any) => {
+        if (showSuccessToast && response?.message) {
+          this.log(response.message);
+        }
+      }),
       catchError(this.handleError.bind(this)),
     );
   }
-}
-
-export interface ApiResponse {
-  message: string;
 }

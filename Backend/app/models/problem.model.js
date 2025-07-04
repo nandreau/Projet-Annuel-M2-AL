@@ -20,9 +20,6 @@ module.exports = (sequelize, Sequelize) => {
     task: {
       type: Sequelize.STRING
     },
-    date: {
-      type: Sequelize.DATE
-    },
     status: {
       type: Sequelize.ENUM('En cours', 'Non résolu', 'Résolu')
     },
@@ -33,8 +30,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.JSON,
       allowNull: true
     }
-  }, {
-    timestamps: false
   });
   return Problem;
 };

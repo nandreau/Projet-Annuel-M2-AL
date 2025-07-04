@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthResponse } from 'src/app/models/global.model';
+import { RequestService } from 'src/app/services/request.service';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 
@@ -12,12 +14,38 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   imports: [FormsModule, RouterLink, IonicModule, PrimengModule],
 })
 export class LoginPage {
-  email: string = '';
-  password: string = '';
+email    = '';
+  password = '';
+
+  constructor(
+    private request: RequestService,
+    private router:  Router
+  ) {}
 
   onSubmit() {
-    // traitement du formulaire ici
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
+    const payload = {
+      email:    this.email,
+      password: this.password
+    };
+
+    this.request
+    .post<AuthResponse>('api/auth/signin', payload, true)
+    .subscribe({
+      next: res => {
+        localStorage.setItem('accessToken', res.accessToken);
+        localStorage.setItem('currentUser', JSON.stringify({
+          id:        res.id,
+          firstname: res.firstname,
+          name:      res.name,
+          email:     res.email,
+          roles:     res.roles,
+          avatar:    res.avatar
+        }));
+        this.router.navigate(['/']);
+      },
+      error: err => {
+        console.error(err);
+      }
+    });
   }
 }
