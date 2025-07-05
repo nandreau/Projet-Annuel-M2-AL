@@ -74,9 +74,6 @@ jobs:
       - name: Lancer les tests
         run: npm run test
 
-      - name: Générer le build production
-        run: npm run build
-
   deploy:
     name: Deploy Frontend to GitHub Pages
     runs-on: ubuntu-latest
