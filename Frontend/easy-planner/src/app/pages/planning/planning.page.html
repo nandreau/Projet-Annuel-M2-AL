@@ -7,21 +7,32 @@
 
     <!-- Filtres & recherches -->
     <div class="planning-project p-2 flex gap-2 items-center mb-2">
-      <p-dropdown
+      <p-select
         [options]="sites"
         [(ngModel)]="selectedSite"
         optionLabel="name"
-      ></p-dropdown>
-      <p-dropdown
+        filter
+        placeholder="Site"
+        panelStyleClass="w-full"
+      ></p-select>
+
+      <p-select
         [options]="views"
         [(ngModel)]="selectedView"
         optionLabel="name"
-      ></p-dropdown>
-      <p-dropdown
+        filter
+        placeholder="Vue"
+        panelStyleClass="w-full"
+      ></p-select>
+
+      <p-select
         [options]="groupBy"
         [(ngModel)]="selectedGroup"
         optionLabel="name"
-      ></p-dropdown>
+        filter
+        placeholder="Regrouper par"
+        panelStyleClass="w-full"
+      ></p-select>
     </div>
 
     <!-- Navigation de semaine -->

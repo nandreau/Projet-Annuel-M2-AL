@@ -4,11 +4,12 @@ import { AuthResponse } from '../../models/global.model';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { addIcons } from 'ionicons';
 import { logOutOutline } from 'ionicons/icons';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [IonicModule],
+  imports: [IonicModule, CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })

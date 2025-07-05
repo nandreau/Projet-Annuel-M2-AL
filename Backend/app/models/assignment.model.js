@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const TaskPlanning = sequelize.define('task_plannings', {
+  const Assignment = sequelize.define('task_plannings', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -14,5 +14,5 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: true
     }
   });
-  return TaskPlanning;
+  return Assignment;
 };

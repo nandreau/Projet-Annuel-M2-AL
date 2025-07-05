@@ -8,7 +8,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { BadgeModule } from 'primeng/badge';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { CarouselModule } from 'primeng/carousel';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -24,7 +24,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DockModule } from 'primeng/dock';
 import { DragDropModule } from 'primeng/dragdrop';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EditorModule } from 'primeng/editor';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -99,7 +99,7 @@ import { MessageService } from 'primeng/api';
     BreadcrumbModule,
     BlockUIModule,
     ButtonModule,
-    CalendarModule,
+    DatePickerModule,
     CarouselModule,
     CascadeSelectModule,
     CheckboxModule,
@@ -114,7 +114,7 @@ import { MessageService } from 'primeng/api';
     DividerModule,
     DockModule,
     DragDropModule,
-    DropdownModule,
+    SelectModule,
     DynamicDialogModule,
     EditorModule,
     FieldsetModule,

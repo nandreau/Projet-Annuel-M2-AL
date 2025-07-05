@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 // Register Auth & CRUD routes
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
-require("./app/routes/taskPlanning.routes")(app);
+require("./app/routes/assignment.routes")(app);
 require("./app/routes/task.routes")(app);
 require("./app/routes/phase.routes")(app);
 require("./app/routes/chantier.routes")(app);

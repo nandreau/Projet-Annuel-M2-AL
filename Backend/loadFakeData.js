@@ -8,7 +8,7 @@ const {
     Chantier,
     Phase,
     Task,
-    TaskPlanning,
+    Assignment,
     Problem,
     ProblemMessage,
     sequelize
@@ -89,7 +89,7 @@ module.exports = async function loadFakeData() {
                 // plannings
                 const plans = faker.number.int({ min: 0, max: 3 });
                 for (let k = 0; k < plans; k++) {
-                    await TaskPlanning.create({
+                    await Assignment.create({
                         id: tpId++,
                         startDate: faker.date.between({ from: chantier.start, to: chantier.end }),
                         endDate: faker.date.between({ from: chantier.start, to: chantier.end }),

@@ -1,5 +1,5 @@
 const { authJwt } = require("../middleware");
-const controller = require("../controllers/taskPlanning.controller");
+const controller = require("../controllers/assignment.controller");
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -11,27 +11,27 @@ module.exports = function(app) {
   });
 
   app.post(
-    "/api/taskPlannings",
+    "/api/assignments",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.create
   );
   app.get(
-    "/api/taskPlannings",
+    "/api/assignments",
     [authJwt.verifyToken],
     controller.findAll
   );
   app.get(
-    "/api/taskPlannings/:id",
+    "/api/assignments/:id",
     [authJwt.verifyToken],
     controller.findOne
   );
   app.put(
-    "/api/taskPlannings/:id",
+    "/api/assignments/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.update
   );
   app.delete(
-    "/api/taskPlannings/:id",
+    "/api/assignments/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.delete
   );

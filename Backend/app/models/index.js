@@ -24,7 +24,7 @@ db.sequelize = sequelize;
 // Models
 db.User           = require('./user.model.js')(sequelize, Sequelize);
 db.Role           = require('./role.model.js')(sequelize, Sequelize);
-db.TaskPlanning   = require('./taskPlanning.model.js')(sequelize, Sequelize);
+db.Assignment   = require('./assignment.model.js')(sequelize, Sequelize);
 db.Task           = require('./task.model.js')(sequelize, Sequelize);
 db.Phase          = require('./phase.model.js')(sequelize, Sequelize);
 db.Chantier       = require('./chantier.model.js')(sequelize, Sequelize);
@@ -44,13 +44,13 @@ db.Role.belongsToMany(db.User, {
   otherKey: 'userId'
 });
 
-// TaskPlanning <-> User (Many-to-Many)
-db.TaskPlanning.belongsToMany(db.User, { through: 'User_Task_Planning' });
-db.User.belongsToMany(db.TaskPlanning, { through: 'User_Task_Planning' });
+// Assignment <-> User (Many-to-Many)
+db.Assignment.belongsToMany(db.User, { through: 'User_Task_Planning' });
+db.User.belongsToMany(db.Assignment, { through: 'User_Task_Planning' });
 
-// TaskPlanning -> Task (One-to-Many)
-db.Task.hasMany(db.TaskPlanning, { foreignKey: 'taskId' });
-db.TaskPlanning.belongsTo(db.Task, { foreignKey: 'taskId' });
+// Assignment -> Task (One-to-Many)
+db.Task.hasMany(db.Assignment, { foreignKey: 'taskId' });
+db.Assignment.belongsTo(db.Task, { foreignKey: 'taskId' });
 
 // Phase -> Task (One-to-Many)
 db.Phase.hasMany(db.Task, { foreignKey: 'phaseId' });

@@ -89,11 +89,13 @@
         <div class="card">
           <div class="card-title">Liste des Tâches</div>
           <div class="flex gap-2">
-            <p-dropdown
+            <p-select
               [options]="chantierOptions"
               [(ngModel)]="historyChantierId"
+              optionLabel="label"
+              filter
               placeholder="Chantier"
-            ></p-dropdown>
+            ></p-select>
           </div>
           <div class="mt-3">
             <p-table [value]="historyTasks">
@@ -136,21 +138,27 @@
         <div class="card">
           <div class="card-title">Liste des problèmes</div>
           <div class="flex gap-2">
-            <p-dropdown
-              [options]="chantierOptions"
-              [(ngModel)]="problemChantierId"
-              placeholder="Chantier"
-            ></p-dropdown>
-            <p-dropdown
-              [options]="statusOptions"
-              [(ngModel)]="problemStatus"
-              placeholder="Statut"
-            ></p-dropdown>
-            <p-dropdown
-              [options]="priorityOptions"
-              [(ngModel)]="problemPriority"
-              placeholder="Priorité"
-            ></p-dropdown>
+              <p-select
+                [options]="chantierOptions"
+                [(ngModel)]="problemChantierId"
+                optionLabel="label"
+                filter
+                placeholder="Chantier"
+              ></p-select>
+              <p-select
+                [options]="statusOptions"
+                [(ngModel)]="problemStatus"
+                optionLabel="label"
+                filter
+                placeholder="Statut"
+              ></p-select>
+              <p-select
+                [options]="priorityOptions"
+                [(ngModel)]="problemPriority"
+                optionLabel="label"
+                filter
+                placeholder="Priorité"
+              ></p-select>
           </div>
           <div class="mt-3">
             <p-table [value]="filteredProblems">

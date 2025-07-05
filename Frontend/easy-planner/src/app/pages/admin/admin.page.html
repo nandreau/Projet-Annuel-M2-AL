@@ -172,14 +172,17 @@
   </div>
   <div class="flex align-items-center gap-4 mb-3">
     <label class="font-semibold w-2">Rôle</label>
-    <p-multiSelect
+    <p-select
       class="w-full"
       [options]="availableRoles"
       [(ngModel)]="userForm.role"
       optionLabel="label"
-      display="chip"
+      multiple
+      filter
+      filterPlaceholder="Rechercher un rôle"
       placeholder="Sélectionner les rôles"
-    ></p-multiSelect>
+      panelStyleClass="w-full"
+    ></p-select>
   </div>
   <div class="flex align-items-center gap-4 mb-5">
     <label class="font-semibold w-2">Droit</label>

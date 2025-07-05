@@ -9,7 +9,7 @@ export interface User extends WithTimestamps  {
   password?: string;
 }
 
-export interface TaskPlanning extends WithTimestamps  {
+export interface Assignment extends WithTimestamps  {
   id: number;
   startDate?: string;
   endDate?: string;
@@ -23,7 +23,7 @@ export interface Task extends WithTimestamps  {
   dueDate?: string;
   doneDate?: string;
   images?: string[];
-  tasks: TaskPlanning[];
+  tasks: Assignment[];
 }
 
 export interface Phase extends WithTimestamps  {
