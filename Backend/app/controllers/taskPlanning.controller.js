@@ -23,7 +23,7 @@ exports.findOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   const [updated] = await Assignment.update(req.body, {
-    where: { id: req.params.id }
+    where: { id: req.params.id },
   });
   if (!updated) return res.status(404).json({ message: "Not found" });
   res.json({ message: "Updated successfully" });
@@ -31,7 +31,7 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   const deleted = await Assignment.destroy({
-    where: { id: req.params.id }
+    where: { id: req.params.id },
   });
   if (!deleted) return res.status(404).json({ message: "Not found" });
   res.json({ message: "Deleted successfully" });

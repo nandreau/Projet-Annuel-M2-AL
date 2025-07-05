@@ -1,4 +1,4 @@
-export interface User extends WithTimestamps  {
+export interface User extends WithTimestamps {
   id: number;
   firstname: string;
   name: string;
@@ -9,14 +9,14 @@ export interface User extends WithTimestamps  {
   password?: string;
 }
 
-export interface Assignment extends WithTimestamps  {
+export interface Assignment extends WithTimestamps {
   id: number;
   startDate?: string;
   endDate?: string;
   attribution?: User[];
 }
 
-export interface Task extends WithTimestamps  {
+export interface Task extends WithTimestamps {
   id: number;
   name: string;
   done: boolean;
@@ -26,14 +26,14 @@ export interface Task extends WithTimestamps  {
   tasks: Assignment[];
 }
 
-export interface Phase extends WithTimestamps  {
+export interface Phase extends WithTimestamps {
   id: number;
   name: string;
   progress: number;
   tasks: Task[];
 }
 
-export interface Chantier extends WithTimestamps  {
+export interface Chantier extends WithTimestamps {
   id: number;
   title: string;
   client: User;
@@ -46,13 +46,13 @@ export interface Chantier extends WithTimestamps  {
   intervenants: { avatar: string }[];
 }
 
-export interface ProblemMessage extends WithTimestamps  {
+export interface ProblemMessage extends WithTimestamps {
   id: number;
   user: User;
   content: string;
 }
 
-export interface Problem extends WithTimestamps  {
+export interface Problem extends WithTimestamps {
   id: number;
   title: string;
   urgency: 'Urgent' | 'Moyen' | 'Faible';
@@ -77,7 +77,7 @@ export interface AuthResponse {
   name: string;
   email: string;
   roles: string[];
-  avatar: string|null;
+  avatar: string | null;
   accessToken: string;
 }
 

@@ -52,12 +52,19 @@
               >
                 <div class="message-header">
                   <ng-container *ngIf="group.side === 'left'">
-                    <strong>{{ group.sender.firstname }} {{ group.sender.name }}</strong> ·
+                    <strong
+                      >{{ group.sender.firstname }} {{ group.sender.name
+                      }}</strong
+                    >
+                    ·
                     <span>{{ group.createdAt }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">
                     <span>{{ group.createdAt }}</span> ·
-                    <strong>{{ group.sender.firstname }} {{ group.sender.name }}</strong>
+                    <strong
+                      >{{ group.sender.firstname }} {{ group.sender.name
+                      }}</strong
+                    >
                   </ng-container>
                 </div>
 

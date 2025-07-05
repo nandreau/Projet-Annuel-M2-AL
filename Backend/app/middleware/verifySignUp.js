@@ -9,7 +9,9 @@ async function checkDuplicateEmail(req, res, next) {
   }
   const user = await User.findOne({ where: { email } });
   if (user) {
-    return res.status(400).send({ message: "Failed! Email is already in use!" });
+    return res
+      .status(400)
+      .send({ message: "Failed! Email is already in use!" });
   }
   next();
 }
@@ -20,7 +22,7 @@ function checkRolesExisted(req, res, next) {
     for (let r of roles) {
       if (!ROLES.includes(r)) {
         return res.status(400).send({
-          message: "Failed! Role does not exist = " + r
+          message: "Failed! Role does not exist = " + r,
         });
       }
     }

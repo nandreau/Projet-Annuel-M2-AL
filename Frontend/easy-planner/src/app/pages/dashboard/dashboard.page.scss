@@ -12,20 +12,40 @@
 }
 
 .badge-done {
-  background: #33d17a33; color: #33d17a; padding: 2px 6px; border-radius: 4px;
+  background: #33d17a33;
+  color: #33d17a;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 .badge-late {
-  background: #ff5c5c33; color: #ff5c5c; padding: 2px 6px; border-radius: 4px;
+  background: #ff5c5c33;
+  color: #ff5c5c;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 .badge-todo {
-  background: #00000033; color: #000; padding: 2px 6px; border-radius: 4px;
+  background: #00000033;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .badge-priority {
-  padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;
-  &.urgent { background: #ff5c5c33; color: #ff5c5c; }
-  &.moyen { background: #ffd60033; color: #ffd600; }
-  &.faible { background: #c0c0c033; color: #777; }
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  &.urgent {
+    background: #ff5c5c33;
+    color: #ff5c5c;
+  }
+  &.moyen {
+    background: #ffd60033;
+    color: #ffd600;
+  }
+  &.faible {
+    background: #c0c0c033;
+    color: #777;
+  }
 }
 
 ::ng-deep .p-datatable-table-container {

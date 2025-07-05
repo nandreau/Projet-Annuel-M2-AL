@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  Router,
-  UrlTree
-} from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
@@ -11,8 +7,6 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean | UrlTree {
     const token = localStorage.getItem('accessToken');
-    return token
-      ? true
-      : this.router.createUrlTree(['/login']);
+    return token ? true : this.router.createUrlTree(['/login']);
   }
 }

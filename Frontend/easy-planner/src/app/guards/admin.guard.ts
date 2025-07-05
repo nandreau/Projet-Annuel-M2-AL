@@ -16,7 +16,7 @@ export class AdminGuard implements CanActivate {
       if (user.roles.includes('ROLE_ADMIN')) {
         return true;
       }
-    } catch { }
+    } catch {}
 
     return this.router.createUrlTree(['/not-authorized']);
   }

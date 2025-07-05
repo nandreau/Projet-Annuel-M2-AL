@@ -11,7 +11,10 @@ import { providePrimeNG } from 'primeng/config';
 
 import { CustomAura } from './themes';
 
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
@@ -28,10 +31,8 @@ export const appConfig: ApplicationConfig = {
       },
     }),
 
-    provideHttpClient(
-      withInterceptorsFromDi()
-    ),
-    
+    provideHttpClient(withInterceptorsFromDi()),
+
     MessageService,
   ],
 };

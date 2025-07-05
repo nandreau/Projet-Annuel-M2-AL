@@ -1,9 +1,9 @@
 // app/middleware/authJwt.js
-const jwt    = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
-const db     = require("../models");
+const db = require("../models");
 
-const User         = db.User;
+const User = db.User;
 const RevokedToken = db.RevokedToken;
 
 const verifyToken = async (req, res, next) => {
@@ -26,12 +26,12 @@ const verifyToken = async (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) {
       return res.status(404).send({ message: "User not found." });
     }
-    user.getRoles().then(roles => {
-      if (roles.some(r => r.name === "admin")) {
+    user.getRoles().then((roles) => {
+      if (roles.some((r) => r.name === "admin")) {
         return next();
       }
       res.status(403).send({ message: "Require Admin Role!" });
@@ -40,12 +40,12 @@ const isAdmin = (req, res, next) => {
 };
 
 const isModerator = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) {
       return res.status(404).send({ message: "User not found." });
     }
-    user.getRoles().then(roles => {
-      if (roles.some(r => r.name === "moderator")) {
+    user.getRoles().then((roles) => {
+      if (roles.some((r) => r.name === "moderator")) {
         return next();
       }
       res.status(403).send({ message: "Require Moderator Role!" });
@@ -54,12 +54,12 @@ const isModerator = (req, res, next) => {
 };
 
 const isModeratorOrAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) {
       return res.status(404).send({ message: "User not found." });
     }
-    user.getRoles().then(roles => {
-      if (roles.some(r => r.name === "moderator" || r.name === "admin")) {
+    user.getRoles().then((roles) => {
+      if (roles.some((r) => r.name === "moderator" || r.name === "admin")) {
         return next();
       }
       res.status(403).send({ message: "Require Moderator or Admin Role!" });
@@ -71,5 +71,5 @@ module.exports = {
   verifyToken,
   isAdmin,
   isModerator,
-  isModeratorOrAdmin
+  isModeratorOrAdmin,
 };

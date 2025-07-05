@@ -1,18 +1,22 @@
 module.exports = (sequelize, Sequelize) => {
-  const RefreshToken = sequelize.define('refresh_tokens', {
-    token: {
-      type: Sequelize.STRING,
-      primaryKey: true
+  const RefreshToken = sequelize.define(
+    "refresh_tokens",
+    {
+      token: {
+        type: Sequelize.STRING,
+        primaryKey: true,
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      expiryDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
     },
-    userId: {
-      type: Sequelize.INTEGER,
-      allowNull: false
-    },
-    expiryDate: {
-      type: Sequelize.DATE,
-      allowNull: false
-    }
-  }, { timestamps: false });
+    { timestamps: false },
+  );
 
   return RefreshToken;
 };

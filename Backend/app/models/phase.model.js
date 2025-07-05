@@ -1,16 +1,16 @@
 module.exports = (sequelize, Sequelize) => {
-  const Phase = sequelize.define('phases', {
+  const Phase = sequelize.define("phases", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     progress: {
-      type: Sequelize.FLOAT
-    }
+      type: Sequelize.FLOAT,
+    },
   });
   return Phase;
 };

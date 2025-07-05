@@ -1,35 +1,35 @@
 module.exports = (sequelize, Sequelize) => {
-  const Problem = sequelize.define('problems', {
+  const Problem = sequelize.define("problems", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     title: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     urgency: {
-      type: Sequelize.ENUM('Urgent', 'Moyen', 'Faible')
+      type: Sequelize.ENUM("Urgent", "Moyen", "Faible"),
     },
     chantier: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     phase: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     task: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     status: {
-      type: Sequelize.ENUM('En cours', 'Non résolu', 'Résolu')
+      type: Sequelize.ENUM("En cours", "Non résolu", "Résolu"),
     },
     description: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
     },
     images: {
       type: Sequelize.JSON,
-      allowNull: true
-    }
+      allowNull: true,
+    },
   });
   return Problem;
 };

@@ -1,18 +1,18 @@
 module.exports = (sequelize, Sequelize) => {
-  const Assignment = sequelize.define('task_plannings', {
+  const Assignment = sequelize.define("task_plannings", {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     startDate: {
       type: Sequelize.DATE,
-      allowNull: true
+      allowNull: true,
     },
     endDate: {
       type: Sequelize.DATE,
-      allowNull: true
-    }
+      allowNull: true,
+    },
   });
   return Assignment;
 };

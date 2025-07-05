@@ -19,7 +19,7 @@ export class SitesPage {
     name: 'youn',
     email: 'm@r',
     role: ['admin'],
-    job: ['Chef']
+    job: ['Chef'],
   };
 
   projets: Chantier[] = [
@@ -195,7 +195,7 @@ export class SitesPage {
   }
   confirmChantier() {
     this.projets.push({
-      id:0,
+      id: 0,
       title: this.newChantier.title,
       client: this.newChantier.client,
       address: this.newChantier.address,
@@ -247,7 +247,7 @@ export class SitesPage {
       name: this.newTask.name,
       done: false,
       dueDate: this.formatDate(this.newTask.dueDate),
-      tasks: []
+      tasks: [],
     });
     this.newTask = { name: '', dueDate: null };
     this.visibleAddTask = false;

@@ -3,30 +3,29 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const config = require("../config/auth.config.js");
 
-const User         = db.User;
-const Role         = db.Role;
+const User = db.User;
+const Role = db.Role;
 const RefreshToken = db.RefreshToken;
-const Op           = db.Sequelize.Op;
 
 // lifetimes
-const ACCESS_TOKEN_TTL  = 15 * 60;         // 15 minutes (in seconds)
-const REFRESH_TOKEN_TTL = 7 * 24 * 3600;   // 7 days
+const ACCESS_TOKEN_TTL = 15 * 60; // 15 minutes (in seconds)
+const REFRESH_TOKEN_TTL = 7 * 24 * 3600; // 7 days
 
 function generateAccessToken(userId) {
   return jwt.sign({ id: userId }, config.secret, {
-    expiresIn: ACCESS_TOKEN_TTL
+    expiresIn: ACCESS_TOKEN_TTL,
   });
 }
 
 async function generateRefreshToken(user) {
   const token = jwt.sign({ id: user.id }, config.secret, {
-    expiresIn: REFRESH_TOKEN_TTL
+    expiresIn: REFRESH_TOKEN_TTL,
   });
   const expiryDate = new Date(Date.now() + REFRESH_TOKEN_TTL * 1000);
   await RefreshToken.create({
     token,
     userId: user.id,
-    expiryDate
+    expiryDate,
   });
   return token;
 }
@@ -43,16 +42,18 @@ exports.signup = async (req, res) => {
       date: new Date(date),
       avatar: avatar || null,
       password: bcrypt.hashSync(password, 8),
-      job: Array.isArray(job) ? job : []
+      job: Array.isArray(job) ? job : [],
     });
 
     // always assign the "user" role
     const defaultRole = await Role.findOne({ where: { name: "user" } });
     await user.setRoles([defaultRole]);
 
-    console.log(user)
+    console.log(user);
 
-    res.status(201).send({ message: "User registered successfully with role USER!" });
+    res
+      .status(201)
+      .send({ message: "User registered successfully with role USER!" });
   } catch (err) {
     res.status(400).send({ message: err.message });
   }
@@ -68,12 +69,14 @@ exports.signin = async (req, res) => {
     if (!valid) return res.status(401).send({ message: "Invalid password!" });
 
     // 1) issue short-lived access token
-    const accessToken  = generateAccessToken(user.id);
+    const accessToken = generateAccessToken(user.id);
 
     // 2) issue long-lived refresh token & persist it
     const refreshToken = await generateRefreshToken(user);
 
-    const roles = (await user.getRoles()).map(r => `ROLE_${r.name.toUpperCase()}`);
+    const roles = (await user.getRoles()).map(
+      (r) => `ROLE_${r.name.toUpperCase()}`,
+    );
 
     res.status(200).send({
       id: user.id,
@@ -83,7 +86,7 @@ exports.signin = async (req, res) => {
       roles,
       avatar: user.avatar,
       accessToken,
-      refreshToken
+      refreshToken,
     });
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -107,7 +110,9 @@ exports.refreshToken = async (req, res) => {
   }
   if (stored.expiryDate < new Date()) {
     await RefreshToken.destroy({ where: { token } });
-    return res.status(403).send({ message: "Refresh token expired. Please login again." });
+    return res
+      .status(403)
+      .send({ message: "Refresh token expired. Please login again." });
   }
 
   // 2) verify its signature

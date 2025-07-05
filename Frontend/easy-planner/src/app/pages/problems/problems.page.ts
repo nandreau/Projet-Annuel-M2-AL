@@ -25,12 +25,10 @@ export class ProblemsPage implements OnInit {
   }
 
   private loadProblems(): void {
-    this.request
-      .get<Problem[]>('api/problems', false)
-      .subscribe({
-        next: (data) => (this.problems = data),
-        error: (err) => console.error('Erreur chargement problèmes', err)
-      });
+    this.request.get<Problem[]>('api/problems', false).subscribe({
+      next: (data) => (this.problems = data),
+      error: (err) => console.error('Erreur chargement problèmes', err),
+    });
   }
 
   onComment() {
@@ -50,7 +48,7 @@ export class ProblemsPage implements OnInit {
 
         currentGroup = {
           sender: msg.user,
-          createdAt: "11 juillet 2021",
+          createdAt: '11 juillet 2021',
           side: nextSide,
           contents: [msg.content],
         };

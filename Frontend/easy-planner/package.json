@@ -8,6 +8,7 @@
     "start": "ng serve",
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
     "test": "ng test --watch=false --browsers=ChromeHeadlessCI",

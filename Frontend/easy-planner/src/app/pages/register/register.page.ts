@@ -16,16 +16,16 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
 })
 export class RegisterPage {
   firstname = '';
-  name      = '';
-  email     = '';
-  password  = '';
-  confirmPassword = '';  
-  job = '' ;
+  name = '';
+  email = '';
+  password = '';
+  confirmPassword = '';
+  job = '';
 
   constructor(
     private request: RequestService,
-    private router:  Router,
-    private messageService: MessageService
+    private router: Router,
+    private messageService: MessageService,
   ) {}
 
   onSubmit() {
@@ -40,24 +40,20 @@ export class RegisterPage {
 
     const payload = {
       firstname: this.firstname,
-      name:      this.name,
-      email:     this.email,
-      job:       [this.job],
-      avatar:    null,
-      password:  this.password
+      name: this.name,
+      email: this.email,
+      job: [this.job],
+      avatar: null,
+      password: this.password,
     };
 
-    this.request
-      .post<ApiResponse>('api/auth/signup', payload, true)
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/login']);
-        },
-        error: err => {
-          console.error(err);
-        },
-      });
+    this.request.post<ApiResponse>('api/auth/signup', payload, true).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 }
-
-

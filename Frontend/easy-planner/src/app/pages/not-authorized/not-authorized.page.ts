@@ -1,4 +1,4 @@
-import { Component,  } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './not-authorized.page.html',
   styleUrls: ['./not-authorized.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
-export class NotAuthorizedPage {
-}
+export class NotAuthorizedPage {}

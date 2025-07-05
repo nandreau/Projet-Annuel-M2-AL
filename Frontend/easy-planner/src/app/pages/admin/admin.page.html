@@ -69,7 +69,9 @@
               Nom prénom <p-sortIcon field="name" />
             </th>
             <th pSortableColumn="mail">Email <p-sortIcon field="mail" /></th>
-            <th pSortableColumn="createdAt">Adhérent <p-sortIcon field="createdAt" /></th>
+            <th pSortableColumn="createdAt">
+              Adhérent <p-sortIcon field="createdAt" />
+            </th>
             <th pSortableColumn="role">Rôle <p-sortIcon field="role" /></th>
             <th pSortableColumn="job">Droit <p-sortIcon field="job" /></th>
           </tr>
@@ -83,7 +85,9 @@
             <td>{{ user.email }}</td>
             <td>{{ user.createdAt }}</td>
             <td>
-              <span *ngFor="let role of user.role" class="p-tag p-tag-rounded p-tag-info"
+              <span
+                *ngFor="let role of user.role"
+                class="p-tag p-tag-rounded p-tag-info"
                 >{{ role }}</span
               >
             </td>

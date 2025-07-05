@@ -2,7 +2,11 @@
   <div class="login-background">
     <div class="login-form register-form">
       <div class="login-header flex">
-        <ion-img class="w-5rem h-5rem mr-2" src="assets/logo.png" alt="logo"></ion-img>
+        <ion-img
+          class="w-5rem h-5rem mr-2"
+          src="assets/logo.png"
+          alt="logo"
+        ></ion-img>
         <h1 class="login-title">EasyPlanner</h1>
       </div>
 
@@ -17,7 +21,7 @@
             [(ngModel)]="firstname"
             name="firstname"
           />
-        </div> 
+        </div>
         <div class="login-form-group">
           <input
             type="text"
@@ -26,7 +30,7 @@
             [(ngModel)]="name"
             name="name"
           />
-        </div> 
+        </div>
         <div class="login-form-group">
           <input
             type="text"
@@ -35,7 +39,7 @@
             [(ngModel)]="job"
             name="job"
           />
-        </div> 
+        </div>
         <div class="login-form-group">
           <input
             type="email"
@@ -66,12 +70,16 @@
             autocomplete="new-password"
           />
         </div>
-        <ion-button class="mt-5" mode="ios" expand="block" type="submit">S’inscrire</ion-button>
+        <ion-button class="mt-5" mode="ios" expand="block" type="submit"
+          >S’inscrire</ion-button
+        >
       </form>
 
       <div class="text-center text-md text-gray-600 mt-6">
         Vous avez déjà un compte ?
-        <a routerLink="/login" class="text-blue-600 hover:underline">Se connecter</a>
+        <a routerLink="/login" class="text-blue-600 hover:underline"
+          >Se connecter</a
+        >
       </div>
     </div>
   </div>

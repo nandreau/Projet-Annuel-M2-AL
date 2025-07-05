@@ -21,7 +21,7 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
     PrimengModule,
     IconField,
     InputIcon,
-    FormsModule
+    FormsModule,
   ],
 })
 export class AdminPage implements OnInit {
@@ -34,7 +34,7 @@ export class AdminPage implements OnInit {
       email: 'James@gmail.com',
       role: ['PDG'],
       job: ['Admin'],
-      avatar: "AV1.png"
+      avatar: 'AV1.png',
     },
     {
       id: 2,
@@ -43,7 +43,7 @@ export class AdminPage implements OnInit {
       email: 'Josephine@gmail.com',
       role: ['Ressource Humaine'],
       job: ['Manager'],
-      avatar: "AV1.png"
+      avatar: 'AV1.png',
     },
     {
       id: 3,
@@ -52,7 +52,7 @@ export class AdminPage implements OnInit {
       email: 'Donette@gmail.com',
       role: ['Plombier'],
       job: ['Artisan'],
-      avatar: "AV1.png"
+      avatar: 'AV1.png',
     },
   ];
   availableRoles!: string[];
@@ -137,7 +137,7 @@ export class AdminPage implements OnInit {
       email: '',
       role: [''],
       job: [''],
-      avatar: ''
+      avatar: '',
     };
   }
 }

@@ -38,12 +38,13 @@ export class RequestService {
     return { headers: new HttpHeaders({ 'x-access-token': token }) };
   }
 
-
   get<T>(endpoint: string, showSuccessToast: boolean = false): Observable<T> {
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, this.getAuthOptions()).pipe(
-      tap((_) => showSuccessToast && this.log('Fetched data')),
-      catchError(this.handleError.bind(this)),
-    );
+    return this.http
+      .get<T>(`${this.apiUrl}/${endpoint}`, this.getAuthOptions())
+      .pipe(
+        tap((_) => showSuccessToast && this.log('Fetched data')),
+        catchError(this.handleError.bind(this)),
+      );
   }
 
   download(
@@ -63,14 +64,16 @@ export class RequestService {
     data: any,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions()).pipe(
-      tap((response: any) => {
-        if (showSuccessToast && response?.message) {
-          this.log(response.message);
-        }
-      }),
-      catchError(this.handleError.bind(this)),
-    );
+    return this.http
+      .post<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions())
+      .pipe(
+        tap((response: any) => {
+          if (showSuccessToast && response?.message) {
+            this.log(response.message);
+          }
+        }),
+        catchError(this.handleError.bind(this)),
+      );
   }
 
   put<T>(
@@ -78,14 +81,16 @@ export class RequestService {
     data: any,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions()).pipe(
-      tap((response: any) => {
-        if (showSuccessToast && response?.message) {
-          this.log(response.message);
-        }
-      }),
-      catchError(this.handleError.bind(this)),
-    );
+    return this.http
+      .put<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions())
+      .pipe(
+        tap((response: any) => {
+          if (showSuccessToast && response?.message) {
+            this.log(response.message);
+          }
+        }),
+        catchError(this.handleError.bind(this)),
+      );
   }
 
   patch<T>(
@@ -93,27 +98,31 @@ export class RequestService {
     data: any,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.patch<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions()).pipe(
-      tap((response: any) => {
-        if (showSuccessToast && response?.message) {
-          this.log(response.message);
-        }
-      }),
-      catchError(this.handleError.bind(this)),
-    );
+    return this.http
+      .patch<T>(`${this.apiUrl}/${endpoint}`, data, this.getAuthOptions())
+      .pipe(
+        tap((response: any) => {
+          if (showSuccessToast && response?.message) {
+            this.log(response.message);
+          }
+        }),
+        catchError(this.handleError.bind(this)),
+      );
   }
 
   delete<T>(
     endpoint: string,
     showSuccessToast: boolean = false,
   ): Observable<T> {
-    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, this.getAuthOptions()).pipe(
-      tap((response: any) => {
-        if (showSuccessToast && response?.message) {
-          this.log(response.message);
-        }
-      }),
-      catchError(this.handleError.bind(this)),
-    );
+    return this.http
+      .delete<T>(`${this.apiUrl}/${endpoint}`, this.getAuthOptions())
+      .pipe(
+        tap((response: any) => {
+          if (showSuccessToast && response?.message) {
+            this.log(response.message);
+          }
+        }),
+        catchError(this.handleError.bind(this)),
+      );
   }
 }

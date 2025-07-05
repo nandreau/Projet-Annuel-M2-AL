@@ -1,13 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./app/models");
-const { Role } = db;
-
 const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8081",
 };
 app.use(cors(corsOptions));
 
@@ -18,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // Sync database and load roles
 db.sequelize.sync({ force: true }).then(async () => {
   console.log("✔️  Database dropped & re-synced with { force: true }");
-  const loadFakeData = require('./loadFakeData');
+  const loadFakeData = require("./loadFakeData");
   try {
     await loadFakeData();
   } catch (err) {

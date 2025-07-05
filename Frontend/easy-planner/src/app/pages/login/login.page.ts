@@ -14,38 +14,41 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   imports: [FormsModule, RouterLink, IonicModule, PrimengModule],
 })
 export class LoginPage {
-email    = '';
+  email = '';
   password = '';
 
   constructor(
     private request: RequestService,
-    private router:  Router
+    private router: Router,
   ) {}
 
   onSubmit() {
     const payload = {
-      email:    this.email,
-      password: this.password
+      email: this.email,
+      password: this.password,
     };
 
     this.request
-    .post<AuthResponse>('api/auth/signin', payload, true)
-    .subscribe({
-      next: res => {
-        localStorage.setItem('accessToken', res.accessToken);
-        localStorage.setItem('currentUser', JSON.stringify({
-          id:        res.id,
-          firstname: res.firstname,
-          name:      res.name,
-          email:     res.email,
-          roles:     res.roles,
-          avatar:    res.avatar
-        }));
-        this.router.navigate(['/']);
-      },
-      error: err => {
-        console.error(err);
-      }
-    });
+      .post<AuthResponse>('api/auth/signin', payload, true)
+      .subscribe({
+        next: (res) => {
+          localStorage.setItem('accessToken', res.accessToken);
+          localStorage.setItem(
+            'currentUser',
+            JSON.stringify({
+              id: res.id,
+              firstname: res.firstname,
+              name: res.name,
+              email: res.email,
+              roles: res.roles,
+              avatar: res.avatar,
+            }),
+          );
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
   }
 }
