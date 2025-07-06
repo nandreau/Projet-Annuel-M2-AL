@@ -171,8 +171,8 @@
     subtitle="Veuillez remplir les informations du chantier."
     [model]="newChantier"
     [fields]="chantierFields"
-    (confirm)="handleAddChantier($event)"
-    (cancel)="visibleAddChantier=false"
+    (submitted)="handleAddChantier($event)"
+    (closed)="visibleAddChantier=false"
   ></app-dynamic-form-modal>
 
   <!-- Delete Chantier Confirm -->
@@ -181,8 +181,8 @@
     header="Supprimer un chantier"
     subtitle="Voulez-vous vraiment supprimer le chantier « {{selectedChantierName}} » ? "
     color="danger"
-    (confirm)="confirmDeleteChantier()"
-    (cancel)="visibleDeleteChantier=false"
+    (submitted)="confirmDeleteChantier()"
+    (closed)="visibleDeleteChantier=false"
   ></app-confirm-modal>
 
   <!-- Add Phase -->
@@ -193,8 +193,8 @@
     subtitle="Saisissez le nom de la phase."
     [model]="newPhase"
     [fields]="phaseFields"
-    (confirm)="handleAddPhase($event)"
-    (cancel)="visibleAddPhase=false"
+    (submitted)="handleAddPhase($event)"
+    (closed)="visibleAddPhase=false"
   ></app-dynamic-form-modal>
 
   <!-- Delete Phase Confirm -->
@@ -203,8 +203,8 @@
     header="Supprimer une phase"
     subtitle="Supprimer la phase « {{selectedPhaseName}} » ? "
     color="danger"
-    (confirm)="confirmDeletePhase()"
-    (cancel)="visibleDeletePhase=false"
+    (submitted)="confirmDeletePhase()"
+    (closed)="visibleDeletePhase=false"
   ></app-confirm-modal>
 
   <!-- Add Task -->
@@ -215,8 +215,8 @@
     subtitle="Saisissez les détails de la tâche."
     [model]="newTask"
     [fields]="taskFields"
-    (confirm)="handleAddTask($event)"
-    (cancel)="visibleAddTask=false"
+    (submitted)="handleAddTask($event)"
+    (closed)="visibleAddTask=false"
   ></app-dynamic-form-modal>
 
   <!-- Delete Task Confirm -->
@@ -225,7 +225,7 @@
     header="Supprimer une tâche"
     subtitle="Supprimer la tâche « {{selectedTaskName}}  » ?"
     color="danger"
-    (confirm)="confirmDeleteTask()"
-    (cancel)="visibleDeleteTask=false"
+    (submitted)="confirmDeleteTask()"
+    (closed)="visibleDeleteTask=false"
   ></app-confirm-modal>
 </ion-content>

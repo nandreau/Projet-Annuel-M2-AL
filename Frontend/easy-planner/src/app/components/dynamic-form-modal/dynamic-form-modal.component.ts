@@ -34,13 +34,6 @@ export class DynamicFormModalComponent<T> {
   @Input() optionValueKey = 'id';
   @Input() separator = ',';
 
-  @Output() confirm = new EventEmitter<any>();
-  @Output() cancel  = new EventEmitter<void>();
-
-  onConfirm() {
-    this.confirm.emit(this.model);
-  }
-  onCancel() {
-    this.cancel.emit();
-  }
+  @Output() submitted = new EventEmitter<any>();
+  @Output() closed   = new EventEmitter<void>();
 }

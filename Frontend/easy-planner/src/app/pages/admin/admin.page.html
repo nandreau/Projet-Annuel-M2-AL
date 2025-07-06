@@ -119,8 +119,8 @@
     subtitle="Veuillez remplir les informations de l'utilisateur."
     [model]="userForm"
     [fields]="addFields"
-    (confirm)="handleAdd($event)"
-    (cancel)="visibleAdd=false"
+    (submitted)="handleAdd($event)"
+    (closed)="visibleAdd=false"
   ></app-dynamic-form-modal>
 
   <!-- Edit Modal -->
@@ -130,8 +130,8 @@
     subtitle="Modifier les informations de l'utilisateur sélectionné."
     [model]="userForm"
     [fields]="editFields"
-    (confirm)="handleEdit($event)"
-    (cancel)="visibleEdit=false"
+    (submitted)="handleEdit($event)"
+    (closed)="visibleEdit=false"
   ></app-dynamic-form-modal>
 
   <!-- Delete Confirm -->
@@ -140,7 +140,7 @@
     header="Supprimer Utilisateurs"
     subtitle="Confirmer la suppression de {{selectedUsers.length}} utilisateurs?"
     color="danger"
-    (confirm)="handleDelete()"
-    (cancel)="visibleDelete=false"
+    (submitted)="handleDelete()"
+    (closed)="visibleDelete=false"
   ></app-confirm-modal>
 </ion-content>

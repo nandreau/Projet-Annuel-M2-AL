@@ -1,6 +1,6 @@
 <p-dialog
   [header]="header"
-  (onHide)="cancel.emit()"
+  (onHide)="closed.emit()"
   [(visible)]="visible"
   [modal]="true"
   [style]="{ width: '25rem' }"
@@ -10,7 +10,7 @@
     {{ subtitle }}
   </p>
   <div class="flex justify-content-end gap-2 mt-5">
-    <button pButton type="button" label="Annuler" severity="secondary" (click)="cancel.emit()"></button>
-    <button pButton type="button" label="Supprimer" [severity]="color" (click)="confirm.emit()"></button>
+    <button pButton type="button" label="Annuler" severity="secondary" (click)="closed.emit()"></button>
+    <button pButton type="button" label="Supprimer" [severity]="color" (click)="submitted.emit()"></button>
   </div>
 </p-dialog>
