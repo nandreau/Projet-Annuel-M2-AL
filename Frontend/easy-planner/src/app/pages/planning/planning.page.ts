@@ -3,7 +3,10 @@ import { IonicModule } from 'src/app/shared/ionic.module';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 import { FormsModule } from '@angular/forms';
-import { Phase, Task } from 'src/app/models/global.model';
+import { Chantier, Phase, Task } from 'src/app/models/global.model';
+import { RequestService } from 'src/app/services/request.service';
+import { UtilitiesService } from 'src/app/services/utilities.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-planning',
@@ -14,50 +17,58 @@ import { Phase, Task } from 'src/app/models/global.model';
 })
 export class PlanningPage implements OnInit {
   days: { date: Date; name: string; day: string }[] = [];
+  chantiers: Chantier[] = [];
 
-  projects: Phase[] = [
-
-  ];
-
-  // header controls
+  // header controls (unchanged)…
   views = [{ name: 'Semaine' }, { name: 'Mois' }];
-  sites = [
-    { name: 'Construction Maison Martin' },
-    { name: 'Réfection Toiture Dubois' },
-  ];
   groupBy = [{ name: 'Par artisan' }];
   selectedView = this.views[0];
-  selectedSite = this.sites[0];
+  selectedChantier?: Chantier;
   selectedGroup = this.groupBy[0];
   weekRange = '';
   today: Date = new Date();
 
-  ngOnInit() {
+  constructor(
+    private request: RequestService,
+    public utils: UtilitiesService
+  ) {}
+
+  async ngOnInit() {
+    this.initWeekDays();
+    await this.loadChantiers();
+  }
+
+  private initWeekDays() {
     const dow = this.today.getDay();
     const diffToMon = (dow + 6) % 7;
     const monday = new Date(this.today);
     monday.setDate(this.today.getDate() - diffToMon);
 
     const weekdayFmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'long' });
-    const dayNumFmt = new Intl.DateTimeFormat('fr-FR', { day: '2-digit' });
+    const dayNumFmt  = new Intl.DateTimeFormat('fr-FR', { day: '2-digit' });
+    const monthFmt   = new Intl.DateTimeFormat('fr-FR', { month: 'long' });
 
     this.days = [];
     for (let i = 0; i < 7; i++) {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
-      this.days.push({
-        date: d,
-        name: weekdayFmt.format(d),
-        day: dayNumFmt.format(d),
-      });
+      this.days.push({ date: d, name: weekdayFmt.format(d), day: dayNumFmt.format(d) });
     }
-
-    // 3. compute weekRange display
-    const monthFmt = new Intl.DateTimeFormat('fr-FR', { month: 'long' });
     const startStr = dayNumFmt.format(this.days[0].date);
-    const endStr = dayNumFmt.format(this.days[6].date);
+    const endStr   = dayNumFmt.format(this.days[6].date);
     const monthStr = monthFmt.format(this.days[0].date);
     this.weekRange = `${startStr} – ${endStr} ${monthStr} ${this.days[0].date.getFullYear()}`;
+  }
+
+  private async loadChantiers() {
+    try {
+      this.chantiers = await firstValueFrom(
+        this.request.get<Chantier[]>('api/chantiers')
+      );
+      this.selectedChantier = this.chantiers[0];
+    } catch (err) {
+      console.error('Erreur chargement chantiers', err);
+    }
   }
 
   getSchedulesForDay(task: Task, day: Date): { time: string }[] {

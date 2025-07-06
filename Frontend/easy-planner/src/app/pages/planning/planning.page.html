@@ -6,13 +6,13 @@
     </div>
 
     <!-- Filtres & recherches -->
-    <div class="planning-project p-2 flex gap-2 items-center mb-2">
+    <div class="planning-cect p-2 flex gap-2 items-center mb-2">
       <p-select
-        [options]="sites"
-        [(ngModel)]="selectedSite"
-        optionLabel="name"
+        [options]="chantiers"
+        [(ngModel)]="selectedChantier"
+        optionLabel="title"
         filter
-        placeholder="Site"
+        placeholder="Chantier"
         panelStyleClass="w-full"
       ></p-select>
 
@@ -76,60 +76,62 @@
       </ng-container>
     </div>
 
-    <!-- Projets -->
-    <ng-container *ngFor="let proj of projects">
-      <!-- Ligne projet -->
-      <div
-        class="planning-project align-items-center justify-content-between px-4 py-2 w-full sticky left-0"
-      >
-        <div class="flex items-center gap-2">
-          <span class="font-semibold">{{ proj.name }}</span>
-          <span class="text-sm text-gray-600"
-            >({{ proj.tasks.length }} tâches)</span
-          >
-        </div>
-        <div class="w-3 flex">
-          <p-progressBar
-            [value]="50"
-            [showValue]="false"
-            class="w-full"
-          ></p-progressBar>
-          <span class="text-sm ml-2"> {{ 50 }}% </span>
-        </div>
-      </div>
-
-      <!-- Lignes tâches -->
-      <div
-        *ngFor="let task of proj.tasks"
-        class="planning-grid planning-task-row"
-      >
-        <!-- Sticky task cell -->
+    <!-- Chantiers -->
+    <ng-container *ngIf="selectedChantier">
+      <ng-container *ngFor="let phase of selectedChantier.phases">
+        <!-- Ligne phase -->
         <div
-          class="planning-task-cell px-4 py-2 sticky left-0 bg-white z-10 flex items-center gap-2"
+          class="planning-chantier align-items-center justify-content-between px-4 py-2 w-full sticky left-0"
         >
-          <i *ngIf="task.done" class="pi pi-check-circle text-green-500"></i>
-          <i
-            *ngIf="isOverdue(task)"
-            class="pi pi-exclamation-circle text-red-500"
-          ></i>
-          <i *ngIf="isOngoing(task)" class="pi pi-clock text-yellow-500"></i>
-          <i *ngIf="isTodo(task)" class="pi pi-hourglass text-gray-400"></i>
-          <span>{{ task.name }}</span>
+          <div class="flex align-items-center items-center gap-2">
+            <span class="font-semibold">{{ phase.name }}</span>
+            <span class="text-sm text-gray-600"
+              >(todo tâches)</span
+            >
+          </div>
+          <div class="w-3 flex align-items-center">
+            <p-progressBar
+              [value]="utils.getPhaseProgress(phase)"
+              [showValue]="false"
+              class="w-full"
+            ></p-progressBar>
+            <span class="text-sm ml-2">{{ utils.getPhaseProgress(phase) }}% </span>
+          </div>
         </div>
 
-        <!-- cellules jours -->
-        <ng-container *ngFor="let d of days">
-          <div class="planning-task-cell p-1 cursor-pointer">
-            <ng-container *ngFor="let e of getSchedulesForDay(task, d.date)">
-              <div
-                class="bg-gray-50 flex items-center justify-between px-2 py-1 rounded border border-gray-200"
-              >
-                <span class="text-sm">{{ e.time }}</span>
-              </div>
-            </ng-container>
+        <!-- Lignes tâches -->
+        <div
+          *ngFor="let task of phase.tasks"
+          class="planning-grid planning-task-row"
+        >
+          <!-- Sticky task cell -->
+          <div
+            class="planning-task-cell px-4 py-2 sticky left-0 bg-white z-10 flex items-center gap-2"
+          >
+            <i *ngIf="task.done" class="pi pi-check-circle text-green-500"></i>
+            <i
+              *ngIf="isOverdue(task)"
+              class="pi pi-exclamation-circle text-red-500"
+            ></i>
+            <i *ngIf="isOngoing(task)" class="pi pi-clock text-yellow-500"></i>
+            <i *ngIf="isTodo(task)" class="pi pi-hourglass text-gray-400"></i>
+            <span>{{ task.name }}</span>
           </div>
-        </ng-container>
-      </div>
+
+          <!-- cellules jours -->
+          <ng-container *ngFor="let d of days">
+            <div class="planning-task-cell p-1 cursor-pointer">
+              <ng-container *ngFor="let e of getSchedulesForDay(task, d.date)">
+                <div
+                  class="bg-gray-50 flex items-center justify-between px-2 py-1 rounded border border-gray-200"
+                >
+                  <span class="text-sm">{{ e.time }}</span>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 </ion-content>
