@@ -1,21 +1,21 @@
 const { authJwt } = require("../middleware");
-const controller = require("../controllers/task.controller");
+const controller = require("../controllers/assignment.controller");
 
 module.exports = function (app) {
   app.post(
-    "/api/tasks",
+    "/api/assignments",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.create,
   );
-  app.get("/api/tasks", [authJwt.verifyToken], controller.findAll);
-  app.get("/api/tasks/:id", [authJwt.verifyToken], controller.findOne);
+  app.get("/api/assignments", [authJwt.verifyToken], controller.findAll);
+  app.get("/api/assignments/:id", [authJwt.verifyToken], controller.findOne);
   app.put(
-    "/api/tasks/:id",
+    "/api/assignments/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.update,
   );
   app.delete(
-    "/api/tasks/:id",
+    "/api/assignments/:id",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.delete,
   );

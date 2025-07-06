@@ -7,10 +7,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     name: {
       type: Sequelize.STRING,
-    },
-    progress: {
-      type: Sequelize.FLOAT,
-    },
+    }
   });
   return Phase;
 };

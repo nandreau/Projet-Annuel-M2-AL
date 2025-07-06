@@ -5,6 +5,8 @@ import { Problem } from 'src/app/models/global.model';
 import { IonicModule } from 'src/app/shared/ionic.module';
 import { PrimengModule } from 'src/app/shared/primeng.module';
 import { RequestService } from 'src/app/services/request.service';
+import { addIcons } from 'ionicons';
+import { camera } from 'ionicons/icons';
 
 @Component({
   selector: 'app-problems',
@@ -18,7 +20,9 @@ export class ProblemsPage implements OnInit {
   comment: string = '';
   activeProblem: number = 0;
 
-  constructor(private request: RequestService) {}
+  constructor(private request: RequestService) {
+    addIcons({ camera });
+  }
 
   ngOnInit() {
     this.loadProblems();
@@ -39,22 +43,22 @@ export class ProblemsPage implements OnInit {
   groupMessages(messages: any[]) {
     const grouped = [];
     let currentGroup: any = null;
-    let lastSender = null;
+    let lastuser = null;
     let nextSide = 'right';
 
     for (const msg of messages) {
-      if (msg.user !== lastSender) {
+      if (msg.user !== lastuser) {
         nextSide = nextSide === 'left' ? 'right' : 'left';
 
         currentGroup = {
-          sender: msg.user,
-          createdAt: '11 juillet 2021',
+          user: msg.user,
+          createdAt: msg.createdAt,
           side: nextSide,
           contents: [msg.content],
         };
 
         grouped.push(currentGroup);
-        lastSender = msg.user;
+        lastuser = msg.user;
       } else if (currentGroup) {
         currentGroup.contents.push(msg.content);
       }

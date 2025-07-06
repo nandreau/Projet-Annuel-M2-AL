@@ -35,3 +35,11 @@
 .phase-add:hover {
   background-color: #e9ebef;
 }
+.avatar-stack ion-img::part(image),
+.avatar-stack div {
+  margin-right: -1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: inline-block;
+}

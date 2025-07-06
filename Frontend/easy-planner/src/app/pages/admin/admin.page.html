@@ -27,22 +27,22 @@
                 icon="pi pi-plus"
                 severity="success"
                 size="small"
-                (onClick)="openAdd()"
+                (click)="openAdd()"
               />
               <p-button
                 label="Modifier"
                 icon="pi pi-pencil"
                 severity="warn"
                 size="small"
-                (onClick)="openEdit()"
-                [disabled]="!selectedUsers?.length"
+                (click)="openEdit()"
+                [disabled]="!selectedUsers?.length || selectedUsers.length > 1"
               />
               <p-button
                 label="Supprimer"
                 icon="pi pi-trash"
                 severity="danger"
                 size="small"
-                (onClick)="openDelete()"
+                (click)="openDelete()"
                 [disabled]="!selectedUsers?.length"
               />
             </div>
@@ -52,7 +52,7 @@
               </p-inputIcon>
               <input
                 pInputText
-                type="text"
+                [disabled]="visibleAdd || visibleEdit || visibleDelete"
                 type="text"
                 (input)="applyGlobalFilter($event)"
                 placeholder="Rechercher un utilisateur"
@@ -72,8 +72,8 @@
             <th pSortableColumn="createdAt">
               Adhérent <p-sortIcon field="createdAt" />
             </th>
-            <th pSortableColumn="role">Rôle <p-sortIcon field="role" /></th>
-            <th pSortableColumn="job">Droit <p-sortIcon field="job" /></th>
+            <th pSortableColumn="roles">Rôle <p-sortIcon field="role" /></th>
+            <th pSortableColumn="job">Métier <p-sortIcon field="job" /></th>
           </tr>
         </ng-template>
 
@@ -83,18 +83,22 @@
             <td><p-tableCheckbox [value]="user" /></td>
             <td>{{ user.firstname }} {{ user.name }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ user.createdAt }}</td>
+            <td>{{ user.createdAt | date:'d MMMM y HH:mm' }}</td>
             <td>
-              <span
-                *ngFor="let role of user.role"
-                class="p-tag p-tag-rounded p-tag-info"
-                >{{ role }}</span
-              >
+              <p-tag
+                *ngFor="let role of user.roles"
+                [value]="role.name"
+                class="mr-3"
+                rounded="true"
+              ></p-tag>
             </td>
             <td>
-              <span class="p-tag p-tag-rounded p-tag-primary"
-                >{{ user.job }}</span
-              >
+              <p-tag
+                *ngFor="let job of user.job"
+                [value]="job"
+                class="mr-3"
+                rounded="true"
+              ></p-tag>
             </td>
           </tr>
         </ng-template>
@@ -108,122 +112,35 @@
       </p-table>
     </div>
   </div>
+  <!-- Add Modal -->
+  <app-dynamic-form-modal
+    [visible]="visibleAdd"
+    mode="add"
+    subtitle="Veuillez remplir les informations de l'utilisateur."
+    [model]="userForm"
+    [fields]="addFields"
+    (confirm)="handleAdd($event)"
+    (cancel)="visibleAdd=false"
+  ></app-dynamic-form-modal>
+
+  <!-- Edit Modal -->
+  <app-dynamic-form-modal
+    [visible]="visibleEdit"
+    mode="edit"
+    subtitle="Modifier les informations de l'utilisateur sélectionné."
+    [model]="userForm"
+    [fields]="editFields"
+    (confirm)="handleEdit($event)"
+    (cancel)="visibleEdit=false"
+  ></app-dynamic-form-modal>
+
+  <!-- Delete Confirm -->
+  <app-confirm-modal
+    [visible]="visibleDelete"
+    header="Supprimer Utilisateurs"
+    subtitle="Confirmer la suppression de {{selectedUsers.length}} utilisateurs?"
+    color="danger"
+    (confirm)="handleDelete()"
+    (cancel)="visibleDelete=false"
+  ></app-confirm-modal>
 </ion-content>
-
-<!-- ✅ Modal Ajouter -->
-<p-dialog
-  header="Ajouter un utilisateur"
-  [(visible)]="visibleAdd"
-  [modal]="true"
-  [style]="{ width: '30rem' }"
-  appendTo="body"
->
-  <span class="p-text-secondary block mb-5"
-    >Veuillez remplir les informations de l'utilisateur.</span
-  >
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Nom</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.name" />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Email</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.email" />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Rôle</label>
-    <p-multiSelect
-      class="w-full"
-      [options]="availableRoles"
-      [(ngModel)]="userForm.role"
-      optionLabel="label"
-      display="chip"
-      placeholder="Sélectionner les rôles"
-    ></p-multiSelect>
-  </div>
-  <div class="flex align-items-center gap-4 mb-5">
-    <label class="font-semibold w-2">Droit</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.job" />
-  </div>
-  <div class="flex justify-content-end gap-2">
-    <p-button
-      label="Annuler"
-      severity="secondary"
-      (click)="visibleAdd = false"
-    />
-    <p-button label="Ajouter" (click)="visibleAdd = false" />
-  </div>
-</p-dialog>
-
-<!-- ✅ Modal Modifier -->
-<p-dialog
-  header="Modifier un utilisateur"
-  [(visible)]="visibleEdit"
-  [modal]="true"
-  [style]="{ width: '30rem' }"
-  appendTo="body"
->
-  <span class="p-text-secondary block mb-5"
-    >Modifier les informations de l'utilisateur sélectionné.</span
-  >
-  <!-- les mêmes champs que ci-dessus -->
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Nom</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.name" />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Email</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.email" />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Rôle</label>
-    <p-select
-      class="w-full"
-      [options]="availableRoles"
-      [(ngModel)]="userForm.role"
-      optionLabel="label"
-      multiple
-      filter
-      filterPlaceholder="Rechercher un rôle"
-      placeholder="Sélectionner les rôles"
-      panelStyleClass="w-full"
-    ></p-select>
-  </div>
-  <div class="flex align-items-center gap-4 mb-5">
-    <label class="font-semibold w-2">Droit</label>
-    <input class="w-full" pInputText [(ngModel)]="userForm.job" />
-  </div>
-  <div class="flex justify-content-end gap-2">
-    <p-button
-      label="Annuler"
-      severity="secondary"
-      (click)="visibleEdit = false"
-    />
-    <p-button label="Enregistrer" (click)="visibleEdit = false" />
-  </div>
-</p-dialog>
-
-<!-- ✅ Modal Supprimer -->
-<p-dialog
-  header="Supprimer"
-  [(visible)]="visibleDelete"
-  [modal]="true"
-  [style]="{ width: '25rem' }"
-  appendTo="body"
->
-  <p class="mt-1">
-    Confirmer la suppression de
-    <strong>{{ selectedUsers?.length }}</strong> utilisateur(s) ?
-  </p>
-  <div class="flex justify-content-end gap-2 mt-5">
-    <p-button
-      label="Annuler"
-      severity="secondary"
-      (click)="visibleDelete = false"
-    />
-    <p-button
-      label="Supprimer"
-      severity="danger"
-      (click)="visibleDelete = false"
-    />
-  </div>
-</p-dialog>

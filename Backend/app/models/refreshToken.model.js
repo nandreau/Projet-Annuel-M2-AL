@@ -14,8 +14,12 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      revokedAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     },
-    { timestamps: false },
+    { timestamps: false }
   );
 
   return RefreshToken;

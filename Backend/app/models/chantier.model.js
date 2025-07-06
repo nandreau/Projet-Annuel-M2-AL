@@ -17,16 +17,10 @@ module.exports = (sequelize, Sequelize) => {
     end: {
       type: Sequelize.DATE,
     },
-    progress: {
-      type: Sequelize.FLOAT,
-    },
     images: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING,
       allowNull: true,
-    },
-    intervenants: {
-      type: Sequelize.JSON,
-    },
+    }
   });
   return Chantier;
 };

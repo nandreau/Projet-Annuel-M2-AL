@@ -3,17 +3,22 @@ export interface User extends WithTimestamps {
   firstname: string;
   name: string;
   email: string;
-  role: string[];
+  roles: Role[];
   job: string[];
   avatar?: string;
   password?: string;
 }
 
+export interface Role {
+  id: number;
+  name: string;
+}
+
 export interface Assignment extends WithTimestamps {
   id: number;
-  startDate?: string;
-  endDate?: string;
-  attribution?: User[];
+  startDate: string;
+  endDate: string;
+  users: User[];
 }
 
 export interface Task extends WithTimestamps {
@@ -23,13 +28,12 @@ export interface Task extends WithTimestamps {
   dueDate?: string;
   doneDate?: string;
   images?: string[];
-  tasks: Assignment[];
+  assignments: Assignment[];
 }
 
 export interface Phase extends WithTimestamps {
   id: number;
   name: string;
-  progress: number;
   tasks: Task[];
 }
 
@@ -40,10 +44,8 @@ export interface Chantier extends WithTimestamps {
   address: string;
   start: string;
   end: string;
-  progress: number;
   phases: Phase[];
-  images?: string[];
-  intervenants: { avatar: string }[];
+  images?: string;
 }
 
 export interface ProblemMessage extends WithTimestamps {
@@ -63,7 +65,7 @@ export interface Problem extends WithTimestamps {
   description: string;
   user: User;
   images: string[];
-  messages: ProblemMessage[];
+  problem_messages: ProblemMessage[];
 }
 
 export interface WithTimestamps {
@@ -83,4 +85,16 @@ export interface AuthResponse {
 
 export interface ApiResponse {
   message: string;
+}
+
+export type FieldType = 'text' | 'email' | 'password' | 'multiselect' | 'chips' | 'date' | 'select';
+
+export interface FormField<T = any> {
+  key: keyof T;
+  label: string;
+  type: FieldType;
+  options?: any[];
+  optionValue?: string;
+  optionLabel?: string;
+  placeholder?: string;
 }

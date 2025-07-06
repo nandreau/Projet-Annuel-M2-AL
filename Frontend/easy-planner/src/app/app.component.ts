@@ -16,12 +16,13 @@ import {
   warningSharp,
 } from 'ionicons/icons';
 import { IonicModule } from './shared/ionic.module';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [RouterLink, RouterLinkActive, IonicModule],
+  imports: [RouterLink, RouterLinkActive, IonicModule, ToastModule],
 })
 export class AppComponent {
   public appPages = [

@@ -128,7 +128,7 @@ export class DashboardPage implements OnInit {
       firstname: 'Michael',
       name: 'youn',
       email: 'm@r',
-      role: ['admin'],
+      roles: [{name: 'admin', id:1}],
       job: ['admin'],
     };
 
@@ -140,14 +140,10 @@ export class DashboardPage implements OnInit {
         address: '123 Rue Principale',
         start: '2025-05-01',
         end: '2025-12-31',
-        progress: 65,
-        images: ['https://picsum.photos/seed/1/200/120'],
-        intervenants: [{ avatar: 'https://i.pravatar.cc/40?img=1' }],
         phases: [
           {
             id: 11,
             name: 'Fondations',
-            progress: 100,
             tasks: [
               {
                 id: 111,
@@ -155,42 +151,39 @@ export class DashboardPage implements OnInit {
                 done: true,
                 dueDate: '2025-05-25',
                 doneDate: '2025-05-25',
-                tasks: [],
+                assignments: [],
               },
             ],
           },
           {
             id: 12,
             name: 'Electricité',
-            progress: 60,
             tasks: [
               {
                 id: 121,
                 name: 'Câblage',
                 done: false,
                 dueDate: '2025-07-19',
-                tasks: [],
+                assignments: [],
               },
             ],
           },
           {
             id: 13,
             name: 'Plomberie',
-            progress: 20,
             tasks: [
               {
                 id: 131,
                 name: 'Tuyaux sanitaires',
                 done: false,
                 dueDate: '2025-09-30',
-                tasks: [],
+                assignments: [],
               },
             ],
           },
           {
             id: 14,
             name: 'Finitions',
-            progress: 0,
             tasks: [],
           },
         ],
@@ -210,7 +203,7 @@ export class DashboardPage implements OnInit {
         description: '',
         user: user,
         images: [],
-        messages: [
+        problem_messages: [
           {
             id: 1,
             user: user,

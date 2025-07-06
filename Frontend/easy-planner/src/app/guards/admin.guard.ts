@@ -1,23 +1,45 @@
-// src/app/guards/admin.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
+import {
+  CanActivate,
+  Router,
+  UrlTree,
+} from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { RequestService } from '../services/request.service';
 import { AuthResponse } from '../models/global.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(
+    private request: RequestService,
+    private router: Router
+  ) {}
 
-  canActivate(): boolean | UrlTree {
+  canActivate(): Observable<boolean | UrlTree> {
     const raw = localStorage.getItem('currentUser');
-    if (!raw) return this.router.createUrlTree(['/login']);
+    if (!raw) {
+      return of(this.router.createUrlTree(['/login']));
+    }
 
+    let user: AuthResponse;
     try {
-      const user = JSON.parse(raw) as AuthResponse;
-      if (user.roles.includes('ROLE_ADMIN')) {
-        return true;
-      }
-    } catch {}
+      user = JSON.parse(raw);
+    } catch {
+      return of(this.router.createUrlTree(['/not-authorized']));
+    }
 
-    return this.router.createUrlTree(['/not-authorized']);
+    return this.request
+      .get<{ id: number; message: string }>('api/auth/verify')
+      .pipe(
+        map(() => {
+          return user.roles.includes('ROLE_ADMIN')
+            ? true
+            : this.router.createUrlTree(['/not-authorized']);
+        }),
+        catchError(() =>
+          of(this.router.createUrlTree(['/login']))
+        )
+      );
   }
 }

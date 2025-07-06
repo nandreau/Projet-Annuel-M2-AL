@@ -1,15 +1,15 @@
-const db = require("../models");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const config = require("../config/auth.config.js");
+const db       = require("../models");
+const jwt      = require("jsonwebtoken");
+const bcrypt   = require("bcryptjs");
+const config   = require("../config/auth.config.js");
 
-const User = db.User;
-const Role = db.Role;
+const User         = db.User;
+const Role         = db.Role;
 const RefreshToken = db.RefreshToken;
 
 // lifetimes
-const ACCESS_TOKEN_TTL = 15 * 60; // 15 minutes (in seconds)
-const REFRESH_TOKEN_TTL = 7 * 24 * 3600; // 7 days
+const ACCESS_TOKEN_TTL  = 15 * 60;        // 15 minutes in seconds
+const REFRESH_TOKEN_TTL = 7 * 24 * 3600;  // 7 days in seconds
 
 function generateAccessToken(userId) {
   return jwt.sign({ id: userId }, config.secret, {
@@ -26,6 +26,7 @@ async function generateRefreshToken(user) {
     token,
     userId: user.id,
     expiryDate,
+    revokedAt: null,
   });
   return token;
 }
@@ -33,8 +34,6 @@ async function generateRefreshToken(user) {
 exports.signup = async (req, res) => {
   try {
     const { firstname, name, email, date, avatar, password, job } = req.body;
-
-    // create the user record
     const user = await User.create({
       firstname,
       name,
@@ -45,11 +44,8 @@ exports.signup = async (req, res) => {
       job: Array.isArray(job) ? job : [],
     });
 
-    // always assign the "user" role
     const defaultRole = await Role.findOne({ where: { name: "user" } });
     await user.setRoles([defaultRole]);
-
-    console.log(user);
 
     res
       .status(201)
@@ -65,17 +61,16 @@ exports.signin = async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (!user) return res.status(404).send({ message: "User not found." });
 
-    const valid = bcrypt.compareSync(password, user.password);
-    if (!valid) return res.status(401).send({ message: "Invalid password!" });
+    if (!bcrypt.compareSync(password, user.password)) {
+      return res.status(401).send({ message: "Invalid password!" });
+    }
 
-    // 1) issue short-lived access token
-    const accessToken = generateAccessToken(user.id);
-
-    // 2) issue long-lived refresh token & persist it
+    // issue tokens
+    const accessToken  = generateAccessToken(user.id);
     const refreshToken = await generateRefreshToken(user);
 
     const roles = (await user.getRoles()).map(
-      (r) => `ROLE_${r.name.toUpperCase()}`,
+      r => `ROLE_${r.name.toUpperCase()}`
     );
 
     res.status(200).send({
@@ -98,41 +93,56 @@ exports.verify = (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
-  const { refreshToken: token } = req.body;
-  if (!token) {
+  const { refreshToken: incoming } = req.body;
+  if (!incoming) {
     return res.status(400).send({ message: "Refresh Token is required!" });
   }
 
-  // 1) check it exists in DB
-  const stored = await RefreshToken.findOne({ where: { token } });
-  if (!stored) {
-    return res.status(403).send({ message: "Refresh token not found!" });
-  }
-  if (stored.expiryDate < new Date()) {
-    await RefreshToken.destroy({ where: { token } });
-    return res
-      .status(403)
-      .send({ message: "Refresh token expired. Please login again." });
-  }
-
-  // 2) verify its signature
   try {
-    const decoded = jwt.verify(token, config.secret);
-    const userId = decoded.id;
+    // 1) fetch & validate
+    const stored = await RefreshToken.findOne({ where: { token: incoming } });
+    if (
+      !stored ||
+      stored.expiryDate < new Date() ||
+      stored.revokedAt !== null
+    ) {
+      return res
+        .status(403)
+        .send({ message: "Refresh token is invalid or expired." });
+    }
 
-    // 3) issue new access token
-    const newAccessToken = generateAccessToken(userId);
-    return res.status(200).send({ accessToken: newAccessToken });
+    // 2) verify its JWT
+    const decoded = jwt.verify(incoming, config.secret);
+
+    // 3) revoke old refresh token
+    await stored.update({ revokedAt: new Date() });
+
+    // 4) issue new pair
+    const user       = await User.findByPk(decoded.id);
+    const newRefresh = await generateRefreshToken(user);
+    const newAccess  = generateAccessToken(user.id);
+
+    return res.status(200).send({
+      accessToken: newAccess,
+      refreshToken: newRefresh,
+    });
   } catch (err) {
-    return res.status(403).send({ message: "Invalid refresh token!" });
+    return res.status(403).send({
+      message:
+        err.name === "TokenExpiredError"
+          ? "Refresh token expired. Please sign in again."
+          : "Invalid refresh token!",
+    });
   }
 };
 
 exports.signout = async (req, res) => {
-  // delete the passed refresh token
-  const { refreshToken: token } = req.body;
-  if (token) {
-    await RefreshToken.destroy({ where: { token } });
+  const { refreshToken: incoming } = req.body;
+  if (incoming) {
+    await RefreshToken.update(
+      { revokedAt: new Date() },
+      { where: { token: incoming } }
+    );
   }
-  res.status(200).send({ message: "Signed out successfully" });
+  res.status(200).send({ message: "Signed out successfully!" });
 };

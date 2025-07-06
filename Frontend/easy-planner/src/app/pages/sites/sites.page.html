@@ -9,11 +9,11 @@
         (click)="openAddChantier()"
       ></p-button>
     </div>
-    <ng-container *ngFor="let ct of projets; index as i;">
+    <ng-container *ngFor="let ct of chantiers; index as i;">
       <!-- Encadré chantier -->
       <div class="form p-4 mb-4">
         <!-- En-tête du chantier -->
-        <div class="w-fu flex justify-content-between mb-6">
+        <div class="w-fu flex justify-content-between mb-5">
           <div class="flex items-start">
             <ion-img
               src="assets/chantier-icon.png"
@@ -22,7 +22,7 @@
             <div class="ml-4 flex flex-column justify-content-evenly">
               <div class="text-xl font-semibold mb-2">{{ ct.title }}</div>
               <div class="text-sm text-gray-600">
-                <div>Client : {{ ct.client.firstname }}</div>
+                <div>Client : {{ ct.client.firstname }} {{ ct.client.name }}</div>
                 <div class="mt-1">Adresse : {{ ct.address }}</div>
               </div>
             </div>
@@ -30,9 +30,9 @@
           <div class="md:mt-0 text-right flex flex-column">
             <div class="flex align-items-center justify-content-end">
               <div>
-                <div class="text-sm text-gray-600">Début : {{ ct.start }}</div>
+                <div class="text-sm text-gray-600">Début : {{ ct.start | date:'d MMMM y' }}</div>
                 <div class="text-sm text-gray-600 mt-1">
-                  Fin estimée : {{ ct.end }}
+                  Fin estimée : {{ ct.end | date:'d MMMM y' }}
                 </div>
               </div>
               <p-button
@@ -48,12 +48,12 @@
             <div class="flex align-items-center mt-3">
               <span class="mr-2 text-sm text-gray-600">Avancement global</span>
               <p-progressBar
-                [value]="ct.progress"
+                [value]="utils.getChantierProgress(ct)"
                 [showValue]="false"
                 class="global-progress-bar"
               ></p-progressBar>
               <span class="ml-2 text-sm font-semibold">
-                {{ ct.progress }}%
+                {{ utils.getChantierProgress(ct) }}%
               </span>
             </div>
           </div>
@@ -104,10 +104,10 @@
                   <div class="flex align-items-center">
                     <div class="text-right text-xs ml-2 text-gray-500">
                       <ng-container *ngIf="t.doneDate">
-                        Terminé le {{ t.doneDate }}
+                        Terminé le {{ t.doneDate | date:'d MMMM y' }}
                       </ng-container>
                       <ng-container *ngIf="!t.doneDate && t.dueDate">
-                        À faire pour le {{ t.dueDate }}
+                        À faire le {{ t.dueDate | date:'d MMMM y' }}
                       </ng-container>
                     </div>
                     <p-button
@@ -129,11 +129,11 @@
               >
                 <span class="mr-0 text-sm text-gray-600">Avancement</span>
                 <p-progressBar
-                  [value]="ph.progress"
+                  [value]="utils.getPhaseProgress(ph)"
                   [showValue]="false"
                   class="phase-progress-bar"
                 ></p-progressBar>
-                <span class="text-sm font-medium">{{ ph.progress }}%</span>
+                <span class="text-sm font-medium">{{ utils.getPhaseProgress(ph) }}%</span>
               </div>
             </div>
           </div>
@@ -146,207 +146,86 @@
 
         <!-- Footer des intervenants -->
         <div class="mt-4 flex align-items-center">
-          <div class="flex">
-            <p-avatar
-              *ngFor="let u of ct.intervenants"
-              [image]="u.avatar"
-              class="-mr-3 w-2rem h-2rem border-circle border-solid border-400 border-1"
-            ></p-avatar>
+          <div class="avatar-stack flex">
+            <ion-img
+              *ngFor="let u of getIntervenants(ct) | slice:0:5"
+              [src]="u.avatar"
+            ></ion-img>
+            <div
+              *ngIf="getIntervenants(ct).length > 5"
+              class=" flex align-items-center justify-content-center bg-gray-200 text-xs text-gray-500 font-semibold"
+            >
+              +{{ getIntervenants(ct).length - 5 }}
+            </div>
           </div>
-          <span class="ml-4 text-sm text-gray-600">
-            {{ ct.intervenants.length }} intervenants
-          </span>
         </div>
+
       </div>
     </ng-container>
   </div>
+  <!-- Add Chantier -->
+  <app-dynamic-form-modal
+    [visible]="visibleAddChantier"
+    mode="add"
+    header="Ajouter un nouveau chantier"
+    subtitle="Veuillez remplir les informations du chantier."
+    [model]="newChantier"
+    [fields]="chantierFields"
+    (confirm)="handleAddChantier($event)"
+    (cancel)="visibleAddChantier=false"
+  ></app-dynamic-form-modal>
+
+  <!-- Delete Chantier Confirm -->
+  <app-confirm-modal
+    [visible]="visibleDeleteChantier"
+    header="Supprimer un chantier"
+    subtitle="Voulez-vous vraiment supprimer le chantier « {{selectedChantierName}} » ? "
+    color="danger"
+    (confirm)="confirmDeleteChantier()"
+    (cancel)="visibleDeleteChantier=false"
+  ></app-confirm-modal>
+
+  <!-- Add Phase -->
+  <app-dynamic-form-modal
+    [visible]="visibleAddPhase"
+    mode="add"
+    header="Ajouter une phase"
+    subtitle="Saisissez le nom de la phase."
+    [model]="newPhase"
+    [fields]="phaseFields"
+    (confirm)="handleAddPhase($event)"
+    (cancel)="visibleAddPhase=false"
+  ></app-dynamic-form-modal>
+
+  <!-- Delete Phase Confirm -->
+  <app-confirm-modal
+    [visible]="visibleDeletePhase"
+    header="Supprimer une phase"
+    subtitle="Supprimer la phase « {{selectedPhaseName}} » ? "
+    color="danger"
+    (confirm)="confirmDeletePhase()"
+    (cancel)="visibleDeletePhase=false"
+  ></app-confirm-modal>
+
+  <!-- Add Task -->
+  <app-dynamic-form-modal
+    [visible]="visibleAddTask"
+    mode="add"
+    header="Ajouter une tâche"
+    subtitle="Saisissez les détails de la tâche."
+    [model]="newTask"
+    [fields]="taskFields"
+    (confirm)="handleAddTask($event)"
+    (cancel)="visibleAddTask=false"
+  ></app-dynamic-form-modal>
+
+  <!-- Delete Task Confirm -->
+  <app-confirm-modal
+    [visible]="visibleDeleteTask"
+    header="Supprimer une tâche"
+    subtitle="Supprimer la tâche « {{selectedTaskName}}  » ?"
+    color="danger"
+    (confirm)="confirmDeleteTask()"
+    (cancel)="visibleDeleteTask=false"
+  ></app-confirm-modal>
 </ion-content>
-
-<!-- Modal : Ajouter un Chantier -->
-<p-dialog
-  header="Ajouter un nouveau chantier"
-  [(visible)]="visibleAddChantier"
-  [modal]="true"
-  [style]="{ width: '28rem' }"
-  appendTo="body"
->
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Titre</label>
-    <input
-      class="w-full"
-      pInputText
-      class="flex-1"
-      [(ngModel)]="newChantier.title"
-    />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Client</label>
-    // todo select
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Adresse</label>
-    <input
-      class="w-full"
-      pInputText
-      class="flex-1"
-      [(ngModel)]="newChantier.address"
-    />
-  </div>
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Début</label>
-    <p-datePicker
-      class="flex-1"
-      [(ngModel)]="newChantier.start"
-      dateFormat="dd/mm/yy"
-      showIcon
-    ></p-datePicker>
-  </div>
-
-  <div class="flex align-items-center gap-4 mb-5">
-    <label class="font-semibold w-2">Fin estimée</label>
-    <p-datePicker
-      class="flex-1"
-      [(ngModel)]="newChantier.end"
-      dateFormat="dd/mm/yy"
-      showIcon
-    ></p-datePicker>
-  </div>
-  <div class="flex justify-content-end gap-2">
-    <p-button label="Annuler" severity="secondary" (click)="cancelChantier()" />
-    <p-button label="Ajouter" (click)="confirmChantier()" />
-  </div>
-</p-dialog>
-
-<!-- Modal : Ajouter une Phase -->
-<p-dialog
-  header="Ajouter une phase"
-  [(visible)]="visibleAddPhase"
-  [modal]="true"
-  [style]="{ width: '24rem' }"
-  appendTo="body"
->
-  <div class="flex align-items-center gap-4 mb-3 mb-5">
-    <label class="font-semibold w-2">Nom phase</label>
-    <input
-      class="w-full"
-      pInputText
-      class="flex-1"
-      [(ngModel)]="newPhase.name"
-    />
-  </div>
-  <div class="flex justify-content-end gap-2">
-    <p-button label="Annuler" severity="secondary" (click)="cancelPhase()" />
-    <p-button label="Ajouter" (click)="confirmPhase()" />
-  </div>
-</p-dialog>
-
-<!-- Modal : Ajouter une Tâche -->
-<p-dialog
-  header="Ajouter une tâche"
-  [(visible)]="visibleAddTask"
-  [modal]="true"
-  [style]="{ width: '24rem' }"
-  appendTo="body"
->
-  <div class="flex align-items-center gap-4 mb-3">
-    <label class="font-semibold w-2">Libellé</label>
-    <input
-      class="w-full"
-      pInputText
-      class="flex-1"
-      [(ngModel)]="newTask.name"
-    />
-  </div>
-  <div class="flex align-items-center gap-4 mb-5">
-    <label class="font-semibold w-2">Date cible</label>
-    <p-datePicker
-      class="flex-1"
-      [(ngModel)]="newTask.dueDate"
-      dateFormat="dd/mm/yy"
-      showIcon
-    ></p-datePicker>
-  </div>
-  <div class="flex justify-content-end gap-2">
-    <p-button label="Annuler" severity="secondary" (click)="cancelTask()" />
-    <p-button label="Ajouter" (click)="confirmTask()" />
-  </div>
-</p-dialog>
-
-<!-- MODAL : Supprimer Chantier -->
-<p-dialog
-  header="Confirmer la suppression"
-  [(visible)]="visibleDeleteChantier"
-  [modal]="true"
-  [style]="{ width: '24rem' }"
-  appendTo="body"
->
-  <p>
-    Voulez-vous vraiment supprimer le chantier "<strong
-      >{{ projets[selectedChantierIndex].title }}</strong
-    >" ?
-  </p>
-  <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-2">
-      <p-button label="Annuler" (click)="cancelDeleteChantier()"></p-button>
-      <p-button
-        label="Supprimer"
-        severity="danger"
-        (click)="confirmDeleteChantier()"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>
-
-<!-- MODAL : Supprimer Phase -->
-<p-dialog
-  header="Confirmer la suppression"
-  [(visible)]="visibleDeletePhase"
-  [modal]="true"
-  [style]="{ width: '24rem' }"
-  appendTo="body"
->
-  <p>
-    Supprimer la phase "<strong
-      >{{ projets[selectedChantierIndex].phases[selectedPhaseIndex].name
-      }}</strong
-    >" ?
-  </p>
-  <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-2">
-      <p-button label="Annuler" (click)="cancelDeletePhase()"></p-button>
-      <p-button
-        label="Supprimer"
-        severity="danger"
-        (click)="confirmDeletePhase()"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>
-
-<!-- MODAL : Supprimer Tâche -->
-<p-dialog
-  header="Confirmer la suppression"
-  [(visible)]="visibleDeleteTask"
-  [modal]="true"
-  [style]="{ width: '24rem' }"
-  appendTo="body"
->
-  <p>
-    Supprimer la tâche "<strong>
-      {{
-      projets[selectedChantierIndex].phases[selectedPhaseIndex].tasks[selectedTaskIndex].name
-      }}
-    </strong>
-    " ?
-  </p>
-  <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-2">
-      <p-button label="Annuler" (click)="cancelDeleteTask()"></p-button>
-      <p-button
-        label="Supprimer"
-        severity="danger"
-        (click)="confirmDeleteTask()"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>

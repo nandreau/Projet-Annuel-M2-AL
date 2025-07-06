@@ -27,8 +27,8 @@ Cette application vise à **optimiser la gestion des chantiers** en facilitant :
 - Permettre un **suivi précis des chantiers** et une meilleure coordination des équipes.  
 - Garantir la **sécurité et la conformité** des données.
 
-## 🏛️ Architecture
-![Schéma d’architecture](architecture.png)
+## 🏛️ Modèle relationelle des données
+![Schéma du MCD](MCD.png)
 
 ## 📌 Installation & Déploiement  
 

@@ -16,111 +16,7 @@ export class PlanningPage implements OnInit {
   days: { date: Date; name: string; day: string }[] = [];
 
   projects: Phase[] = [
-    {
-      id: 0,
-      name: 'Phase 1 : Démolition',
-      progress: 65,
-      tasks: [
-        {
-          id: 0,
-          name: 'Démolition cloisons',
-          done: false,
-          dueDate: '2025-06-24',
-          doneDate: '2025-06-24',
-          tasks: [
-            {
-              id: 0,
-              startDate: '2025-06-24T08:00:00',
-              endDate: '2025-06-24T12:00:00',
-            },
-          ],
-        },
-        {
-          id: 0,
-          name: 'Installation plomberie',
-          done: true,
-          dueDate: '2025-06-15',
-          doneDate: '2025-06-24',
-          tasks: [
-            {
-              id: 0,
-              startDate: '2025-06-24T13:00:00',
-              endDate: '2025-06-24T17:00:00',
-            },
-          ],
-        },
-        {
-          id: 0,
-          name: 'Installation électricité',
-          done: false,
-          dueDate: '2025-07-02',
-          doneDate: '2025-06-24',
-          tasks: [
-            {
-              id: 0,
-              startDate: '2025-06-24T09:00:00',
-              endDate: '2025-06-24T12:00:00',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 0,
-      name: 'Phase 2 : Electricité',
-      progress: 30,
-      tasks: [
-        {
-          id: 0,
-          name: 'Coulage fondations',
-          done: true,
-          dueDate: '2025-06-10',
-          doneDate: '2025-06-24',
-          tasks: [
-            {
-              id: 0,
-              startDate: '2025-06-24T08:00:00',
-              endDate: '2025-06-24T10:30:00',
-            },
-          ],
-        },
-        {
-          id: 0,
-          name: 'Élévation murs',
-          done: false,
-          dueDate: '2025-07-05',
-          doneDate: '2025-06-24',
-          tasks: [
-            {
-              id: 0,
-              startDate: '2025-06-24T10:30:00',
-              endDate: '2025-06-24T15:00:00',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 0,
-      name: 'Phase 3 : Peinture',
-      progress: 10,
-      tasks: [
-        {
-          id: 0,
-          name: 'Dépose ancienne toiture',
-          done: false,
-          dueDate: '2025-07-10',
-          doneDate: '2025-06-24',
-          tasks: [
-            {
-              id: 0,
-              startDate: '2025-06-24T08:00:00',
-              endDate: '2025-06-24T11:00:00',
-            },
-          ],
-        },
-      ],
-    },
+
   ];
 
   // header controls
@@ -174,7 +70,7 @@ export class PlanningPage implements OnInit {
     const dayEnd = new Date(day);
     dayEnd.setHours(23, 59, 59, 999);
 
-    for (const planning of task.tasks) {
+    for (const planning of task.assignments) {
       if (!planning.startDate || !planning.endDate) continue;
 
       const start = new Date(planning.startDate);

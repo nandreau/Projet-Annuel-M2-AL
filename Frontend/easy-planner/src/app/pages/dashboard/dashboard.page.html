@@ -84,7 +84,7 @@
                     *ngFor="let ph of ct.phases"
                   >
                     <p-progressBar
-                      [value]="ph.progress"
+                      [value]="50"
                       [showValue]="false"
                     ></p-progressBar>
                     <div class="text-xs mt-1">{{ ph.name }}</div>
@@ -123,7 +123,7 @@
                 <tr>
                   <td>{{ task.name }}</td>
                   <td>
-                    {{ task.tasks[0]?.attribution?.[0]?.firstname || '—' }}
+                    {{ task.assignments[0]?.attribution?.[0]?.firstname || '—' }}
                   </td>
                   <td>{{ task.doneDate || task.dueDate }}</td>
                   <td>

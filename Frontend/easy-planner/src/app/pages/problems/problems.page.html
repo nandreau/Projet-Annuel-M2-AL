@@ -20,7 +20,7 @@
                 <span>Chantier: {{ problem.chantier }}</span>
                 <span>Phase: {{ problem.phase }}</span>
                 <span>Tâche: {{ problem.task }}</span>
-                <span>Signalé le {{ problem.createdAt }}</span>
+                <span>Signalé le {{ problem.createdAt | date:'d MMMM y HH:mm' }}</span>
               </div>
             </div>
             <p-tag
@@ -42,27 +42,27 @@
               </div>
             </div>
 
-            <div class="problem-messages" *ngIf="problem.messages.length">
+            <div class="problem-messages" *ngIf="problem.problem_messages.length">
               <div class="problem-messages-title">Historique des messages</div>
 
               <div
-                *ngFor="let group of groupMessages(problem.messages)"
+                *ngFor="let group of groupMessages(problem.problem_messages)"
                 [ngClass]="{ 'align-items-end': group.side === 'right' }"
                 class="message flex flex-column"
               >
                 <div class="message-header">
                   <ng-container *ngIf="group.side === 'left'">
                     <strong
-                      >{{ group.sender.firstname }} {{ group.sender.name
+                      >{{ group.user.firstname }} {{ group.user.name
                       }}</strong
                     >
                     ·
-                    <span>{{ group.createdAt }}</span>
+                    <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">
-                    <span>{{ group.createdAt }}</span> ·
+                    <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span> ·
                     <strong
-                      >{{ group.sender.firstname }} {{ group.sender.name
+                      >{{ group.user.firstname }} {{ group.user.name
                       }}</strong
                     >
                   </ng-container>
@@ -90,8 +90,8 @@
                 rows="3"
               ></textarea>
               <div class="comment-actions">
-                <ion-button type="button" fill="clear" size="small"
-                  ><ion-icon name="camera-outline"></ion-icon
+                <ion-button type="button" size="small"
+                  ><ion-icon name="camera"></ion-icon
                 ></ion-button>
                 <div class="spacer"></div>
                 <ion-button size="small" fill="outline">Assigner</ion-button>

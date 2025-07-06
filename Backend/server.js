@@ -6,6 +6,14 @@ const app = express();
 // CORS configuration
 const corsOptions = {
   origin: "http://localhost:8081",
+  allowedHeaders: [
+    "x-access-token",
+    "Origin",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 };
 app.use(cors(corsOptions));
 
@@ -32,6 +40,7 @@ app.get("/", (req, res) => {
 // Register Auth & CRUD routes
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/role.routes")(app);
 require("./app/routes/assignment.routes")(app);
 require("./app/routes/task.routes")(app);
 require("./app/routes/phase.routes")(app);
