@@ -1,12 +1,9 @@
 <app-header></app-header>
 <ion-content [fullscreen]="true">
   <div class="container">
-    <div class="header-container">
-      <div class="header-container-title">Plannification</div>
-    </div>
 
-    <!-- Filtres & recherches -->
-    <div class="planning-cect p-2 flex gap-2 items-center mb-2">
+    <!-- Filters -->
+    <div class="planning-filter">
       <p-select
         [options]="chantiers"
         [(ngModel)]="selectedChantier"
@@ -14,28 +11,20 @@
         filter
         placeholder="Chantier"
         panelStyleClass="w-full"
+        (onChange)="onChantierChange()"
       ></p-select>
-
       <p-select
-        [options]="views"
-        [(ngModel)]="selectedView"
-        optionLabel="name"
-        filter
-        placeholder="Vue"
-        panelStyleClass="w-full"
-      ></p-select>
-
-      <p-select
-        [options]="groupBy"
+        [options]="groupOptions"
         [(ngModel)]="selectedGroup"
         optionLabel="name"
+        optionValue="id"
         filter
-        placeholder="Regrouper par"
+        placeholder="Artisan"
         panelStyleClass="w-full"
       ></p-select>
     </div>
 
-    <!-- Navigation de semaine -->
+    <!-- Week navigation -->
     <div class="flex gap-2 align-items-center mb-2">
       <p-button
         severity="contrast"
@@ -55,38 +44,22 @@
       <p-button
         severity="contrast"
         variant="text"
-        name="Aujourd'hui"
+        label="Aujourd'hui"
         class="ml-2"
-        (click)="naviguateToday()"
+        (click)="navigateToday()"
       ></p-button>
     </div>
 
-    <!-- Header jours -->
-    <div class="planning-grid planning-header">
-      <div
-        class="planning-header-cell px-2 py-2 font-semibold text-center sticky left-0 bg-white z-20"
-      >
-        Chantier / Tâche
-      </div>
-      <ng-container *ngFor="let d of days">
-        <div class="planning-header-cell px-3 py-2 text-center">
-          <div class="text-md text-gray-500">{{ d.name | titlecase }}</div>
-          <div class="text-xl text-gray-700">{{ d.day }}</div>
-        </div>
-      </ng-container>
-    </div>
-
-    <!-- Chantiers -->
+    <!-- Per-phase sections -->
     <ng-container *ngIf="selectedChantier">
       <ng-container *ngFor="let phase of selectedChantier.phases">
-        <!-- Ligne phase -->
-        <div
-          class="planning-chantier align-items-center justify-content-between px-4 py-2 w-full sticky left-0"
-        >
+
+        <!-- Phase header -->
+        <div class="planning-chantier">
           <div class="flex align-items-center items-center gap-2">
             <span class="font-semibold">{{ phase.name }}</span>
             <span class="text-sm text-gray-600"
-              >(todo tâches)</span
+              >({{phase.tasks.length}} tâches)</span
             >
           </div>
           <div class="w-3 flex align-items-center">
@@ -99,39 +72,76 @@
           </div>
         </div>
 
-        <!-- Lignes tâches -->
-        <div
-          *ngFor="let task of phase.tasks"
-          class="planning-grid planning-task-row"
-        >
-          <!-- Sticky task cell -->
-          <div
-            class="planning-task-cell px-4 py-2 sticky left-0 bg-white z-10 flex items-center gap-2"
-          >
-            <i *ngIf="task.done" class="pi pi-check-circle text-green-500"></i>
-            <i
-              *ngIf="isOverdue(task)"
-              class="pi pi-exclamation-circle text-red-500"
-            ></i>
-            <i *ngIf="isOngoing(task)" class="pi pi-clock text-yellow-500"></i>
-            <i *ngIf="isTodo(task)" class="pi pi-hourglass text-gray-400"></i>
-            <span>{{ task.name }}</span>
+        <!-- Scrollable grid for this phase -->
+        <div class="phase-scroll-container">
+
+          <!-- Days header -->
+          <div class="planning-grid planning-header">
+            <div class="planning-header-cell sticky-col">
+              Chantier / Tâche
+            </div>
+            <div
+              *ngFor="let d of days"
+              class="planning-header-cell"
+              [ngClass]="{ 'today-cell': isToday(d.date) }"
+            >
+              <div class="day-name-short">{{ d.shortName }}</div>
+              <div class="day-name-full">{{ d.name | titlecase }}</div>
+              <div class="day-number">{{ d.day }}</div>
+            </div>
           </div>
 
-          <!-- cellules jours -->
-          <ng-container *ngFor="let d of days">
-            <div class="planning-task-cell p-1 cursor-pointer">
-              <ng-container *ngFor="let e of getSchedulesForDay(task, d.date)">
-                <div
-                  class="bg-gray-50 flex items-center justify-between px-2 py-1 rounded border border-gray-200"
-                >
-                  <span class="text-sm">{{ e.time }}</span>
-                </div>
-              </ng-container>
+
+          <!-- Task rows -->
+          <div *ngFor="let task of phase.tasks" class="planning-grid planning-task-row">
+            <div class="planning-task-cell">
+              <i *ngIf="task.done"   class="pi pi-check-circle icon-done"></i>
+              <i *ngIf="isOverdue(task)"  class="pi pi-exclamation-circle icon-overdue"></i>
+              <i *ngIf="isOngoing(task)"  class="pi pi-clock icon-ongoing"></i>
+              <i *ngIf="isTodo(task)"     class="pi pi-hourglass icon-todo"></i>
+              <span class="task-name">{{ task.name }}</span>
             </div>
-          </ng-container>
+            <ng-container *ngFor="let d of days">
+              <div class="planning-task-cell" (click)="openAddModal(task.id, d.date)">
+                <ng-container *ngFor="let a of getSchedulesForDay(task, d.date)">
+                  <div
+                    class="assignment-block"
+                    (click)="$event.stopPropagation(); openEditModal(a)"
+                  >
+                    <span class="assignment-time">{{ a.time }}</span>
+                    <i
+                      class="assignment-icon pi pi-times"
+                      (click)="$event.stopPropagation(); openDeleteModal(a)"
+                    ></i>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+
         </div>
       </ng-container>
     </ng-container>
+
+    <!-- Modals -->
+    <app-dynamic-form-modal
+      [visible]="assignmentFormVisible"
+      [mode]="formMode"
+      [fields]="formFields"
+      [model]="formModel"
+      [subtitle]="formTitle"
+      (submitted)="onFormSubmit($event)"
+      (closed)="assignmentFormVisible = false"
+    ></app-dynamic-form-modal>
+
+    <app-confirm-modal
+      [visible]="confirmVisible"
+      header="Supprimer assignation"
+      subtitle="Confirmer la suppression?"
+      color="danger"
+      (submitted)="onDeleteConfirm()"
+      (closed)="confirmVisible = false"
+    ></app-confirm-modal>
+
   </div>
 </ion-content>

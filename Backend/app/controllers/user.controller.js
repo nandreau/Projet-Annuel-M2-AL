@@ -57,11 +57,11 @@ exports.create = async (req, res) => {
       const roleRecords = await Role.findAll({ where: { name: roles } });
       await user.setRoles(roleRecords);
     }
-    const out = await User.findByPk(user.id, {
+    await User.findByPk(user.id, {
       attributes: { exclude: ["password"] },
       include: [{ model: Role, through: { attributes: [] }, attributes: ["name"] }]
     });
-    res.status(201).json(out);
+    res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     console.error(err);
     res.status(400).json({ message: err.message });

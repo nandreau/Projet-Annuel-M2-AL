@@ -3,8 +3,8 @@ const Phase = db.Phase;
 
 exports.create = async (req, res) => {
   try {
-    const p = await Phase.create(req.body);
-    res.status(201).json(p);
+    await Phase.create(req.body);
+    res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

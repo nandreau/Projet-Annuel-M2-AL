@@ -43,6 +43,7 @@
 :root {
   --ion-color-primary: #2563eb;
   --ion-color-primary-hover: #1d4ed8;
+  --color-primary: #2563eb;
   --border-color: #dddddd;
   --background-color: #f3f5f6;
   --white: #ffffff;
@@ -82,6 +83,12 @@
   padding: 2rem 1.5rem;
 }
 
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+}
+
 .header-container {
   display: flex;
   align-items: center;
@@ -115,9 +122,14 @@ ion-badge {
 }
 
 //primeng
+.p-inputtext,
 .p-inputchips,
 .p-datepicker {
   width: 100%;
+}
+
+.p-multiselect-label-container {
+  display: grid;
 }
 
 .absolute-center {

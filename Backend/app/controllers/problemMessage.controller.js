@@ -3,8 +3,8 @@ const ProblemMessage = db.ProblemMessage;
 
 exports.create = async (req, res) => {
   try {
-    const m = await ProblemMessage.create(req.body);
-    res.status(201).json(m);
+    await ProblemMessage.create(req.body);
+    res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -18,7 +18,7 @@ exports.findAll = async (req, res) => {
 exports.findOne = async (req, res) => {
   const m = await ProblemMessage.findByPk(req.params.id);
   if (!m) return res.status(404).json({ message: "Not found" });
-  res.json(m);
+  res.json({ message: "Created successfully" });
 };
 
 exports.update = async (req, res) => {

@@ -22,14 +22,36 @@
         class="w-full"
       />
 
+      <!-- numeric input -->
+      <p-inputNumber
+        *ngIf="f.type==='number'"
+        [(ngModel)]="model[f.key]"
+        [min]="f.min"
+        [max]="f.max"
+        [step]="1"
+        [placeholder]="f.placeholder"
+        class="w-full"
+      ></p-inputNumber>
+
+      <!-- time with mask -->
+      <p-inputMask
+        *ngIf="f.type==='time'"
+        mask="99:99"
+        slotChar="0"
+        [(ngModel)]="model[f.key]"
+        placeholder="HH:MM"
+        class="w-full"
+      ></p-inputMask>
+
       <!-- multiselect -->
       <p-multiSelect
         *ngIf="f.type==='multiselect'"
         [options]="f.options"
         [(ngModel)]="model[f.key]"
-        [optionLabel]="optionLabelKey"
-        display="chip"
+        [optionLabel]="f.optionLabel"
+        [optionValue]="f.optionValue"
         [placeholder]="f.placeholder"
+        display="chip"
         class="w-full"
         appendTo="body"
       ></p-multiSelect>

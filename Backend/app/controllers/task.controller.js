@@ -3,8 +3,8 @@ const Task = db.Task;
 
 exports.create = async (req, res) => {
   try {
-    const t = await Task.create(req.body);
-    res.status(201).json(t);
+    await Task.create(req.body);
+    res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

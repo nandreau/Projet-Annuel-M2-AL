@@ -47,8 +47,8 @@ db.Role.belongsToMany(db.User, {
 });
 
 // Assignment <-> User (Many-to-Many)
-db.Assignment.belongsToMany(db.User, { through: 'User_Task_Planning' });
-db.User.belongsToMany(db.Assignment, { through: 'User_Task_Planning' });
+db.Assignment.belongsToMany(db.User, { through: 'assignment_users' });
+db.User.belongsToMany(db.Assignment, { through: 'assignment_users' });
 
 // Assignment -> Task (One-to-Many)
 db.Task.hasMany(db.Assignment, { foreignKey: 'taskId' });

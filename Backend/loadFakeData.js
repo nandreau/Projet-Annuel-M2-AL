@@ -246,6 +246,12 @@ module.exports = async function loadFakeData() {
     await user.setRoles([await Role.findByPk(roleId)]);
   }
 
+  // Get all users who have the "artisan" role
+  const artisanRole = await Role.findOne({ where: { name: 'artisan' } });
+  const artisanUsers = artisanRole
+    ? await artisanRole.getUsers({ attributes: ['id'] })
+    : [];
+
   // 3) chantiers / phases / tâches / plannings
   for (let i = 0; i < 20; i++) {
     const chantier = await Chantier.create({
@@ -257,13 +263,16 @@ module.exports = async function loadFakeData() {
       clientId: faker.number.int({ min: 1, max: 100 }),
     });
 
-    for (let p = 0; p < 3; p++) {
+    for (let p = 0; p < faker.number.int({ min: 2, max: 4 }); p++) {
       const phase = await Phase.create({
         name: faker.helpers.arrayElement(phaseNames),
         chantierId: chantier.id,
       });
 
-      for (let t = 0; t < 5; t++) {
+
+      for (let t = 0; t < faker.number.int({ min: 2, max: 6 }); t++) {
+        const usedDates = new Set();
+
         const task = await Task.create({
           name: faker.helpers.arrayElement(taskNames),
           done: faker.datatype.boolean(),
@@ -273,22 +282,44 @@ module.exports = async function loadFakeData() {
           phaseId: phase.id,
         });
 
-        for (let k = 0; k < faker.number.int({ min: 0, max: 3 }); k++) {
-          const assignment = await Assignment.create({
-            startDate: faker.date.between({
-              from: chantier.start,
-              to: chantier.end,
-            }),
-            endDate: faker.date.between({
-              from: chantier.start,
-              to: chantier.end,
-            }),
-            taskId: task.id,
-          });
-          const allUsers = await User.findAll({ attributes: ['id'] });
-          const pickCount = faker.number.int({ min: 1, max: 3 });
-          const picked = faker.helpers.arrayElements(allUsers, pickCount);
-          await assignment.setUsers(picked);
+        if (!task.done) {
+          const assignmentsToCreate = faker.number.int({ min: 15, max: 20 });
+          let createdAssignments = 0;
+
+          while (createdAssignments < assignmentsToCreate && usedDates.size < 22) {
+            const dayOffset = faker.number.int({ min: 0, max: 30 });
+            const baseDate = new Date();
+            baseDate.setDate(baseDate.getDate() + dayOffset);
+
+            const dayOfWeek = baseDate.getDay();
+            if (dayOfWeek === 0 || dayOfWeek === 6) continue; // Skip weekends
+
+            const dateKey = baseDate.toISOString().split('T')[0];
+            if (usedDates.has(dateKey)) continue; // Skip if already used
+
+            usedDates.add(dateKey);
+
+            const startHour = faker.helpers.arrayElement([7, 8, 9, 10, 11, 12]);
+            const endHour = faker.helpers.arrayElement([13, 14, 15, 16, 17, 18]);
+
+            const startDate = new Date(baseDate);
+            startDate.setHours(startHour, 0, 0, 0);
+
+            const endDate = new Date(baseDate);
+            endDate.setHours(endHour, 0, 0, 0);
+
+            const assignment = await Assignment.create({
+              startDate,
+              endDate,
+              taskId: task.id,
+            });
+
+            const pickCount = faker.number.int({ min: 1, max: 2 });
+            const picked = faker.helpers.arrayElements(artisanUsers, pickCount);
+            await assignment.setUsers(picked);
+
+            createdAssignments++;
+          }
         }
       }
     }

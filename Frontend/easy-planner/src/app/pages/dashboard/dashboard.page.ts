@@ -140,6 +140,7 @@ export class DashboardPage implements OnInit {
         address: '123 Rue Principale',
         start: '2025-05-01',
         end: '2025-12-31',
+        intervenants: [],
         phases: [
           {
             id: 11,

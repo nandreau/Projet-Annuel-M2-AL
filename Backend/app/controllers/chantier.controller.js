@@ -1,3 +1,4 @@
+const { extractIntervenants } = require('../utils/chantier');
 const db = require("../models");
 const Chantier   = db.Chantier;
 const Phase      = db.Phase;
@@ -9,7 +10,7 @@ exports.create = async (req, res) => {
   try {
     console.log(req.body)
     const c = await Chantier.create(req.body);
-    res.status(201).json(c);
+    res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -52,12 +53,39 @@ exports.findAll = async (req, res) => {
         [ Phase, Task, Assignment, "id", "ASC" ]
       ]
     });
-
-    res.json(list);
+    const withIntervenants = list.map(ct => {
+      ct.dataValues.intervenants = extractIntervenants(ct);
+      return ct;
+    });
+    res.json(withIntervenants);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: err.message });
   }
+};
+
+exports.findAssignedUsers = async (req, res) => {
+  const chantierId = +req.params.id;
+  const users = await User.findAll({
+    attributes: { exclude: ['password'] },
+    include: [{
+      model: Assignment,
+      through: { attributes: [] },
+      required: true,
+      include: [{
+        model: Task,
+        required: true,
+        include: [{
+          model: Phase,
+          required: true,
+          where: { chantierId }
+        }]
+      }]
+    }],
+    order: [['id', 'ASC']],
+    distinct: true
+  });
+  res.json(users);
 };
 
 exports.findOne = async (req, res) => {
@@ -95,6 +123,7 @@ exports.findOne = async (req, res) => {
     if (!chantier) {
       return res.status(404).json({ message: "Chantier non trouvé" });
     }
+    chantier.dataValues.intervenants = extractIntervenants(ct);
     res.json(chantier);
   } catch (err) {
     console.error(err);

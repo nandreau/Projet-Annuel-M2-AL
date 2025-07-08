@@ -75,8 +75,8 @@ exports.findOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const p = await Problem.create(req.body);
-    res.status(201).json(p);
+    await Problem.create(req.body);
+    res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

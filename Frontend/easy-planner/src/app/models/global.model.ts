@@ -16,6 +16,7 @@ export interface Role {
 
 export interface Assignment extends WithTimestamps {
   id: number;
+  taskId: number;
   startDate: string;
   endDate: string;
   users: User[];
@@ -41,6 +42,7 @@ export interface Chantier extends WithTimestamps {
   id: number;
   title: string;
   client: User;
+  intervenants: User[];
   address: string;
   start: string;
   end: string;
@@ -87,7 +89,7 @@ export interface ApiResponse {
   message: string;
 }
 
-export type FieldType = 'text' | 'email' | 'password' | 'multiselect' | 'chips' | 'date' | 'select';
+export type FieldType = 'text' | 'number' | 'time' | 'email' | 'password' | 'multiselect' | 'chips' | 'date' | 'select';
 
 export interface FormField<T = any> {
   key: keyof T;
@@ -97,4 +99,6 @@ export interface FormField<T = any> {
   optionValue?: string;
   optionLabel?: string;
   placeholder?: string;
+  min?: number;
+  max?: number;
 }
