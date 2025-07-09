@@ -1,10 +1,31 @@
 const db = require("../models");
 const ProblemMessage = db.ProblemMessage;
+const User           = db.User;
+const Role           = db.Role;
 
 exports.create = async (req, res) => {
   try {
-    await ProblemMessage.create(req.body);
-    res.status(201).json({ message: "Created successfully" });
+    const payload = {
+      ...req.body,
+      userId: req.userId,
+    };
+
+    const msg = await ProblemMessage.create(payload);
+
+    const data = await ProblemMessage.findByPk(msg.id, {
+      attributes: { exclude: ["userId"] },
+      include: [
+        {
+          model: User,
+          attributes: { exclude: ["password"] },
+          include: [
+            { model: Role, through: { attributes: [] } }
+          ]
+        }
+      ]
+    });
+
+    res.status(201).json({ message: "Created successfully", data });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

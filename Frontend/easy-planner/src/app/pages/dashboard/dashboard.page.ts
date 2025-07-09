@@ -207,6 +207,7 @@ export class DashboardPage implements OnInit {
         problem_messages: [
           {
             id: 1,
+            problemId:2,
             user: user,
             content: 'Attention !',
           },

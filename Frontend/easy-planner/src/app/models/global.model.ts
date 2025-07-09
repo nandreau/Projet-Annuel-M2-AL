@@ -54,6 +54,8 @@ export interface ProblemMessage extends WithTimestamps {
   id: number;
   user: User;
   content: string;
+  images?: string[]
+  problemId: number;
 }
 
 export interface Problem extends WithTimestamps {
@@ -87,6 +89,7 @@ export interface AuthResponse {
 
 export interface ApiResponse {
   message: string;
+  data: any;
 }
 
 export type FieldType = 'text' | 'number' | 'time' | 'email' | 'password' | 'multiselect' | 'chips' | 'date' | 'select';

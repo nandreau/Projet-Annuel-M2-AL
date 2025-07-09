@@ -83,12 +83,6 @@
   padding: 2rem 1.5rem;
 }
 
-@media screen and (max-width: 768px) {
-  .container {
-    padding: 1rem 0.75rem;
-  }
-}
-
 .header-container {
   display: flex;
   align-items: center;
@@ -99,6 +93,22 @@
 .header-container-title {
   font-size: 1.25rem;
   font-weight: 600;
+}
+
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+  .header-container {
+    display: block;
+  }
+  .header-container-title {
+    margin-bottom: 1rem;
+  }
+  .small-absolute {
+    position: absolute;
+  }
 }
 
 //Ionic

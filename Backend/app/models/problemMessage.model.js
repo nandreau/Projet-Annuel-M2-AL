@@ -8,6 +8,10 @@ module.exports = (sequelize, Sequelize) => {
     content: {
       type: Sequelize.TEXT,
     },
+    images: {
+      type: Sequelize.JSON,
+      allowNull: true,
+    },
   });
   return ProblemMessage;
 };

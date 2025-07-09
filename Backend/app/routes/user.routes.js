@@ -4,12 +4,12 @@ const controller  = require("../controllers/user.controller");
 module.exports = (app) => {
   app.get(
     "/api/users",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken],
     controller.findAll
   );
   app.get(
     "/api/users/:id",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken],
     controller.findOne
   );
   app.post(

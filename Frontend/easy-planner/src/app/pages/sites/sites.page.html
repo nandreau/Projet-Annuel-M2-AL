@@ -3,36 +3,48 @@
   <div class="container">
     <div class="header-container">
       <div class="header-container-title">Liste des chantiers</div>
-      <p-button
-        label="Nouveau chantier"
-        icon="pi pi-plus"
-        (click)="openAddChantier()"
-      ></p-button>
+      <div class="flex justify-content-end align-items-center gap-2">
+        <p-button
+          label="Nouveau chantier"
+          icon="pi pi-plus"
+          (click)="openAddChantier()"
+        ></p-button>
+        <p-select
+          [options]="chantierOptions"
+          [(ngModel)]="selectedChantierIndex"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Sélectionner un chantier"
+          filter
+          (onChange)="onChantierChange()"
+          panelStyleClass="w-full"
+        ></p-select>
+      </div>
     </div>
-    <ng-container *ngFor="let ct of chantiers; index as i;">
+    <ng-container *ngIf="filteredChantier">
       <!-- Encadré chantier -->
       <div class="form p-4 mb-4">
         <!-- En-tête du chantier -->
-        <div class="w-fu flex justify-content-between mb-5">
+        <div class="sm:flex justify-content-between mb-4 relative">
           <div class="flex items-start">
             <ion-img
               src="assets/chantier-icon.png"
               class="w-5rem h-5rem rounded bg-gray-200"
             ></ion-img>
-            <div class="ml-4 flex flex-column justify-content-evenly">
-              <div class="text-xl font-semibold mb-2">{{ ct.title }}</div>
+            <div class="ml-3 mr-6 sm:mr-0  flex flex-column justify-content-evenly">
+              <div class="text-xl font-semibold mb-2">{{ filteredChantier.title }}</div>
               <div class="text-sm text-gray-600">
-                <div>Client : {{ ct.client.firstname }} {{ ct.client.name }}</div>
-                <div class="mt-1">Adresse : {{ ct.address }}</div>
+                <div>Client : {{ filteredChantier.client.firstname }} {{ filteredChantier.client.name }}</div>
+                <div class="mt-1">Adresse : {{ filteredChantier.address }}</div>
               </div>
             </div>
           </div>
-          <div class="md:mt-0 text-right flex flex-column">
-            <div class="flex align-items-center justify-content-end">
+          <div class="md:mt-0 mt-3 sm:text-right flex flex-column">
+            <div class="flex align-items-center sm:justify-content-end">
               <div>
-                <div class="text-sm text-gray-600">Début : {{ ct.start | date:'d MMMM y' }}</div>
+                <div class="text-sm text-gray-600">Début : {{ filteredChantier.start | date:'d MMMM y' }}</div>
                 <div class="text-sm text-gray-600 mt-1">
-                  Fin estimée : {{ ct.end | date:'d MMMM y' }}
+                  Fin estimée : {{ filteredChantier.end | date:'d MMMM y' }}
                 </div>
               </div>
               <p-button
@@ -40,20 +52,20 @@
                 variant="text"
                 [rounded]="true"
                 severity="secondary"
-                class="ml-2"
-                (click)="openDeleteChantier(i)"
+                class="ml-2 -mt-1 right-0 top-0 small-absolute"
+                (click)="openDeleteChantier(filteredChantierIndex)"
               ></p-button>
             </div>
 
-            <div class="flex align-items-center mt-3">
+            <div class="flex align-items-center mt-1 sm:mt-3 sm:justify-content-end">
               <span class="mr-2 text-sm text-gray-600">Avancement global</span>
               <p-progressBar
-                [value]="utils.getChantierProgress(ct)"
+                [value]="utils.getChantierProgress(filteredChantier)"
                 [showValue]="false"
                 class="global-progress-bar"
               ></p-progressBar>
               <span class="ml-2 text-sm font-semibold">
-                {{ utils.getChantierProgress(ct) }}%
+                {{ utils.getChantierProgress(filteredChantier) }}%
               </span>
             </div>
           </div>
@@ -61,7 +73,7 @@
 
         <!-- Phases en grille 2 colonnes -->
         <div class="grid">
-          <div class="col-6" *ngFor="let ph of ct.phases; index as j;">
+          <div class="sm:col-6 col-12" *ngFor="let ph of filteredChantier.phases; index as j;">
             <div class="phase justify-content-between flex flex-column">
               <div>
                 <div
@@ -78,7 +90,7 @@
                       [rounded]="true"
                       severity="secondary"
                       class="p-button-sm p-0"
-                      (click)="openDeletePhase(i, j)"
+                      (click)="openDeletePhase(filteredChantierIndex, j)"
                     ></p-button>
                   </div>
                 </div>
@@ -116,11 +128,11 @@
                       [rounded]="true"
                       severity="secondary"
                       class="small-icon-btn ml-2"
-                      (click)="openDeleteTask(i, j, k)"
+                      (click)="openDeleteTask(filteredChantierIndex, j, k)"
                     ></p-button>
                   </div>
                 </div>
-                <p-button variant="text" (click)="openAddTask(i, j)">
+                <p-button variant="text" (click)="openAddTask(filteredChantierIndex, j)">
                   + Ajouter une tâche
                 </p-button>
               </div>
@@ -137,8 +149,8 @@
               </div>
             </div>
           </div>
-          <div class="col-6">
-            <div (click)="openAddPhase(i)" class="phase phase-add">
+          <div class="sm:col-6 col-12">
+            <div (click)="openAddPhase(filteredChantierIndex)" class="phase phase-add">
               <i class="pi pi-plus text-gray-500 text-xl"></i>
             </div>
           </div>
@@ -148,14 +160,14 @@
         <div class="mt-4 flex align-items-center">
           <div class="avatar-stack flex">
             <ion-img
-              *ngFor="let u of getIntervenants(ct) | slice:0:5"
+              *ngFor="let u of filteredChantier.intervenants| slice:0:5"
               [src]="u.avatar"
             ></ion-img>
             <div
-              *ngIf="getIntervenants(ct).length > 5"
+              *ngIf="filteredChantier.intervenants.length > 5"
               class=" flex align-items-center justify-content-center bg-gray-200 text-xs text-gray-500 font-semibold"
             >
-              +{{ getIntervenants(ct).length - 5 }}
+              +{{ filteredChantier.intervenants.length - 5 }}
             </div>
           </div>
         </div>

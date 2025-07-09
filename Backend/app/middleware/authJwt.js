@@ -35,27 +35,40 @@ const isAdmin = (req, res, next) => {
   });
 };
 
-const isArtisan = (req, res, next) => {
+const isModerator = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     if (!user) return res.status(404).send({ message: "User not found." });
     user.getRoles().then(roles => {
-      if (roles.some(r => r.name === "artisan")) {
+      if (roles.some(r => r.name === "moderator")) {
         next();
       } else {
-        res.status(403).send({ message: "Require Artisan Role!" });
+        res.status(403).send({ message: "Require Moderator Role!" });
       }
     });
   });
 };
 
-const isArtisanOrAdmin = (req, res, next) => {
+const isModeratorOrAdmin = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     if (!user) return res.status(404).send({ message: "User not found." });
     user.getRoles().then(roles => {
-      if (roles.some(r => ["artisan","admin"].includes(r.name))) {
+      if (roles.some(r => ["moderator","admin"].includes(r.name))) {
         next();
       } else {
-        res.status(403).send({ message: "Require Artisan or Admin Role!" });
+        res.status(403).send({ message: "Require Moderator or Admin Role!" });
+      }
+    });
+  });
+};
+
+const isArtisanOrModeratorOrAdmin = (req, res, next) => {
+  User.findByPk(req.userId).then(user => {
+    if (!user) return res.status(404).send({ message: "User not found." });
+    user.getRoles().then(roles => {
+      if (roles.some(r => ["artisan", "moderator","admin"].includes(r.name))) {
+        next();
+      } else {
+        res.status(403).send({ message: "Require Artisan or Moderator or Admin Role!" });
       }
     });
   });
@@ -64,6 +77,6 @@ const isArtisanOrAdmin = (req, res, next) => {
 module.exports = {
   verifyToken,
   isAdmin,
-  isArtisan,
-  isArtisanOrAdmin,
+  isModeratorOrAdmin,
+  isArtisanOrModeratorOrAdmin,
 };

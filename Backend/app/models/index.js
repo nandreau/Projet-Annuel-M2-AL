@@ -78,6 +78,6 @@ db.ProblemMessage.belongsTo(db.Problem, { foreignKey: 'problemId' });
 db.ProblemMessage.belongsTo(db.User, { foreignKey: 'userId' });
 db.User.hasMany(db.ProblemMessage, { foreignKey: 'userId' });
 
-db.ROLES = ['client', 'artisan', 'admin'];
+db.ROLES = ['client', 'artisan', 'moderator', 'admin'];
 
 module.exports = db;

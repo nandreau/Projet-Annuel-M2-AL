@@ -65,8 +65,11 @@ export class AdminPage implements OnInit {
     return firstValueFrom(
       this.request.get<User[]>('api/users')
     ).then(data => {
-      this.users = data;
-      this.initialValues = [...data];
+      this.users = data.map(user => ({
+        ...user,
+        rolesString: user.roles.map(r => r.name).join(' ')
+      }));
+      this.initialValues = [...this.users];
     }).catch(err => {
       console.error('Erreur chargement utilisateurs', err);
     });

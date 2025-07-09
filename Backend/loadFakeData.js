@@ -216,7 +216,7 @@ module.exports = async function loadFakeData() {
     ];
 
   // 1) rôles
-  const roleNames = ["client", "artisan", "admin"];
+  const roleNames = ['client', 'artisan', 'moderator', 'admin'];
   await Role.bulkCreate(roleNames.map((name, idx) => ({ id: idx + 1, name })));
 
   // 2) utilisateurs
@@ -241,7 +241,7 @@ module.exports = async function loadFakeData() {
   await User.bulkCreate(users);
   for (const user of await User.findAll()) {
     const roleId = user.email === "aurelien@gmail.com"
-      ? 3 // admin
+      ? 4 // admin
       : faker.number.int({ min: 1, max: 3 });
     await user.setRoles([await Role.findByPk(roleId)]);
   }
@@ -253,7 +253,7 @@ module.exports = async function loadFakeData() {
     : [];
 
   // 3) chantiers / phases / tâches / plannings
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 5; i++) {
     const chantier = await Chantier.create({
       title: faker.helpers.arrayElement(chantierNames),
       address: faker.location.streetAddress(),

@@ -3,29 +3,40 @@
   <div class="container">
     <div class="header-container">
       <div class="header-container-title">Liste des problèmes</div>
+      <p-select
+        [options]="chantierOptions"
+        [(ngModel)]="selectedChantier"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Tous les chantiers"
+        filter
+        (onChange)="onChantierChange()"
+        class="ml-4"
+      ></p-select>
     </div>
+
     <p-accordion [(activeIndex)]="activeProblem" [multiple]="false">
       <p-accordion-panel
         class="mb-3"
-        *ngFor="let problem of problems"
+        *ngFor="let problem of filteredProblems"
         [value]="problem.id"
       >
         <p-accordion-header>
           <div class="flex align-items-center w-full justify-content-between">
             <div class="flex flex-column">
               <div class="flex bold">
-                {{ problem.id }} — {{ problem.title }} {{ problem.urgency }}
+                {{ problem.id }} — {{ problem.title }} ({{ problem.urgency }})
               </div>
-              <div class="problem-meta font-normal">
-                <span>Chantier: {{ problem.chantier }}</span>
-                <span>Phase: {{ problem.phase }}</span>
-                <span>Tâche: {{ problem.task }}</span>
-                <span>Signalé le {{ problem.createdAt | date:'d MMMM y HH:mm' }}</span>
+              <div class="problem-meta font-normal mt-2">
+                <span><b>Chantier:</b> {{ problem.chantier }}</span>
+                <span><b>Phase:</b> {{ problem.phase }}</span>
+                <span><b>Tâche:</b> {{ problem.task }}</span>
+                <span><b>Signalé le</b> {{ problem.createdAt | date:'d MMMM y HH:mm' }}</span>
               </div>
             </div>
             <p-tag
               [value]="problem.status"
-              [severity]="problem.status !== 'En cours' ? 'danger' : 'warning'"
+              [severity]="problem.status == 'En cours' ? 'warn' : problem.status == 'Non résolu' ? 'danger':'success'"
               class="mr-3"
               rounded="true"
             ></p-tag>
@@ -36,45 +47,71 @@
           <div class="pt-3">
             <div class="problem-description">{{ problem.description }}</div>
 
-            <div class="problem-images" *ngIf="problem.images.length">
-              <div class="image-card" *ngFor="let image of problem.images">
-                {{ image }}
+
+            <div class="problem-images mb-1 grid">
+              <div
+                class="relative {{ problem.images.length < 3 ? 'col-6':'col-3' }}"
+                *ngFor="let image of problem.images; let idx = index"
+              >
+                <img [src]="image" class="border-round-md object-cover rounded" />
+                <p-button
+                  icon="pi pi-times"
+                  variant="text"
+                  [rounded]="true"
+                  severity="secondary"
+                  class="absolute top-0 right-0"
+                  (click)="removePhoto(problem, idx)"
+                ></p-button>
               </div>
             </div>
+            <div class="w-full bg-white">
+               <p-fileUpload
+                #fu
+                name="images"
+                [customUpload]="true"
+                (uploadHandler)="onFileUpload($event, problem, fu)"
+                [multiple]="true"
+                accept="image/*"
+                [maxFileSize]="1000000"
+                mode="advanced"
+                chooseLabel="Ajouter"
+                uploadLabel="Envoyer"
+                cancelLabel="Annuler"
+                class="w-full"
+              >
+                <ng-template #empty>
+                  <div class="flex items-center justify-center h-full text-gray-500">
+                    Glissez-déposez ou cliquez pour ajouter
+                  </div>
+                </ng-template>
+              </p-fileUpload>
+            </div>
 
-            <div class="problem-messages" *ngIf="problem.problem_messages.length">
-              <div class="problem-messages-title">Historique des messages</div>
-
+            <!-- Messages history -->
+            <div class="problem-messages mt-4" *ngIf="problem.problem_messages.length">
+              <div class="problem-messages-title mb-2">Historique des messages</div>
               <div
                 *ngFor="let group of groupMessages(problem.problem_messages)"
                 [ngClass]="{ 'align-items-end': group.side === 'right' }"
-                class="message flex flex-column"
+                class="message flex flex-column mb-3"
               >
-                <div class="message-header">
+                <div class="message-header mb-1">
                   <ng-container *ngIf="group.side === 'left'">
-                    <strong
-                      >{{ group.user.firstname }} {{ group.user.name
-                      }}</strong
-                    >
-                    ·
-                    <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span>
+                    <strong>{{ group.user.firstname }} {{ group.user.name }}</strong>
+                    · <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">
-                    <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span> ·
-                    <strong
-                      >{{ group.user.firstname }} {{ group.user.name
-                      }}</strong
-                    >
+                    <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span>
+                    · <strong>{{ group.user.firstname }} {{ group.user.name }}</strong>
                   </ng-container>
                 </div>
-
                 <div
                   class="flex flex-column w-full"
                   [ngClass]="{ 'align-items-end': group.side === 'right' }"
                 >
                   <div
                     *ngFor="let content of group.contents"
-                    class="message-body"
+                    class="message-body bg-gray-100 p-2 rounded mb-1"
                   >
                     {{ content }}
                   </div>
@@ -82,20 +119,17 @@
               </div>
             </div>
 
-            <form class="problem-comment-box" (ngSubmit)="onComment()">
+
+
+            <form class="problem-comment-box" (ngSubmit)="sendMessage(problem)">
               <textarea
-                [(ngModel)]="comment"
-                name="comment"
+                [(ngModel)]="newComments[problem.id]"
+                name="comment-{{problem.id}}"
                 placeholder="Votre commentaire..."
                 rows="3"
               ></textarea>
               <div class="comment-actions">
-                <ion-button type="button" size="small"
-                  ><ion-icon name="camera"></ion-icon
-                ></ion-button>
-                <div class="spacer"></div>
-                <ion-button size="small" fill="outline">Assigner</ion-button>
-                <ion-button type="submit" size="small">Commenter</ion-button>
+                <p-button type="submit" class=""> Commenter</p-button>
               </div>
             </form>
           </div>

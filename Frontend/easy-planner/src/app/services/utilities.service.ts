@@ -22,23 +22,4 @@ export class UtilitiesService {
     const done = allTasks.filter(t => t.done).length;
     return Math.round((done / allTasks.length) * 100);
   }
-
-  /**
-   * Extract a flat list of unique users assigned anywhere in this chantier.
-   */
-  extractUniqueUsersFromChantier(chantier: Chantier): User[] {
-    const seen = new Map<number, User>();
-    for (const phase of chantier.phases || []) {
-      for (const task of phase.tasks || []) {
-        for (const assignment of (task.assignments || [])) {
-          for (const user of (assignment.users || [])) {
-            if (!seen.has(user.id)) {
-              seen.set(user.id, user);
-            }
-          }
-        }
-      }
-    }
-    return Array.from(seen.values());
-  }
 }

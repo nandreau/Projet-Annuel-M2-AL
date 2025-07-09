@@ -29,6 +29,9 @@ import { UtilitiesService } from 'src/app/services/utilities.service';
 })
 export class SitesPage implements OnInit {
   chantiers: Chantier[] = [];
+  chantierOptions: { label: string; value: number }[] = [];
+  filteredChantierIndex = 0;
+  filteredChantier!: Chantier;
   clients: User[] = [];
 
   /** Modals Chantier */
@@ -91,7 +94,15 @@ export class SitesPage implements OnInit {
       this.chantiers = await firstValueFrom(
         this.request.get<Chantier[]>('api/chantiers')
       );
-    console.log(this.chantiers)
+      this.chantiers = await firstValueFrom(
+        this.request.get<Chantier[]>('api/chantiers')
+      );
+      this.chantierOptions = this.chantiers
+        .map((ct, idx) => ({ label: ct.title, value: idx }));
+      if (this.chantiers.length > 0) {
+        this.filteredChantierIndex = 0;
+        this.filteredChantier = this.chantiers[0];
+      }
     } catch (err) {
       console.error('Erreur chargement chantiers', err);
     }
@@ -123,8 +134,8 @@ export class SitesPage implements OnInit {
 
   }
 
-  getIntervenants(ct: Chantier) {
-    return this.utils.extractUniqueUsersFromChantier(ct);
+  onChantierChange() {
+    this.filteredChantier = this.chantiers[this.selectedChantierIndex];
   }
 
   // ----- Chantier -----

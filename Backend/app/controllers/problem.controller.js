@@ -17,7 +17,9 @@ exports.findAll = async (req, res) => {
         },
         {
           model: ProblemMessage,
-          attributes: { exclude: ["userId", "problemId"] },
+          separate: true,
+          order: [['id','ASC']],
+          attributes: { exclude: ["userId"] },
           include: [
             {
               model: User,
@@ -50,7 +52,9 @@ exports.findOne = async (req, res) => {
         },
         {
           model: ProblemMessage,
-          attributes: { exclude: ["userId", "problemId"] },
+          separate: true,
+          order: [['id','ASC']],
+          attributes: { exclude: ["userId"] },
           include: [
             {
               model: User,
@@ -69,6 +73,26 @@ exports.findOne = async (req, res) => {
     res.json(p);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.updateMeta = async (req, res) => {
+  const { status, urgency, images } = req.body;
+  try {
+    const [updatedCount] = await Problem.update(
+      { status, urgency, images },
+      { where: { id: req.params.id } }
+    );
+    if (!updatedCount) {
+      return res.status(404).json({ message: "Problem not found" });
+    }
+    const updated = await Problem.findByPk(req.params.id, {
+      attributes: ["id","status","urgency","images"]
+    });
+    res.json({ message: "Meta updated", data: updated });
+  } catch (err) {
+    console.error("Error in updateMeta:", err);
     res.status(500).json({ message: err.message });
   }
 };
