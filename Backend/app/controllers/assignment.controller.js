@@ -20,14 +20,29 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   const list = await Assignment.findAll({
-    include: [{ model: User, through: { attributes: [] } }]
+    include: [
+      {
+        model: User,
+        through: { attributes: [] },
+        attributes: { exclude: ["password"] }
+      }
+    ],
+    order: [
+      ["id", "ASC"]
+    ]
   });
   res.json(list);
 };
 
 exports.findOne = async (req, res) => {
   const assignment = await Assignment.findByPk(req.params.id, {
-    include: [{ model: User, through: { attributes: [] } }]
+    include: [
+      {
+        model: User,
+        through: { attributes: [] },
+        attributes: { exclude: ["password"] }
+      }
+    ]
   });
   if (!assignment) return res.status(404).json({ message: "Not found" });
   res.json(assignment);

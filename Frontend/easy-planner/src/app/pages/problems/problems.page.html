@@ -45,10 +45,28 @@
 
         <p-accordion-content>
           <div class="pt-3">
-            <div class="problem-description">{{ problem.description }}</div>
-
-
-            <div class="problem-images mb-1 grid">
+            <div class="flex justify-content-end">
+              <div class="flex align-items-center gap-2 mr-3">
+                <label class="font-bold">Urgence :</label>
+                <p-dropdown
+                  [options]="urgencyOptions"
+                  [(ngModel)]="problem.urgency"
+                  (onChange)="updateMeta(problem)"
+                  placeholder="Choisir"
+                ></p-dropdown>
+              </div>
+              <!-- Statut -->
+              <div class="flex align-items-center gap-2">
+                <label class="font-bold">Statut :</label>
+                <p-dropdown
+                  [options]="statusOptions"
+                  [(ngModel)]="problem.status"
+                  (onChange)="updateMeta(problem)"
+                  placeholder="Choisir"
+                ></p-dropdown>
+              </div>
+            </div>
+            <div class="problem-images mt-2 mb-1 grid">
               <div
                 class="relative {{ problem.images.length < 3 ? 'col-6':'col-3' }}"
                 *ngFor="let image of problem.images; let idx = index"
@@ -64,7 +82,7 @@
                 ></p-button>
               </div>
             </div>
-            <div class="w-full bg-white">
+            <div class="w-full bg-white mb-3">
                <p-fileUpload
                 #fu
                 name="images"
@@ -81,12 +99,13 @@
               >
                 <ng-template #empty>
                   <div class="flex items-center justify-center h-full text-gray-500">
-                    Glissez-déposez ou cliquez pour ajouter
+                    Glissez-déposez ou cliquez pour ajouter une image
                   </div>
                 </ng-template>
               </p-fileUpload>
             </div>
-
+            <label class="font-bold">Description</label>
+            <div class="mt-1 mb-2">{{ problem.description }}</div>
             <!-- Messages history -->
             <div class="problem-messages mt-4" *ngIf="problem.problem_messages.length">
               <div class="problem-messages-title mb-2">Historique des messages</div>
@@ -128,7 +147,7 @@
                 placeholder="Votre commentaire..."
                 rows="3"
               ></textarea>
-              <div class="comment-actions">
+              <div class="flex justify-content-end mt-2">
                 <p-button type="submit" class=""> Commenter</p-button>
               </div>
             </form>

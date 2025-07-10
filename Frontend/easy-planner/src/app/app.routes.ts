@@ -48,7 +48,12 @@ export const routes: Routes = [
       import('./pages/sites/sites.page').then((m) => m.SitesPage),
     canActivate: [AuthGuard],
   },
-
+  {
+    path: 'sites/:id',
+    loadComponent: () =>
+      import('./pages/sites/sites.page').then((m) => m.SitesPage),
+    canActivate: [AuthGuard],
+  },
   {
     path: 'history',
     loadComponent: () =>

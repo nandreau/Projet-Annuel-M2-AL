@@ -5,14 +5,17 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { SelectItem } from 'primeng/api';
 import { ChartModule } from 'primeng/chart';
+import { forkJoin } from 'rxjs';
 
 import {
   Chantier,
-  Phase,
   Task,
   Problem,
   User,
 } from 'src/app/models/global.model';
+import { RequestService } from 'src/app/services/request.service';
+import { UtilitiesService } from 'src/app/services/utilities.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +28,7 @@ import {
     PrimengModule,
     FormsModule,
     ChartModule,
+    RouterModule
   ],
 })
 export class DashboardPage implements OnInit {
@@ -33,334 +37,198 @@ export class DashboardPage implements OnInit {
   inProgressTasks = 0;
   completedTasks = 0;
   activeUsers = 0;
-  today: Date = new Date();
+  today = new Date();
   todayStr!: string;
 
   // --- Data sources ---
   chantiers: Chantier[] = [];
   problems: Problem[] = [];
+  tasks: Task[] = [];
+  users: User[] = [];
 
-  // --- Dropdown options moved here! ---
+  // --- Dropdown options ---
   chantierOptions: SelectItem[] = [];
   statusOptions: SelectItem[] = [];
   priorityOptions: SelectItem[] = [];
+  stateOptions: SelectItem[] = [];
 
   // --- Filters / selections ---
   historyChantierId: number | null = null;
+  historyState: string | null = null;
   problemChantierId: number | null = null;
   problemStatus: string | null = null;
   problemPriority: string | null = null;
 
+  // --- Chart data & options ---
   tasksData: any;
   tasksOptions: any;
-
   problemsData: any;
   problemsOptions: any;
 
+  constructor(
+    private request: RequestService,
+    private cd: ChangeDetectorRef,
+    public utils: UtilitiesService
+  ) {}
+
   ngOnInit() {
-    this.loadMockData();
-
-    // --- top metrics ---
-    this.activeChantiers = this.chantiers.length;
-    const allTasks: Task[] = [];
-    this.chantiers.forEach((ct) => {
-      ct.phases.forEach((ph) => {
-        allTasks.push(...ph.tasks);
-      });
-    });
-    this.inProgressTasks = allTasks.filter((t) => !t.done).length;
-    this.completedTasks = allTasks.filter((t) => t.done).length;
-    this.activeUsers = 23; // e.g. your real API
-
-    // --- build dropdown options once ---
-    this.chantierOptions = this.chantiers.map((c) => ({
-      label: c.title,
-      value: c.id,
-    }));
-    this.statusOptions = ['En cours', 'Non résolu', 'Résolu'].map((s) => ({
-      label: s,
-      value: s,
-    }));
-    this.priorityOptions = ['Urgent', 'Moyen', 'Faible'].map((u) => ({
-      label: u,
-      value: u,
-    }));
-
     this.todayStr = this.today.toISOString().slice(0, 10);
-
-    // --- init filters ---
-    this.historyChantierId = this.chantiers[0]?.id ?? null;
-    this.problemChantierId = this.chantiers[0]?.id ?? null;
-
-    this.initChart();
+    this.loadAllData();
   }
 
-  constructor(private cd: ChangeDetectorRef) {}
+  private loadAllData() {
+    forkJoin({
+      chantiers: this.request.get<Chantier[]>('api/chantiers', false),
+      tasks:  this.request.get<Task[]>('api/tasks', false),
+      problems:  this.request.get<Problem[]>('api/problems', false),
+      users:     this.request.get<User[]>('api/users', false),
+    }).subscribe({
+      next: ({ chantiers, tasks, problems, users }) => {
+        this.chantiers = chantiers;
+        this.tasks = tasks;
+        this.problems = problems;
+        this.users = users;
+        console.log(users)
+
+        // Metrics
+        this.activeChantiers = chantiers.length;
+
+        // flatten tasks without flatMap
+        const allTasks: Task[] = chantiers.reduce((acc, ct) => {
+          const tasks = ct.phases.reduce((subAcc, ph) => subAcc.concat(ph.tasks), [] as Task[]);
+          return acc.concat(tasks);
+        }, [] as Task[]);
+
+        this.inProgressTasks = allTasks.filter(t => !t.done).length;
+        this.completedTasks  = allTasks.filter(t => t.done).length;
+        this.activeUsers     = users.length;
+
+        // Dropdown options
+        this.chantierOptions = chantiers.map(c => ({ label: c.title, value: c.id }));
+        this.statusOptions    = ['En cours','Non résolu','Résolu'].map(s => ({ label: s, value: s }));
+        this.priorityOptions  = ['Urgent','Moyen','Faible'].map(p => ({ label: p, value: p }));
+        this.stateOptions = [
+          { label: 'À faire',   value: 'À faire' },
+          { label: 'En cours',  value: 'En cours' },
+          { label: 'Terminée',  value: 'Terminée' },
+          { label: 'En retard', value: 'En retard' }
+        ];
+        // Filters default
+        this.historyChantierId = chantiers[0].id;
+        this.problemChantierId = chantiers[0].id;
+
+        // Build charts
+        this.initChart();
+
+        this.cd.markForCheck();
+      },
+      error: err => console.error('Error loading dashboard data', err)
+    });
+  }
+
+  get filteredProblems(): Problem[] {
+    const chantierLabel = this.chantierOptions.find(o => o.value === this.problemChantierId)?.label;
+    console.log(this.problemChantierId, this.problemStatus, this.problemPriority);
+        console.log(this.problems);
+    return this.problems.filter(p =>
+      (!this.problemChantierId || p.chantier === chantierLabel) &&
+      (!this.problemStatus     || p.status  === this.problemStatus) &&
+      (!this.problemPriority   || p.urgency === this.problemPriority)
+    );
+  }
 
   get historyTasks(): Task[] {
-    const chantier = this.chantiers.find(
-      (x) => x.id === this.historyChantierId,
-    );
-    if (!chantier) {
+    if (!this.historyChantierId) {
       return [];
     }
-    // flatten without flatMap
-    return chantier.phases.reduce((all, phase) => {
-      return all.concat(phase.tasks);
-    }, [] as Task[]);
-  }
 
-  get filteredProblems() {
-    return this.problems.filter(
-      (p) =>
-        (!this.problemChantierId ||
-          p.chantier ===
-            this.chantierOptions.find((o) => o.value === this.problemChantierId)
-              ?.label) &&
-        (!this.problemStatus || p.status === this.problemStatus) &&
-        (!this.problemPriority || p.urgency === this.problemPriority),
-    );
-  }
+    const phaseIds = this.chantiers
+      .find(c => c.id === this.historyChantierId)
+      ?.phases.map(ph => ph.id) || [];
+    let tasks = this.tasks.filter(t => phaseIds.includes(t.phaseId));
 
-  loadMockData() {
-    const user: User = {
-      id: 1,
-      firstname: 'Michael',
-      name: 'youn',
-      email: 'm@r',
-      roles: [{name: 'admin', id:1}],
-      job: ['admin'],
-    };
+    if (this.historyState) {
+      tasks = tasks.filter(t =>
+        this.utils.getTaskState(t, this.todayStr) === this.historyState
+      );
+    }
 
-    this.chantiers = [
-      {
-        id: 1,
-        title: 'Chantier A',
-        client: user,
-        address: '123 Rue Principale',
-        start: '2025-05-01',
-        end: '2025-12-31',
-        intervenants: [],
-        phases: [
-          {
-            id: 11,
-            name: 'Fondations',
-            tasks: [
-              {
-                id: 111,
-                name: 'Mise en place',
-                done: true,
-                dueDate: '2025-05-25',
-                doneDate: '2025-05-25',
-                assignments: [],
-              },
-            ],
-          },
-          {
-            id: 12,
-            name: 'Electricité',
-            tasks: [
-              {
-                id: 121,
-                name: 'Câblage',
-                done: false,
-                dueDate: '2025-07-19',
-                assignments: [],
-              },
-            ],
-          },
-          {
-            id: 13,
-            name: 'Plomberie',
-            tasks: [
-              {
-                id: 131,
-                name: 'Tuyaux sanitaires',
-                done: false,
-                dueDate: '2025-09-30',
-                assignments: [],
-              },
-            ],
-          },
-          {
-            id: 14,
-            name: 'Finitions',
-            tasks: [],
-          },
-        ],
-      },
-      // … ajoutez Chantier B, C si besoin …
-    ];
-
-    this.problems = [
-      {
-        id: 100,
-        title: 'Fuite d’eau au plafond',
-        urgency: 'Urgent',
-        chantier: 'Chantier A',
-        phase: 'Plomberie',
-        task: 'Tuyaux sanitaires',
-        status: 'En cours',
-        description: '',
-        user: user,
-        images: [],
-        problem_messages: [
-          {
-            id: 1,
-            problemId:2,
-            user: user,
-            content: 'Attention !',
-          },
-        ],
-      },
-    ];
+    return tasks;
   }
 
   isLate(task: Task): boolean {
     return !!task.dueDate && !task.done && task.dueDate < this.todayStr;
   }
 
-  initChart() {
-    const docStyle = getComputedStyle(document.documentElement);
-    const textColor = docStyle.getPropertyValue('--p-text-color');
-    const textColorSecondary = docStyle.getPropertyValue(
-      '--p-text-muted-color',
-    );
-    const surfaceBorder = docStyle.getPropertyValue('--p-content-border-color');
+  private initChart() {
+    const style = getComputedStyle(document.documentElement);
+    const textColor = style.getPropertyValue('--p-text-color');
+    const textMuted = style.getPropertyValue('--p-text-muted-color');
+    const border    = style.getPropertyValue('--p-content-border-color');
 
-    // —————————————————————————————————————————————
-    // 1) TASKS BY STATUS
-    // —————————————————————————————————————————————
-    const allTasks: Task[] = [];
-    this.chantiers.forEach((ct) =>
-      ct.phases.forEach((ph) => allTasks.push(...ph.tasks)),
-    );
+    // 1) Tasks by status
+    const allTasks: Task[] = this.chantiers.reduce((acc, ct) => {
+      const ts = ct.phases.reduce((sa, ph) => sa.concat(ph.tasks), [] as Task[]);
+      return acc.concat(ts);
+    }, [] as Task[]);
 
-    const todayStr = new Date().toISOString().slice(0, 10);
-    const taskByStatus: Record<string, number> = {
-      'A faire': 0,
-      'En cours': 0,
-      Terminée: 0,
-      'En retard': 0,
-    };
-
-    // count tasks
-    allTasks.forEach((t) => {
-      const key = t.done
-        ? 'Terminée'
-        : t.dueDate
-          ? t.dueDate < todayStr
-            ? 'En retard'
-            : 'En cours'
-          : 'A faire';
-      taskByStatus[key]++;
+    const counts1: Record<string, number> = { 'À faire':0,'En cours':0,'Terminée':0,'En retard':0 };
+    allTasks.forEach(t => {
+      const key = this.utils.getTaskState(t, this.todayStr);
+      counts1[key]++;
     });
-
-    const taskLabels = Object.keys(taskByStatus);
-
-    // define one color per status
-    const taskColors: Record<string, string> = {
-      'A faire': 'rgba(0,0,0,0.6)',
+    const labels1 = Object.keys(counts1);
+    const colors1: Record<string, string> = {
+      'À faire':  'rgba(0,0,0,0.6)',
       'En cours': 'rgba(255,214,0,0.6)',
-      Terminée: 'rgba(51,209,122,0.6)',
-      'En retard': 'rgba(255,92,92,0.6)',
+      'Terminée': 'rgba(51,209,122,0.6)',
+      'En retard':'rgba(255,92,92,0.6)'
     };
-
     this.tasksData = {
-      labels: taskLabels,
-      datasets: [
-        {
-          label: 'Tâches',
-          data: taskLabels.map((l) => taskByStatus[l]),
-          backgroundColor: taskLabels.map((l) => taskColors[l]),
-          borderColor: taskLabels.map((l) =>
-            taskColors[l].replace(/0\.6\)/, '1)'),
-          ),
-          borderWidth: 1,
-        },
-      ],
+      labels: labels1,
+      datasets: [{
+        label: 'Tâches',
+        data: labels1.map(l => counts1[l]),
+        backgroundColor: labels1.map(l => colors1[l]),
+        borderColor:     labels1.map(l => colors1[l].replace(/0\.6\)/,'1)')),
+        borderWidth: 1
+      }]
     };
-
     this.tasksOptions = {
-      indexAxis: 'y', // horizontal bars
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { color: textColor },
-        },
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { color: textColorSecondary, stepSize: 1 },
-          grid: { color: surfaceBorder },
-        },
-        y: {
-          ticks: { color: textColorSecondary },
-          grid: { color: surfaceBorder },
-        },
-      },
-    };
-
-    // —————————————————————————————————————————————
-    // 2) PROBLEMS BY STATUS
-    // —————————————————————————————————————————————
-    const problemByStatus: Record<string, number> = {
-      'En cours': 0,
-      'Non résolu': 0,
-      Résolu: 0,
-    };
-    this.problems.forEach((p) => {
-      if (problemByStatus[p.status] != null) {
-        problemByStatus[p.status]++;
+      indexAxis:'y',
+      plugins:{ legend:{ position:'top', labels:{ color:textColor } } },
+      scales:{
+        x:{ beginAtZero:true, ticks:{ color:textMuted, stepSize:1 }, grid:{ color:border } },
+        y:{ ticks:{ color:textMuted }, grid:{ color:border } }
       }
-    });
-
-    const problemLabels = Object.keys(problemByStatus);
-
-    // define one color per problem-status
-    const problemColors: Record<string, string> = {
-      'En cours': 'rgba(255,214,0,0.6)',
-      'Non résolu': 'rgba(255,92,92,0.6)',
-      Résolu: 'rgba(51,209,122,0.6)',
     };
 
+    // 2) Problems by status
+    const counts2: Record<string, number> = { 'En cours':0,'Non résolu':0,'Résolu':0 };
+    this.problems.forEach(p => { if (counts2[p.status]!=null) counts2[p.status]++; });
+    const labels2 = Object.keys(counts2);
+    const colors2: Record<string,string> = {
+      'En cours':'rgba(255,214,0,0.6)',
+      'Non résolu':'rgba(255,92,92,0.6)',
+      'Résolu':'rgba(51,209,122,0.6)'
+    };
     this.problemsData = {
-      labels: problemLabels,
-      datasets: [
-        {
-          label: 'Problèmes',
-          data: problemLabels.map((l) => problemByStatus[l]),
-          backgroundColor: problemLabels.map((l) => problemColors[l]),
-          borderColor: problemLabels.map((l) =>
-            problemColors[l].replace(/0\.6\)/, '1)'),
-          ),
-          borderWidth: 1,
-        },
-      ],
+      labels: labels2,
+      datasets:[{
+        label:'Problèmes',
+        data: labels2.map(l => counts2[l]),
+        backgroundColor: labels2.map(l => colors2[l]),
+        borderColor:     labels2.map(l => colors2[l].replace(/0\.6\)/,'1)')),
+        borderWidth:1
+      }]
     };
-
     this.problemsOptions = {
-      indexAxis: 'y', // horizontal bars
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { color: textColor },
-        },
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { color: textColorSecondary, stepSize: 1 },
-          grid: { color: surfaceBorder },
-        },
-        y: {
-          ticks: { color: textColorSecondary },
-          grid: { color: surfaceBorder },
-        },
-      },
+      indexAxis:'y',
+      plugins:{ legend:{ position:'top', labels:{ color:textColor } } },
+      scales:{
+        x:{ beginAtZero:true, ticks:{ color:textMuted, stepSize:1 }, grid:{ color:border } },
+        y:{ ticks:{ color:textMuted }, grid:{ color:border } }
+      }
     };
-
-    this.cd.markForCheck();
   }
 }

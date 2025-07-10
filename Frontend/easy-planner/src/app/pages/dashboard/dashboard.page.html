@@ -59,35 +59,34 @@
       <div class="mt-2 col-12">
         <div class="card">
           <div class="card-title">Tout les chantier</div>
-          <div class="flex flex-wrap">
-            <div
-              class="mt-2 col-12 xl:col-6 p-md-4 flex border-round-lg bg-white"
-              *ngFor="let ct of chantiers"
-            >
-              <img
-                [src]="ct.images?.[0]"
-                alt="img"
-                class="border-round-lg h-6rem w-8rem"
-              />
-              <div
-                class="pl-3 p-2 pr-1 justify-content-evenly flex flex-column w-full"
-              >
-                <div>
-                  <div class="text-lg font-bold">{{ ct.title }}</div>
-                  <div class="text-sm">
-                    Client: {{ ct.client.firstname }} {{ ct.client.name }}
+          <div class="grid mt-1">
+            <div *ngFor="let ct of chantiers" class="col-12 xl:col-6">
+              <div [routerLink]="['/sites', ct.id]" class="cursor-pointer p-md-4 flex border-round-lg bg-white">
+                <img
+                  [src]="ct.images?.[0]"
+                  alt="img"
+                  class="border-round-lg border-noround-right h-6rem w-8rem"
+                />
+                <div
+                  class="pl-3 p-2 pr-1 justify-content-between flex flex-column w-full"
+                >
+                  <div>
+                    <div class="text-lg font-bold">{{ ct.title }}</div>
+                    <div class="text-sm">
+                      Client: {{ ct.client.firstname }} {{ ct.client.name }}
+                    </div>
                   </div>
-                </div>
-                <div class="flex mt-2">
-                  <div
-                    class="text-center pr-2 w-full"
-                    *ngFor="let ph of ct.phases"
-                  >
-                    <p-progressBar
-                      [value]="50"
-                      [showValue]="false"
-                    ></p-progressBar>
-                    <div class="text-xs mt-1">{{ ph.name }}</div>
+                  <div class="flex mt-2">
+                    <div
+                      class="text-center pr-2 w-full"
+                      *ngFor="let ph of ct.phases"
+                    >
+                      <p-progressBar
+                        [value]="utils.getPhaseProgress(ph)"
+                        [showValue]="false"
+                      ></p-progressBar>
+                      <div class="text-xs mt-1">{{ ph.name }}</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -99,14 +98,23 @@
       <!-- HISTORIQUE DES MISSIONS -->
       <div class="mt-2 xl:col-6 col-12">
         <div class="card">
-          <div class="card-title">Liste des Tâches</div>
+          <div class="card-title">Nouvelles Tâches</div>
           <div class="flex gap-2">
             <p-select
               [options]="chantierOptions"
               [(ngModel)]="historyChantierId"
               optionLabel="label"
+              optionValue="value"
               filter
               placeholder="Chantier"
+            ></p-select>
+            <p-select
+              [options]="stateOptions"
+              [(ngModel)]="historyState"
+              optionLabel="label"
+              optionValue="value"
+              filter
+              placeholder="État"
             ></p-select>
           </div>
           <div class="mt-3">
@@ -123,21 +131,23 @@
                 <tr>
                   <td>{{ task.name }}</td>
                   <td>
-                    {{ task.assignments[0]?.attribution?.[0]?.firstname || '—' }}
+                    {{ task.assignments[0]?.users[0]?.firstname || '—'}} {{ task.assignments[0]?.users[0]?.name}}
                   </td>
-                  <td>{{ task.doneDate || task.dueDate }}</td>
+                  <td>{{ task.doneDate || task.dueDate | date:'d MMMM y' }}</td>
                   <td>
-                    <span
-                      [ngClass]="{
-                        'badge-done': task.done,
-                        'badge-late': isLate(task),
-                        'badge-todo': !task.done && !isLate(task)
-                      }"
-                    >
-                      {{ task.done ? 'Terminée' : (isLate(task) ? 'En retard' :
-                      'À faire') }}
-                    </span>
+                    <p-tag
+                      [value]="utils.getTaskState(task, todayStr)"
+                      [severity]="utils.getTaskSeverity(task, todayStr)"
+                      class="text-xs"
+                    ></p-tag>
                   </td>
+                </tr>
+              </ng-template>
+
+              <!-- Message vide -->
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="6">Aucune tâche trouvé</td>
                 </tr>
               </ng-template>
             </p-table>
@@ -154,6 +164,7 @@
               [options]="chantierOptions"
               [(ngModel)]="problemChantierId"
               optionLabel="label"
+              optionValue="value"
               filter
               placeholder="Chantier"
             ></p-select>
@@ -161,6 +172,7 @@
               [options]="statusOptions"
               [(ngModel)]="problemStatus"
               optionLabel="label"
+              optionValue="value"
               filter
               placeholder="Statut"
             ></p-select>
@@ -168,6 +180,7 @@
               [options]="priorityOptions"
               [(ngModel)]="problemPriority"
               optionLabel="label"
+              optionValue="value"
               filter
               placeholder="Priorité"
             ></p-select>
@@ -187,16 +200,26 @@
                 <tr>
                   <td>{{ p.title }}</td>
                   <td>{{ p.user.firstname }}</td>
-                  <td>{{ p.createdAt }}</td>
+                  <td>{{ p.createdAt | date:'d MMMM y' }}</td>
                   <td>
-                    <span
-                      class="badge-priority"
-                      [ngClass]="p.urgency.toLowerCase()"
-                    >
-                      {{ p.urgency }}
-                    </span>
+                    <p-tag [value]="p.urgency"
+                      [severity]="utils.getPrioritySeverity(p.urgency)"
+                      class="text-xs">
+                    </p-tag>
                   </td>
-                  <td>{{ p.status }}</td>
+                  <td>
+                    <p-tag [value]="p.status"
+                      [severity]="utils.getStatusSeverity(p.status)"
+                      class="text-xs">
+                    </p-tag>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <!-- Message vide -->
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="6">Aucun problème trouvé</td>
                 </tr>
               </ng-template>
             </p-table>

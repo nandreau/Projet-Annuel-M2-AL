@@ -30,6 +30,7 @@ export interface Task extends WithTimestamps {
   doneDate?: string;
   images?: string[];
   assignments: Assignment[];
+  phaseId: number;
 }
 
 export interface Phase extends WithTimestamps {
@@ -55,7 +56,7 @@ export interface ProblemMessage extends WithTimestamps {
   user: User;
   content: string;
   images?: string[]
-  problemId: number;
+  problemId: number
 }
 
 export interface Problem extends WithTimestamps {

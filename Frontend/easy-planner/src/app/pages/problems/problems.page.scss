@@ -11,12 +11,6 @@
   margin-top: 0.25rem;
 }
 
-.problem-description {
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
 .problem-messages-title {
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -53,24 +47,11 @@
   }
 }
 
-.problem-comment-box {
-  textarea {
+.problem-comment-box textarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;
     border-radius: 8px;
     resize: none;
     font-size: 1rem;
-  }
-
-  .comment-actions {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    margin-top: 0.5rem;
-
-    .spacer {
-      flex: 1;
-    }
-  }
 }

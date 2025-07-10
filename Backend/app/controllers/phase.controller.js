@@ -11,12 +11,54 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  const list = await Phase.findAll();
+  const list = await Phase.findAll({
+    include: [
+      {
+        model: Task,
+        include: [
+          {
+            model: Assignment,
+            include: [
+              {
+                model: User,
+                through: { attributes: [] },
+                attributes: { exclude: ["password"] }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    order: [
+      ["id", "ASC"],
+      [ Task, "updatedAt", "ASC"],
+      [ Task, "id",    "ASC" ],
+      [ Task, Assignment, "id", "ASC" ]
+    ]
+  });
   res.json(list);
 };
 
 exports.findOne = async (req, res) => {
-  const p = await Phase.findByPk(req.params.id);
+  const p = await Phase.findByPk(req.params.id, {
+    include: [
+      {
+        model: Task,
+        include: [
+          {
+            model: Assignment,
+            include: [
+              {
+                model: User,
+                through: { attributes: [] },
+                attributes: { exclude: ["password"] }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  });
   if (!p) return res.status(404).json({ message: "Not found" });
   res.json(p);
 };

@@ -17,8 +17,6 @@ exports.findAll = async (req, res) => {
         },
         {
           model: ProblemMessage,
-          separate: true,
-          order: [['id','ASC']],
           attributes: { exclude: ["userId"] },
           include: [
             {
@@ -31,7 +29,10 @@ exports.findAll = async (req, res) => {
           ]
         }
       ],
-      order: [["createdAt", "DESC"]]
+      order: [
+        ["createdAt", "DESC"],
+        [ ProblemMessage, "id",  "ASC" ]
+      ]
     });
 
     res.json(problems);
@@ -52,8 +53,6 @@ exports.findOne = async (req, res) => {
         },
         {
           model: ProblemMessage,
-          separate: true,
-          order: [['id','ASC']],
           attributes: { exclude: ["userId"] },
           include: [
             {
@@ -63,6 +62,9 @@ exports.findOne = async (req, res) => {
             }
           ]
         }
+      ],
+      order: [
+        [ ProblemMessage, "id",  "ASC" ]
       ]
     });
 

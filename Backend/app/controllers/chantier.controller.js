@@ -9,7 +9,7 @@ const User       = db.User;
 exports.create = async (req, res) => {
   try {
     console.log(req.body)
-    const c = await Chantier.create(req.body);
+    await Chantier.create(req.body);
     res.status(201).json({ message: "Created successfully" });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -49,6 +49,7 @@ exports.findAll = async (req, res) => {
       order: [
         ["id", "ASC"],
         [ Phase,       "id",    "ASC" ],
+        [ Phase, Task, "updatedAt", "ASC"],
         [ Phase, Task, "id",    "ASC" ],
         [ Phase, Task, Assignment, "id", "ASC" ]
       ]
@@ -123,7 +124,7 @@ exports.findOne = async (req, res) => {
     if (!chantier) {
       return res.status(404).json({ message: "Chantier non trouvé" });
     }
-    chantier.dataValues.intervenants = extractIntervenants(ct);
+    chantier.dataValues.intervenants = extractIntervenants(chantier);
     res.json(chantier);
   } catch (err) {
     console.error(err);

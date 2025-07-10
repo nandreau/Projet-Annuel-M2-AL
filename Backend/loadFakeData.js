@@ -259,7 +259,9 @@ module.exports = async function loadFakeData() {
       address: faker.location.streetAddress(),
       start: faker.date.past({ years: 1 }),
       end: faker.date.future({ years: 1 }),
-      images: '',
+      images: Array.from({ length: 3 }, () =>
+        `https://picsum.photos/seed/${faker.string.uuid()}/800/600`
+      ),
       clientId: faker.number.int({ min: 1, max: 100 }),
     });
 
@@ -275,52 +277,52 @@ module.exports = async function loadFakeData() {
 
         const task = await Task.create({
           name: faker.helpers.arrayElement(taskNames),
-          done: faker.datatype.boolean(),
-          dueDate: faker.date.future(),
+          done: Math.random() <= 0.25,
+          dueDate: Math.random() <= 0.3 ? faker.date.past() : faker.date.future(),
           doneDate: faker.datatype.boolean() ? faker.date.recent() : null,
           images: [],
           phaseId: phase.id,
         });
 
-        if (!task.done) {
-          const assignmentsToCreate = faker.number.int({ min: 15, max: 20 });
-          let createdAssignments = 0;
 
-          while (createdAssignments < assignmentsToCreate && usedDates.size < 22) {
-            const dayOffset = faker.number.int({ min: 0, max: 30 });
-            const baseDate = new Date();
-            baseDate.setDate(baseDate.getDate() + dayOffset);
+        const assignmentsToCreate = Math.random() < 0.3 ? 0 : faker.number.int({ min: 15, max: 20 });
+        let createdAssignments = 0;
 
-            const dayOfWeek = baseDate.getDay();
-            if (dayOfWeek === 0 || dayOfWeek === 6) continue; // Skip weekends
+        while (createdAssignments < assignmentsToCreate && usedDates.size < 22) {
+          const dayOffset = t.done ? faker.number.int({ min: 0, max: 30 }) : faker.number.int({ min: -90, max: -1 });
+          const baseDate = new Date();
+          baseDate.setDate(baseDate.getDate() + dayOffset);
 
-            const dateKey = baseDate.toISOString().split('T')[0];
-            if (usedDates.has(dateKey)) continue; // Skip if already used
+          const dayOfWeek = baseDate.getDay();
+          if (dayOfWeek === 0 || dayOfWeek === 6) continue;
 
-            usedDates.add(dateKey);
+          const dateKey = baseDate.toISOString().split('T')[0];
+          if (usedDates.has(dateKey)) continue;
 
-            const startHour = faker.helpers.arrayElement([7, 8, 9, 10, 11, 12]);
-            const endHour = faker.helpers.arrayElement([13, 14, 15, 16, 17, 18]);
+          usedDates.add(dateKey);
 
-            const startDate = new Date(baseDate);
-            startDate.setHours(startHour, 0, 0, 0);
+          const startHour = faker.helpers.arrayElement([7, 8, 9, 10, 11, 12]);
+          const endHour = faker.helpers.arrayElement([13, 14, 15, 16, 17, 18]);
 
-            const endDate = new Date(baseDate);
-            endDate.setHours(endHour, 0, 0, 0);
+          const startDate = new Date(baseDate);
+          startDate.setHours(startHour, 0, 0, 0);
 
-            const assignment = await Assignment.create({
-              startDate,
-              endDate,
-              taskId: task.id,
-            });
+          const endDate = new Date(baseDate);
+          endDate.setHours(endHour, 0, 0, 0);
 
-            const pickCount = faker.number.int({ min: 1, max: 2 });
-            const picked = faker.helpers.arrayElements(artisanUsers, pickCount);
-            await assignment.setUsers(picked);
+          const assignment = await Assignment.create({
+            startDate,
+            endDate,
+            taskId: task.id,
+          });
 
-            createdAssignments++;
-          }
+          const pickCount = faker.number.int({ min: 1, max: 2 });
+          const picked = faker.helpers.arrayElements(artisanUsers, pickCount);
+          await assignment.setUsers(picked);
+
+          createdAssignments++;
         }
+        
       }
     }
   }

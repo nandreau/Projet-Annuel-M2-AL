@@ -100,7 +100,7 @@ export class ProblemsPage implements OnInit {
     }
   }
 
-  updateProblem(problem: Problem) {
+  updateMeta(problem: Problem) {
     const payload = {
       urgency: problem.urgency,
       status: problem.status,
@@ -121,7 +121,7 @@ export class ProblemsPage implements OnInit {
       const url = reader.result as string;
       problem.images = problem.images || [];
       problem.images.push(url);
-      this.updateProblem(problem);
+      this.updateMeta(problem);
     };
     reader.readAsDataURL(file);
     input.value = '';
@@ -138,7 +138,7 @@ export class ProblemsPage implements OnInit {
         const url = reader.result as string;
         problem.images = problem.images || [];
         problem.images.push(url);
-        this.updateProblem(problem);
+        this.updateMeta(problem);
       };
       reader.readAsDataURL(file);
     }
@@ -148,7 +148,7 @@ export class ProblemsPage implements OnInit {
   removePhoto(problem: Problem, index: number) {
     if (!problem.images) return;
     problem.images.splice(index, 1);
-    this.updateProblem(problem);
+    this.updateMeta(problem);
   }
 
   groupMessages(messages: any[]) {

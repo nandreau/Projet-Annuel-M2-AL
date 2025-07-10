@@ -28,8 +28,8 @@
         <div class="sm:flex justify-content-between mb-4 relative">
           <div class="flex items-start">
             <ion-img
-              src="assets/chantier-icon.png"
-              class="w-5rem h-5rem rounded bg-gray-200"
+              [src]="filteredChantier.images?.[0]"
+              class="image-chantier"
             ></ion-img>
             <div class="ml-3 mr-6 sm:mr-0  flex flex-column justify-content-evenly">
               <div class="text-xl font-semibold mb-2">{{ filteredChantier.title }}</div>

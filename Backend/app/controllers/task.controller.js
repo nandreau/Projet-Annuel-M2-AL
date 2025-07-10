@@ -1,5 +1,7 @@
 const db = require("../models");
 const Task = db.Task;
+const Assignment = db.Assignment;
+const User = db.User;
 
 exports.create = async (req, res) => {
   try {
@@ -11,12 +13,43 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  const list = await Task.findAll();
+  const list = await Task.findAll({
+    include: [
+      {
+        model: Assignment,
+        include: [
+          {
+            model: User,
+            through: { attributes: [] },
+            attributes: { exclude: ["password"] }
+          }
+        ]
+      }
+    ],
+    order: [
+      ["updatedAt", "ASC"],
+      ["id", "ASC"],
+      [ Assignment, "id", "ASC" ]
+    ]
+  });
   res.json(list);
 };
 
 exports.findOne = async (req, res) => {
-  const t = await Task.findByPk(req.params.id);
+  const t = await Task.findByPk(req.params.id, {
+    include: [
+      {
+        model: Assignment,
+        include: [
+          {
+            model: User,
+            through: { attributes: [] },
+            attributes: { exclude: ["password"] }
+          }
+        ]
+      }
+    ]
+  });
   if (!t) return res.status(404).json({ message: "Not found" });
   res.json(t);
 };

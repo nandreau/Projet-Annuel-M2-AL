@@ -77,6 +77,7 @@ const isArtisanOrModeratorOrAdmin = (req, res, next) => {
 module.exports = {
   verifyToken,
   isAdmin,
+  isModerator,
   isModeratorOrAdmin,
   isArtisanOrModeratorOrAdmin,
 };

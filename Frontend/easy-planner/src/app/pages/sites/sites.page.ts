@@ -12,6 +12,7 @@ import { DynamicFormModalComponent } from 'src/app/components/dynamic-form-modal
 import { ConfirmModalComponent } from 'src/app/components/confirm-modal/confirm-modal.component';
 import { FormsModule } from '@angular/forms';
 import { UtilitiesService } from 'src/app/services/utilities.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sites',
@@ -61,14 +62,29 @@ export class SitesPage implements OnInit {
   phaseFields: FormField<any>[] = [];
   taskFields: FormField<any>[] = [];
 
-  constructor(private request: RequestService, public utils: UtilitiesService) {}
+  constructor(private request: RequestService, public utils: UtilitiesService, private route: ActivatedRoute, private router: Router) {}
 
-  async ngOnInit() {
-    await Promise.all([
+  ngOnInit(): void {
+    const paramId = Number(this.route.snapshot.paramMap.get('id'));
+
+    Promise.all([
       this.loadClients(),
       this.loadChantiers()
-    ]);
-    this.loadFields();
+    ]).then(() => {
+      this.loadFields();
+
+      if (paramId) {
+        const idx = this.chantiers.findIndex(ct => ct.id === paramId);
+        if (idx >= 0) {
+          this.filteredChantierIndex = idx;
+          this.filteredChantier = this.chantiers[idx];
+        } else {
+          this.router.navigate(['/sites']);
+        }
+      }
+    }).catch(err => {
+      console.error('Initialization error', err);
+    });
   }
 
   /** Charge uniquement les users qui ont le rôle "client" */
@@ -88,24 +104,37 @@ export class SitesPage implements OnInit {
     }
   }
 
-  /** Récupère la liste complète de l’API */
-  private async loadChantiers() {
+  private async loadChantiers(): Promise<void> {
     try {
       this.chantiers = await firstValueFrom(
         this.request.get<Chantier[]>('api/chantiers')
       );
-      this.chantiers = await firstValueFrom(
-        this.request.get<Chantier[]>('api/chantiers')
-      );
-      this.chantierOptions = this.chantiers
-        .map((ct, idx) => ({ label: ct.title, value: idx }));
-      if (this.chantiers.length > 0) {
-        this.filteredChantierIndex = 0;
+
+
+      this.chantierOptions = this.chantiers.map(ct => ({
+        label: ct.title,
+        value: ct.id
+      }));
+
+      const param = this.route.snapshot.paramMap.get('id');
+      const wantedId = param ? Number(param) : this.chantiers[0]?.id;
+      const found = this.chantiers.find(ct => ct.id === wantedId);
+
+      if (found) {
+        this.filteredChantier = found;
+        this.filteredChantierIndex = this.chantiers.indexOf(found);
+      } else {
         this.filteredChantier = this.chantiers[0];
+        this.filteredChantierIndex = 0;
+        this.router.navigate(['/sites']);
       }
     } catch (err) {
       console.error('Erreur chargement chantiers', err);
     }
+  }
+  
+  onChantierChange() {
+    this.filteredChantier = this.chantiers[this.selectedChantierIndex];
   }
 
   private loadFields() {
@@ -132,10 +161,6 @@ export class SitesPage implements OnInit {
       { key: 'dueDate', label: 'Date cible', type: 'date', placeholder: '' },
     ];
 
-  }
-
-  onChantierChange() {
-    this.filteredChantier = this.chantiers[this.selectedChantierIndex];
   }
 
   // ----- Chantier -----

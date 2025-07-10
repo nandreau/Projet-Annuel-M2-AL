@@ -24,6 +24,15 @@
   position: relative;
 }
 
+.image-chantier {
+  height: 6rem;
+  max-width: 8rem;
+}
+
+.image-chantier::part(image) {
+  border-radius: 0.25rem;
+}
+
 .phase-add {
   display: flex;
   justify-content: center;
