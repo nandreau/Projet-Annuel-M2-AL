@@ -1,5 +1,9 @@
 const db = require("../models");
-const Phase = db.Phase;
+const Phase      = db.Phase;
+const Task       = db.Task;
+const Assignment = db.Assignment;
+const Checklist  = db.Checklist;
+const User       = db.User;
 
 exports.create = async (req, res) => {
   try {
@@ -17,6 +21,9 @@ exports.findAll = async (req, res) => {
         model: Task,
         include: [
           {
+            model: Checklist
+          },
+          {
             model: Assignment,
             include: [
               {
@@ -33,7 +40,8 @@ exports.findAll = async (req, res) => {
       ["id", "ASC"],
       [ Task, "updatedAt", "ASC"],
       [ Task, "id",    "ASC" ],
-      [ Task, Assignment, "id", "ASC" ]
+      [ Task, Assignment, "id", "ASC" ],
+      [ Task, Checklist, "id", "ASC" ]
     ]
   });
   res.json(list);
@@ -46,6 +54,9 @@ exports.findOne = async (req, res) => {
         model: Task,
         include: [
           {
+              model: Checklist
+          },
+          {
             model: Assignment,
             include: [
               {
@@ -57,6 +68,12 @@ exports.findOne = async (req, res) => {
           }
         ]
       }
+    ],
+    order: [
+      [ Task, "updatedAt", "ASC"],
+      [ Task, "id",    "ASC" ],
+      [ Task, Assignment, "id", "ASC" ],
+      [ Task, Checklist, "id", "ASC" ]
     ]
   });
   if (!p) return res.status(404).json({ message: "Not found" });

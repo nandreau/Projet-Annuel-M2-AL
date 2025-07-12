@@ -11,7 +11,7 @@ exports.findAll = async (req, res) => {
         {
           model: Role,
           through: { attributes: [] },
-          attributes: ["id", "name"]
+          attributes: ["name"]
         }
       ],
       order: [["id", "ASC"]],
@@ -31,7 +31,7 @@ exports.findOne = async (req, res) => {
         {
           model: Role,
           through: { attributes: [] },
-          attributes: ["id", "name"]
+          attributes: ["name"]
         }
       ]
     });

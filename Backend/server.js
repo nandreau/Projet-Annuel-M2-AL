@@ -42,6 +42,7 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/role.routes")(app);
 require("./app/routes/assignment.routes")(app);
+require("./app/routes/checklist.routes")(app);
 require("./app/routes/task.routes")(app);
 require("./app/routes/phase.routes")(app);
 require("./app/routes/chantier.routes")(app);

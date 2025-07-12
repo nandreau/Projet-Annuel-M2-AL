@@ -8,7 +8,7 @@
         [(ngModel)]="selectedChantier"
         optionLabel="label"
         optionValue="value"
-        placeholder="Tous les chantiers"
+        placeholder="Filtrer par chantiers"
         filter
         (onChange)="onChantierChange()"
         class="ml-4"
@@ -25,12 +25,12 @@
           <div class="flex align-items-center w-full justify-content-between">
             <div class="flex flex-column">
               <div class="flex bold">
-                {{ problem.id }} — {{ problem.title }} ({{ problem.urgency }})
+                {{ problem.id }} — {{ problem.title }} ({{ problem.priority }})
               </div>
               <div class="problem-meta font-normal mt-2">
-                <span><b>Chantier:</b> {{ problem.chantier }}</span>
-                <span><b>Phase:</b> {{ problem.phase }}</span>
-                <span><b>Tâche:</b> {{ problem.task }}</span>
+                <span><b>Chantier:</b> {{ problem.chantier.title || '—' }}</span>
+                <span><b>Phase:</b> {{ problem.phaseLabel }}</span>
+                <span><b>Tâche:</b> {{ problem.taskLabel }}</span>
                 <span><b>Signalé le</b> {{ problem.createdAt | date:'d MMMM y HH:mm' }}</span>
               </div>
             </div>
@@ -48,61 +48,29 @@
             <div class="flex justify-content-end">
               <div class="flex align-items-center gap-2 mr-3">
                 <label class="font-bold">Urgence :</label>
-                <p-dropdown
-                  [options]="urgencyOptions"
-                  [(ngModel)]="problem.urgency"
+                <p-select
+                  [options]="priorityOptions"
+                  [(ngModel)]="problem.priority"
                   (onChange)="updateMeta(problem)"
                   placeholder="Choisir"
-                ></p-dropdown>
+                ></p-select>
               </div>
               <!-- Statut -->
               <div class="flex align-items-center gap-2">
                 <label class="font-bold">Statut :</label>
-                <p-dropdown
+                <p-select
                   [options]="statusOptions"
                   [(ngModel)]="problem.status"
                   (onChange)="updateMeta(problem)"
                   placeholder="Choisir"
-                ></p-dropdown>
+                ></p-select>
               </div>
             </div>
-            <div class="problem-images mt-2 mb-1 grid">
-              <div
-                class="relative {{ problem.images.length < 3 ? 'col-6':'col-3' }}"
-                *ngFor="let image of problem.images; let idx = index"
-              >
-                <img [src]="image" class="border-round-md object-cover rounded" />
-                <p-button
-                  icon="pi pi-times"
-                  variant="text"
-                  [rounded]="true"
-                  severity="secondary"
-                  class="absolute top-0 right-0"
-                  (click)="removePhoto(problem, idx)"
-                ></p-button>
-              </div>
-            </div>
-            <div class="w-full bg-white mb-3">
-               <p-fileUpload
-                #fu
-                name="images"
-                [customUpload]="true"
-                (uploadHandler)="onFileUpload($event, problem, fu)"
-                [multiple]="true"
-                accept="image/*"
-                [maxFileSize]="1000000"
-                mode="advanced"
-                chooseLabel="Ajouter"
-                uploadLabel="Envoyer"
-                cancelLabel="Annuler"
-                class="w-full"
-              >
-                <ng-template #empty>
-                  <div class="flex items-center justify-center h-full text-gray-500">
-                    Glissez-déposez ou cliquez pour ajouter une image
-                  </div>
-                </ng-template>
-              </p-fileUpload>
+            <div class="problem-images mt-4 mb-3">
+              <app-image-manager
+                [images]="problem.images || []"
+                (imagesChange)="onImagesChange(problem, $event)"
+              ></app-image-manager>
             </div>
             <label class="font-bold">Description</label>
             <div class="mt-1 mb-2">{{ problem.description }}</div>

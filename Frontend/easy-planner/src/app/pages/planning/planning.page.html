@@ -90,15 +90,14 @@
               <div class="day-number">{{ d.day }}</div>
             </div>
           </div>
-
-
+          
           <!-- Task rows -->
           <div *ngFor="let task of phase.tasks" class="planning-grid planning-task-row">
             <div class="planning-task-cell">
-              <i *ngIf="task.done"   class="pi pi-check-circle icon-done"></i>
-              <i *ngIf="isOverdue(task)"  class="pi pi-exclamation-circle icon-overdue"></i>
-              <i *ngIf="isOngoing(task)"  class="pi pi-clock icon-ongoing"></i>
-              <i *ngIf="isTodo(task)"     class="pi pi-hourglass icon-todo"></i>
+              <i *ngIf="utils.getTaskState(task) == 'Terminée'" class="pi pi-check-circle icon-done"></i>
+              <i *ngIf="utils.getTaskState(task) == 'En retard'" class="pi pi-exclamation-circle icon-overdue"></i>
+              <i *ngIf="utils.getTaskState(task) == 'En cours'" class="pi pi-clock icon-ongoing"></i>
+              <i *ngIf="utils.getTaskState(task) == 'À faire'" class="pi pi-hourglass icon-todo"></i>
               <span class="task-name">{{ task.name }}</span>
             </div>
             <ng-container *ngFor="let d of days">

@@ -1,0 +1,40 @@
+
+<div class="grid">
+  <div
+    class="relative"
+    [ngClass]="images.length < 3 ? 'col-6':'col-3'"
+    *ngFor="let image of images; let idx=index"
+  >
+    <img [src]="image" class="border-round-md object-cover rounded w-full" />
+    <p-button
+      icon="pi pi-times"
+      variant="text"
+      [rounded]="true"
+      severity="secondary"
+      class="absolute top-0 right-0"
+      (click)="remove(idx)"
+    ></p-button>
+  </div>
+</div>
+<div class="w-full bg-white text-sm">
+  <p-fileUpload
+    #fu
+    name="images"
+    [customUpload]="true"
+    (uploadHandler)="upload($event, fu)"
+    [multiple]="true"
+    accept="image/*"
+    [maxFileSize]="1000000"
+    mode="advanced"
+    chooseLabel="Ajouter"
+    uploadLabel="Envoyer"
+    cancelLabel="Annuler"
+    class="w-full"
+  >
+    <ng-template #empty>
+      <div class="flex items-center justify-center h-full text-gray-500">
+        Glissez-déposez ou cliquez pour ajouter une image
+      </div>
+    </ng-template>
+  </p-fileUpload>
+  </div>

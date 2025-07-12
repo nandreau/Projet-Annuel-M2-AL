@@ -8,7 +8,7 @@ const Role         = db.Role;
 const RefreshToken = db.RefreshToken;
 
 // lifetimes
-const ACCESS_TOKEN_TTL  = 15 * 60;        // 15 minutes in seconds
+const ACCESS_TOKEN_TTL  = 60 * 60;        // 60 minutes in seconds
 const REFRESH_TOKEN_TTL = 7 * 24 * 3600;  // 7 days in seconds
 
 function generateAccessToken(userId) {

@@ -27,7 +27,8 @@ export class UtilitiesService {
    * Returns one of 'À faire' | 'En cours' | 'Terminée' | 'En retard'
    * based on done, dueDate, assignments, and a current date string.
    */
-  getTaskState(task: Task, todayStr: string): string {
+  getTaskState(task: Task): string {
+    const todayStr = new Date().toISOString().slice(0, 10);
     if (task.done) {
       return 'Terminée';
     }
@@ -42,25 +43,26 @@ export class UtilitiesService {
   /**
    * Returns PrimeNG severity for a given task state.
    */
-  getTaskSeverity(task: Task, todayStr: string): 'success' | 'warn' | 'danger' | 'info' {
-    const state = this.getTaskState(task, todayStr);
+  getTaskSeverity(task: Task): 'success' | 'warn' | 'danger' | 'secondary' {
+    const state = this.getTaskState(task);
     switch (state) {
       case 'Terminée':  return 'success';
       case 'En retard': return 'danger';
       case 'En cours':  return 'warn';
-      case 'À faire':   return 'info';
-      default:          return 'info';
+      case 'À faire':   return 'secondary';
+      default:          return 'secondary';
     }
   }
 
   /**
-   * Returns PrimeNG severity for a given problem urgency.
+   * Returns PrimeNG severity for a given problem priority.
    */
-  getPrioritySeverity(urgency: string): 'danger' | 'warn' | 'info' {
-    switch (urgency) {
+  getPrioritySeverity(priority: string): 'danger' | 'warn' | 'info' | 'secondary' {
+    switch (priority) {
       case 'Urgent': return 'danger';
-      case 'Moyen':  return 'warn';
-      case 'Faible': return 'info';
+      case 'Important': return 'warn';
+      case 'Moyen':  return 'info';
+      case 'Faible': return 'secondary';
       default:       return 'info';
     }
   }

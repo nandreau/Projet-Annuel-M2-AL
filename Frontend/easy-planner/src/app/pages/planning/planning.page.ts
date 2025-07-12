@@ -135,19 +135,6 @@ export class PlanningPage implements OnInit {
       });
   }
 
-
-  isOverdue(task: Task): boolean {
-    return !task.done && !!task.dueDate && new Date(task.dueDate) <= this.today;
-  }
-
-  isOngoing(task: Task): boolean {
-    return !task.done && !!task.dueDate && new Date(task.dueDate) > this.today;
-  }
-
-  isTodo(task: Task): boolean {
-    return !task.done && !task.dueDate;
-  }
-
   isToday(date: Date): boolean {
     const today = new Date();
     return date.getDate() === today.getDate() &&

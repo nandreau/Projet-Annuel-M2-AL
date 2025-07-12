@@ -4,6 +4,7 @@ const Chantier   = db.Chantier;
 const Phase      = db.Phase;
 const Task       = db.Task;
 const Assignment = db.Assignment;
+const Checklist  = db.Checklist;
 const User       = db.User;
 
 exports.create = async (req, res) => {
@@ -32,6 +33,9 @@ exports.findAll = async (req, res) => {
               model: Task,
               include: [
                 {
+                  model: Checklist
+                },
+                {
                   model: Assignment,
                   include: [
                     {
@@ -51,7 +55,8 @@ exports.findAll = async (req, res) => {
         [ Phase,       "id",    "ASC" ],
         [ Phase, Task, "updatedAt", "ASC"],
         [ Phase, Task, "id",    "ASC" ],
-        [ Phase, Task, Assignment, "id", "ASC" ]
+        [ Phase, Task, Assignment, "id", "ASC" ],
+        [ Phase, Task, Checklist, "id", "ASC" ]
       ]
     });
     const withIntervenants = list.map(ct => {
@@ -105,6 +110,9 @@ exports.findOne = async (req, res) => {
               model: Task,
               include: [
                 {
+                  model: Checklist
+                },
+                {
                   model: Assignment,
                   include: [
                     {
@@ -118,6 +126,13 @@ exports.findOne = async (req, res) => {
             }
           ]
         }
+      ],
+      order: [
+        [ Phase,       "id",    "ASC" ],
+        [ Phase, Task, "updatedAt", "ASC"],
+        [ Phase, Task, "id",    "ASC" ],
+        [ Phase, Task, Assignment, "id", "ASC" ],
+        [ Phase, Task, Checklist, "id", "ASC" ]
       ]
     });
 

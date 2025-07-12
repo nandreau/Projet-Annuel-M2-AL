@@ -8,6 +8,7 @@ const {
   Chantier,
   Phase,
   Task,
+  Checklist,
   Assignment,
   Problem,
   ProblemMessage,
@@ -49,9 +50,9 @@ module.exports = async function loadFakeData() {
     "Carré des Entrepreneurs",
     "Domaine du Château-Vieux",
     "Place de la République",
-    ];
+  ];
 
-    const phaseNames = [
+  const phaseNames = [
     "Plomberie",
     "Électricité",
     "Carrelage",
@@ -82,107 +83,255 @@ module.exports = async function loadFakeData() {
     "Montage de structures",
     "Traitement humidité",
     "Désamiantage",
-    ];
+  ];
 
-    const taskNames = [
-    "Réparation de canalisation",
-    "Remplacement de disjoncteur",
-    "Pose de carrelage mural",
-    "Application de sous-couche",
-    "Réfection de tuiles",
-    "Installation de radiateur",
-    "Réglage de robinetterie",
-    "Ponçage de plancher",
-    "Vernissage de poutres",
-    "Mise en place de gaines électriques",
-    "Réalisation de coffrage",
-    "Installation de menuiserie extérieure",
-    "Pose de faux plafond",
-    "Montage de charpente",
-    "Réglage de système HVAC",
-    "Câblage informatique",
-    "Pose de revêtement PVC",
-    "Fixation de garde-corps",
-    "Installation de volets roulants",
-    "Réglage de serrure de sécurité",
-    "Nettoyage haute pression",
-    "Installation de néons LED",
-    "Révision de pompe à chaleur",
-    "Assemblage d'échafaudage",
-    "Réparations ponctuelles de fissures",
-    "Pose de profilés métalliques",
-    "Test d'étanchéité aux gaz",
-    "Mise à niveau de sol",
-    "Montage de murs mobiles",
-    ];
+  const taskTemplates = [
+    {
+      name: "Réparation de canalisation",
+      description: "Inspecter la fuite d’eau visible au plafond du couloir du 2ᵉ étage, identifier la canalisation responsable, remplacer le joint défectueux et vérifier l’absence de nouvelle infiltration pendant au moins 24 heures."
+    },
+    {
+      name: "Remplacement de disjoncteur",
+      description: "Diagnostiquer la panne électrique générale, contrôler les fusibles et disjoncteurs du tableau principal, remplacer les composants endommagés puis tester chaque circuit de manière systématique."
+    },
+    {
+      name: "Pose de carrelage mural",
+      description: "Décoller les carreaux fissurés, nettoyer la surface, appliquer du mortier-colle, reposer les nouveaux carreaux en suivant le calepinage initial."
+    },
+    {
+      name: "Application de sous-couche",
+      description: "Préparer les murs en ponçant puis dépoussiérant, appliquer une sous-couche adaptée, laisser sécher 24 heures avant finition."
+    },
+    {
+      name: "Réfection de tuiles",
+      description: "Retirer les tuiles endommagées, nettoyer la surface, poser de nouvelles tuiles et appliquer un traitement hydrofuge si nécessaire."
+    },
+    {
+      name: "Installation de radiateur",
+      description: "Fixer le radiateur au mur, raccorder au circuit de chauffage, purger et tester le bon fonctionnement de l’ensemble."
+    },
+    {
+      name: "Réglage de robinetterie",
+      description: "Contrôler la pression, démonter la cartouche, remplacer les joints défectueux et tester l’écoulement."
+    },
+    {
+      name: "Ponçage de plancher",
+      description: "Utiliser une ponceuse orbitale pour niveler la surface, dépoussiérer, et préparer le sol à la vitrification."
+    },
+    {
+      name: "Vernissage de poutres",
+      description: "Décaper les anciennes couches, poncer manuellement, appliquer deux couches de vernis anti-UV."
+    },
+    {
+      name: "Mise en place de gaines électriques",
+      description: "Tracer les saignées, installer les gaines ICTA, tirer les câbles selon plan et reboucher proprement."
+    },
+    {
+      name: "Pose de faux plafond",
+      description: "Monter la structure métallique, fixer les plaques de plâtre, jointer, enduire et poncer les raccords."
+    },
+    {
+      name: "Montage de charpente",
+      description: "Assembler les éléments préfabriqués au sol, lever la charpente avec grue, fixer et sécuriser selon plan."
+    },
+    {
+      name: "Réglage de système HVAC",
+      description: "Vérifier la ventilation, calibrer le débit d’air, ajuster la température de consigne et contrôler le retour d’air."
+    },
+    {
+      name: "Pose de revêtement PVC",
+      description: "Préparer le sol, découper les lés, coller en plein, maroufler et souder les joints à chaud."
+    },
+    {
+      name: "Fixation de garde-corps",
+      description: "Positionner les supports au laser, percer et cheviller, fixer le garde-corps et tester la résistance."
+    },
+    {
+      name: "Installation de volets roulants",
+      description: "Fixer le caisson, monter les glissières, raccorder au réseau et configurer la télécommande."
+    },
+    {
+      name: "Réglage de serrure de sécurité",
+      description: "Démonter le barillet, lubrifier les mécanismes, réaligner les gâches et tester le verrouillage complet."
+    },
+    {
+      name: "Nettoyage haute pression",
+      description: "Utiliser un nettoyeur haute pression pour décaper les surfaces dures, appliquer un produit antidérapant si nécessaire."
+    },
+    {
+      name: "Révision de pompe à chaleur",
+      description: "Vérifier les pressions, nettoyer les filtres, tester le fluide frigorigène et assurer la conformité du groupe."
+    },
+    {
+      name: "Test d'étanchéité aux gaz",
+      description: "Boucher les extrémités du réseau, injecter du gaz traceur, détecter toute fuite et consigner les résultats."
+    },
+    {
+      name: "Réparations de fissures murales",
+      description: "Ouvrir les fissures, injecter une résine de scellement, appliquer un enduit de finition et repeindre."
+    },
+    {
+      name: "Montage de cloison sèche",
+      description: "Installer les rails, positionner les plaques BA13, visser, jointer et préparer à la peinture."
+    },
+    {
+      name: "Traitement anti-humidité",
+      description: "Décaper la surface touchée, injecter un produit hydrofuge, poser une membrane étanche et ventiler."
+    },
+    {
+      name: "Pose de gouttière en zinc",
+      description: "Fixer les crochets, assembler les éléments en zinc par soudure à l’étain, contrôler l’écoulement."
+    },
+    {
+      name: "Démontage de cloison",
+      description: "Sécuriser la zone, retirer proprement les plaques, démonter l’ossature métallique et évacuer les gravats."
+    },
+    {
+      name: "Isolation des combles",
+      description: "Dérouler l’isolant, couvrir avec pare-vapeur, assurer l’étanchéité des raccords et vérifier les ponts thermiques."
+    },
+    {
+      name: "Pose de dalle PVC clipsable",
+      description: "Préparer le sol, clipser les dalles sans colle, découper les rives et poser les plinthes."
+    },
+    {
+      name: "Calfeutrage de fenêtres",
+      description: "Retirer les anciens joints, nettoyer les rebords, poser un joint silicone neuf et lisser avec spatule."
+    },
+    {
+      name: "Pose d'escalier en kit",
+      description: "Assembler les éléments selon notice, fixer solidement au plancher et sécuriser avec garde-corps."
+    },
+    {
+      name: "Peinture de façade extérieure",
+      description: "Laver à haute pression, réparer les fissures, appliquer une couche d’accroche puis deux couches de peinture siloxane."
+    },
+  ];
 
-    const problemTitles = [
-    "Fuite d'eau au niveau du 2ème étage",
-    "Panne générale d'électricité",
-    "Carrelage fissuré dans la cuisine",
-    "Peinture écaillée dans le salon",
-    "Tuiles manquantes sur le toit",
-    "Chauffage en panne dans les combles",
-    "Fenêtre mal étanchéisée",
-    "Fissures dans le mur porteur",
-    "Ventilation défectueuse",
-    "Portail automatique bloqué",
-    "Ascenseur en arrêt d'urgence",
-    "Éclairage de parking hors service",
-    "Gouttière obstruée",
-    "Baignoire fissurée",
-    "Plancher qui craque",
-    "Toit qui laisse passer l'eau",
-    "Moustiquaires déchirées",
-    "Peinture moisie",
-    "Climatisation qui fuit",
-    "Convecteur hors service",
-    "Colonne montante bouchée",
-    "Rideau métallique grippé",
-    "Crépissage qui s'effrite",
-    "Escalier glissant",
-    "Corniche détériorée",
-    "Porte blindée voilée",
-    "Isolation insuffisante",
-    "Évacuation encombrée",
-    "Balustrade branlante",
-    "Dalles soulevées",
-    ];
+  const problemTemplates = [
+    {
+      title: "Fuite d'eau au niveau du 2ème étage",
+      description: "Une fuite d'eau importante a été détectée dans le couloir, nécessitant une intervention urgente pour éviter dégâts des plafonds."
+    },
+    {
+      title: "Panne générale d'électricité",
+      description: "L'ensemble du tableau électrique a sauté ce matin après un orage, plongeant tous les étages dans le noir."
+    },
+    {
+      title: "Carrelage fissuré dans la cuisine",
+      description: "Plusieurs carreaux sont fissurés suite à un choc, créant un risque de coupures et d’infiltration d’humidité."
+    },
+    {
+      title: "Peinture écaillée dans le salon",
+      description: "La peinture commence à s’écailler après des infiltrations d’humidité, donnant un aspect négligé au mur principal."
+    },
+    {
+      title: "Tuiles manquantes sur le toit",
+      description: "Des tuiles se sont envolées avec le dernier coup de vent, laissant apparaître la sous-toiture à nu."
+    },
+    {
+      title: "Fenêtre qui ferme mal",
+      description: "La poignée est désalignée, ce qui empêche une fermeture hermétique, causant des courants d'air et pertes de chaleur."
+    },
+    {
+      title: "Serrure défectueuse",
+      description: "La serrure principale coince, rendant difficile l’ouverture depuis l’extérieur, surtout par temps froid."
+    },
+    {
+      title: "Prise électrique en court-circuit",
+      description: "Une étincelle a été observée sur la prise de la salle à manger, provoquant une coupure momentanée du réseau."
+    },
+    {
+      title: "Moisissure au plafond de la salle de bain",
+      description: "Des taches sombres se forment en permanence malgré l’aération, indiquant un problème d’humidité chronique."
+    },
+    {
+      title: "Chauffage central en panne",
+      description: "Les radiateurs restent froids dans tout l’immeuble malgré la mise en route du chauffage collectif."
+    },
+    {
+      title: "Tâches d'humidité dans le garage",
+      description: "Une humidité ascensionnelle remonte le long des murs, détériorant la peinture."
+    },
+    {
+      title: "Ventilation bruyante",
+      description: "Le système de VMC émet un sifflement permanent, audible depuis les pièces principales."
+    },
+    {
+      title: "Portail automatique bloqué",
+      description: "Le portail motorisé ne répond plus à la commande à distance ni à l'ouverture manuelle."
+    },
+    {
+      title: "Fissure sur le mur porteur",
+      description: "Une fissure verticale de plus de 5 mm est visible, signalée comme potentiellement structurelle par l'expert."
+    },
+    {
+      title: "Luminaire qui ne s’allume plus",
+      description: "Malgré le remplacement de l’ampoule, le plafonnier ne fonctionne toujours pas."
+    },
+    {
+      title: "Odeur persistante dans le local technique",
+      description: "Une odeur de brûlé émane du tableau électrique, pouvant indiquer une surchauffe ou court-circuit latent."
+    },
+    {
+      title: "Escalier extérieur glissant",
+      description: "Les marches deviennent dangereusement glissantes après la pluie, sans traitement antidérapant."
+    },
+    {
+      title: "Caniveau bouché",
+      description: "Le caniveau du parking ne draine plus correctement, provoquant des flaques persistantes."
+    },
+    {
+      title: "Fuite sous l’évier",
+      description: "Une flaque d’eau apparaît chaque matin sous l’évier malgré le serrage des raccords."
+    },
+    {
+      title: "Rideau métallique bloqué",
+      description: "Impossible de lever le rideau de la boutique ce matin, même en mode manuel."
+    },
+    {
+      title: "Infiltration autour de la cheminée",
+      description: "Lors des pluies, l’eau s’infiltre par les joints du conduit de cheminée, détériorant le plafond."
+    },
+    {
+      title: "Grille de ventilation manquante",
+      description: "La grille en façade est tombée, exposant le conduit directement à l’extérieur."
+    },
+    {
+      title: "Détecteur de fumée défectueux",
+      description: "Il sonne aléatoirement sans raison, gênant les résidents et nécessitant un remplacement."
+    },
+    {
+      title: "Évier bouché",
+      description: "L'eau met plusieurs minutes à s'évacuer, même après tentative de débouchage manuel."
+    },
+    {
+      title: "Radiateur qui fuit",
+      description: "Une fuite goutte à goutte persiste au niveau du robinet thermostatique."
+    },
+    {
+      title: "Gaine technique ouverte",
+      description: "La trappe d’accès à la gaine technique n’est plus fixée, posant un risque d’accident."
+    },
+    {
+      title: "Porte d’entrée qui frotte",
+      description: "Elle frotte fortement contre le sol depuis quelques semaines, rendant l’ouverture difficile."
+    },
+    {
+      title: "Revêtement décollé",
+      description: "Le revêtement mural de la cage d’escalier se décolle à plusieurs endroits."
+    },
+    {
+      title: "Carrelage glissant dans les sanitaires",
+      description: "Les carreaux deviennent dangereux après nettoyage, un traitement antidérapant est requis."
+    },
+    {
+      title: "Trappe de désenfumage bloquée",
+      description: "Elle reste en position fermée malgré l’essai manuel via la commande murale."
+    },
+  ];
 
-    const problemDescriptions = [
-    "Une fuite d'eau importante a été détectée dans le couloir.",
-    "L'ensemble du tableau électrique a sauté ce matin.",
-    "Plusieurs carreaux sont fissurés suite à un choc.",
-    "La peinture commence à s'écailler après l'humidité.",
-    "Des tuiles se sont envolées avec le dernier coup de vent.",
-    "Le chauffage ne s'allume plus, même après réinitialisation.",
-    "De l'eau s'infiltre autour de la fenêtre lors de fortes pluies.",
-    "Des craquelures apparaissent dans la maçonnerie du mur nord.",
-    "La ventilation émet un bruit strident en continu.",
-    "Le portail refuse de se fermer automatiquement.",
-    "L'ascenseur est bloqué entre deux étages.",
-    "Les lampadaires extérieurs ne fonctionnent plus.",
-    "Les gouttières sont pleines de feuilles et débordent.",
-    "La baignoire présente une fissure sous le trop-plein.",
-    "Le plancher grince fortement à chaque pas.",
-    "Le toit laisse pénétrer l'eau par temps de pluie.",
-    "Les moustiquaires sont déchirées aux fenêtres.",
-    "La peinture est tachée par des moisissures.",
-    "La climatisation goutte dans le bureau.",
-    "Le convecteur ne chauffe plus du tout.",
-    "La colonne d'eau est partiellement obstruée.",
-    "Le rideau métallique est grippé à l'ouverture.",
-    "Le crépis de façade s'effrite par endroits.",
-    "Les marches de l'escalier sont glissantes.",
-    "La corniche extérieure est endommagée.",
-    "La porte blindée ne ferme plus parfaitement.",
-    "L'isolation laisse passer le froid.",
-    "L'évacuation des eaux usées est lente.",
-    "La balustrade du balcon est instable.",
-    "Les dalles de la terrasse sont soulevées.",
-    ];
-
-    const messageContents = [
+  const messageContents = [
     "J'ai constaté le problème ce matin.",
     "Nous sommes en cours d'intervention.",
     "Le devis a été envoyé au client.",
@@ -213,7 +362,53 @@ module.exports = async function loadFakeData() {
     "La pose des menuiseries démarre demain.",
     "L'échafaudage est prêt à être démonté.",
     "Le sol a été balayé et nettoyé.",
-    ];
+  ];
+
+  const checklistTemplates = [
+    "Inspecter la zone affectée",
+    "Prendre des photos avant intervention",
+    "Commander les pièces nécessaires",
+    "Planifier l’intervention",
+    "Valider la conformité après réparation",
+    "Mettre à jour la documentation",
+    "Informer le résident",
+    "Vérifier le fonctionnement en conditions réelles",
+    "Nettoyer le chantier après travaux",
+    "Tester en mode hors charge",
+    "Contrôler les branchements électriques",
+    "Mesurer la pression hydraulique",
+    "Vérifier l’absence de fuites",
+    "Analyser le rapport d’anomalie",
+    "S’assurer du respect des normes",
+    "Renseigner le registre de maintenance",
+    "Faire signer par le responsable",
+    "Programmer la prochaine visite",
+    "Évaluer le coût des fournitures",
+    "Vérifier la qualité de la peinture",
+    "Contrôler le serrage des fixations",
+    "Réaliser un essai fonctionnel",
+    "Mettre en place une signalisation de sécurité",
+    "Confirmer la remise en service",
+    "Archiver les bons de commande",
+    "Établir un compte-rendu photo",
+    "Informer l’équipe technique",
+    "Planifier l’aération post-travaux",
+    "Documenter les éventuelles réserves",
+    "Vérifier l’intégrité des conduits",
+    "Nettoyer les canalisations",
+    "Tester le fonctionnement en charge",
+    "Vérifier la tension des ressorts",
+    "Mettre à jour le planning d’intervention",
+    "Archiver la preuve de conformité",
+    "Informer la direction",
+    "Réaliser un debriefing avec l’équipe",
+    "Mettre à jour le tableau de bord",
+    "Envoyer le rapport au client",
+    "Planifier la formation sur l’équipement",
+  ];
+
+
+  const priorities = ["Urgent", "Important", "Moyen", "Faible"];
 
   // 1) rôles
   const roleNames = ['client', 'artisan', 'moderator', 'admin'];
@@ -221,13 +416,38 @@ module.exports = async function loadFakeData() {
 
   // 2) utilisateurs
   const users = [{
-    firstname: "Aurélien",
-    name: "Penot",
-    email: "aurelien@gmail.com",
-    job: ["PDG"],
-    avatar: faker.image.avatar(),
-    password: "$2a$08$36NBre.ckxhWoQpVNA1AROClrqTQpLgWIiD1IqtoXYmvA704rtOc.", // Azerty123
-  }];
+      firstname: "Admin",
+      name: "Test",
+      email: "admin@gmail.com",
+      job: ["admin"],
+      avatar: faker.image.avatar(),
+      password: "$2a$08$36NBre.ckxhWoQpVNA1AROClrqTQpLgWIiD1IqtoXYmvA704rtOc.", // Azerty123
+    },
+    {
+      firstname: "Moderator",
+      name: "Test",
+      email: "moderator@gmail.com",
+      job: ["moderator"],
+      avatar: faker.image.avatar(),
+      password: "$2a$08$36NBre.ckxhWoQpVNA1AROClrqTQpLgWIiD1IqtoXYmvA704rtOc.", // Azerty123
+    },
+    {
+      firstname: "Artisan",
+      name: "Test",
+      email: "artisan@gmail.com",
+      job: ["artisan"],
+      avatar: faker.image.avatar(),
+      password: "$2a$08$36NBre.ckxhWoQpVNA1AROClrqTQpLgWIiD1IqtoXYmvA704rtOc.", // Azerty123
+    },
+    {
+      firstname: "Client",
+      name: "Test",
+      email: "client@gmail.com",
+      job: ["PDG"],
+      avatar: faker.image.avatar(),
+      password: "$2a$08$36NBre.ckxhWoQpVNA1AROClrqTQpLgWIiD1IqtoXYmvA704rtOc.", // Azerty123
+    },
+  ];
   for (let i = 0; i < 100; i++) {
     users.push({
       firstname: faker.person.firstName(),
@@ -240,9 +460,11 @@ module.exports = async function loadFakeData() {
   }
   await User.bulkCreate(users);
   for (const user of await User.findAll()) {
-    const roleId = user.email === "aurelien@gmail.com"
-      ? 4 // admin
-      : faker.number.int({ min: 1, max: 3 });
+    const roleId = user.email === "client@gmail.com"
+      ? 1 : user.email === "artisan@gmail.com" 
+      ? 2 : user.email === "moderator@gmail.com"
+      ? 3 : user.email === "admin@gmail.com"
+      ? 4 : faker.number.int({ min: 1, max: 3 });
     await user.setRoles([await Role.findByPk(roleId)]);
   }
 
@@ -271,25 +493,40 @@ module.exports = async function loadFakeData() {
         chantierId: chantier.id,
       });
 
-
       for (let t = 0; t < faker.number.int({ min: 2, max: 6 }); t++) {
         const usedDates = new Set();
 
+        const { name, description } = faker.helpers.arrayElement(taskTemplates);
+        const isDone = Math.random() <= 0.3;
+
         const task = await Task.create({
-          name: faker.helpers.arrayElement(taskNames),
-          done: Math.random() <= 0.25,
+          name,
+          description,
+          priority: faker.helpers.arrayElement(priorities),
+          done: isDone,
           dueDate: Math.random() <= 0.3 ? faker.date.past() : faker.date.future(),
-          doneDate: faker.datatype.boolean() ? faker.date.recent() : null,
-          images: [],
+          doneDate: isDone ? faker.date.recent() : null,
+          images: isDone ? Array.from({ length: 3 }, () =>
+            `https://picsum.photos/seed/${faker.string.uuid()}/800/600`
+          ): [],
           phaseId: phase.id,
         });
 
+        const howManyChecks = faker.number.int({ min: 4, max: 8 })
+        const picks = faker.helpers.arrayElements(checklistTemplates, howManyChecks)
+        for (const itemName of picks) {
+          await Checklist.create({
+            name: itemName,
+            done: false,
+            taskId: task.id,
+          })
+        }
 
-        const assignmentsToCreate = Math.random() < 0.3 ? 0 : faker.number.int({ min: 15, max: 20 });
+        const assignmentsToCreate = Math.random() < 0.2 ? 0 : faker.number.int({ min: 35, max: 45 });
         let createdAssignments = 0;
 
         while (createdAssignments < assignmentsToCreate && usedDates.size < 22) {
-          const dayOffset = t.done ? faker.number.int({ min: 0, max: 30 }) : faker.number.int({ min: -90, max: -1 });
+          const dayOffset = task.done ? faker.number.int({ min: -61, max: -1 }) : faker.number.int({ min: 0, max: 60 });
           const baseDate = new Date();
           baseDate.setDate(baseDate.getDate() + dayOffset);
 
@@ -322,22 +559,22 @@ module.exports = async function loadFakeData() {
 
           createdAssignments++;
         }
-        
       }
     }
   }
 
   // 4) problèmes / messages
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 20; i++) {
+    const { title, description } = faker.helpers.arrayElement(problemTemplates);
     const problem = await Problem.create({
-      title: faker.helpers.arrayElement(problemTitles),
-      urgency: faker.helpers.arrayElement(["Urgent","Moyen","Faible"]),
-      chantier: faker.helpers.arrayElement(chantierNames),
+      title,
+      description,
+      priority: faker.helpers.arrayElement(priorities),
+      chantierId: faker.number.int({ min: 1, max: 5 }),
       phase: faker.helpers.arrayElement(phaseNames),
-      task: faker.helpers.arrayElement(taskNames),
+      task: faker.helpers.arrayElement(taskTemplates).name,
       date: faker.date.recent(),
-      status: faker.helpers.arrayElement(["En cours","Non résolu","Résolu"]),
-      description: faker.helpers.arrayElement(problemDescriptions),
+      status: faker.helpers.arrayElement(["En cours", "Non résolu", "Résolu"]),
       images: [],
       userId: faker.number.int({ min: 1, max: 100 }),
     });

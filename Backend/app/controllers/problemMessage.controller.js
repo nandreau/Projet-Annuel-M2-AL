@@ -32,12 +32,35 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  const list = await ProblemMessage.findAll();
+  const list = await ProblemMessage.findAll({
+    include: [
+        {
+          model: User,
+          attributes: { exclude: ["password"] },
+          include: [
+            { model: Role, through: { attributes: [] } }
+          ]
+        }
+      ],
+      order: [
+        [ "id",  "ASC" ]
+      ]
+  });
   res.json(list);
 };
 
 exports.findOne = async (req, res) => {
-  const m = await ProblemMessage.findByPk(req.params.id);
+  const m = await ProblemMessage.findByPk(req.params.id, {
+    include: [
+        {
+          model: User,
+          attributes: { exclude: ["password"] },
+          include: [
+            { model: Role, through: { attributes: [] } }
+          ]
+        }
+      ]
+  });
   if (!m) return res.status(404).json({ message: "Not found" });
   res.json({ message: "Created successfully" });
 };

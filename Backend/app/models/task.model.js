@@ -8,6 +8,12 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING,
     },
+    description: {
+      type: Sequelize.STRING,
+    },
+    priority: {
+      type: Sequelize.ENUM("Urgent", "Important", "Moyen", "Faible"),
+    },
     done: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,

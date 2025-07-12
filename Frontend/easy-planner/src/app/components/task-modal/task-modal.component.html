@@ -1,0 +1,184 @@
+<p-dialog
+  [(visible)]="visible"
+  *ngIf="!confirmation"
+  (onHide)="closed.emit()"
+  header="Détails de la tâche"
+  [modal]="true"
+  [style]="{ width:  '40rem' }"
+  appendTo="body"
+>
+
+  <div class="flex align-items-center mb-2">
+    <span class="white-space-nowrap font-bold">
+      {{utils.getTaskState(task) + ':'}}&nbsp;
+    </span>
+    <input
+      pInputText
+      [disabled]="task.done"
+      [(ngModel)]="task.name"
+      (blur)="onFieldChange('name', task.name)"
+      class="raw-input"
+      tab
+    />
+  </div>
+
+
+  <div class="grid mt-2">
+      <!-- Images -->
+    <div class="col-6 sm:col-4" *ngFor="let image of task.images">
+      <img [src]="image" class="border-round-md object-cover rounded" />
+    </div>
+  </div>
+  <div class="grid mt-2">
+    <!-- Priority -->
+    <div class="col-6">
+      <div class="font-bold text-sm mb-2">Priorité</div>
+      <p-select
+        [variant]="task.done ? 'filled' : 'outlined'"
+        [disabled]="task.done"
+        class="w-full"
+        inputId="priority"
+        [options]="priorityOptions"
+        [(ngModel)]="task.priority"
+        (onChange)="onFieldChange('priority', task.priority)"
+        placeholder="Priorité"
+      ></p-select>
+    </div>
+
+    <!-- Due Date -->
+    <div class="field col-6">
+      <div class="font-bold text-sm mb-2">Date d’échéance</div>
+      <p-datePicker
+        [variant]="task.done ? 'filled' : 'outlined'"
+        [disabled]="task.done"
+        inputId="due"
+        class="w-full"
+        [(ngModel)]="task.dueDate"
+        dateFormat="dd/mm/yy"
+        showIcon
+        [placeholder]="
+          (task.dueDate | date:'d MMMM y') ?? 'Pas d’échéance'
+        "
+        (onSelect)="onFieldChange('dueDate', task.dueDate)"
+        appendTo="body"
+        [showButtonBar]="true"
+      ></p-datePicker>
+    </div>
+
+    <!-- Description -->
+    <div class="field col-12">
+      <div class="font-bold text-sm mb-2">Description</div>
+      <textarea
+        id="desc"
+        [variant]="task.done ? 'filled' : 'outlined'"
+        [disabled]="task.done"
+        pInputTextarea
+        rows="4"
+        [(ngModel)]="task.description"
+        (blur)="onFieldChange('description', task.description)"
+        placeholder="Ajoutez des notes ici..."
+        class="w-full"
+      ></textarea>
+    </div>
+
+    <!-- Checklist -->
+    <div class="field col-12">
+      <div class="font-bold text-sm mb-2">Liste de contrôle</div>
+      <div class="checklist">
+        <div
+          *ngFor="let item of task.checklists"
+          class="checklist-item flex align-items-center mb-2"
+        >
+          <p-checkbox
+            [readonly]="task.done"
+            [(ngModel)]="item.done"
+            (onChange)="onChecklistChange(item)"
+            binary="true"
+          ></p-checkbox>
+
+          <input
+            pInputText
+            [variant]="task.done ? 'filled' : 'outlined'"
+            [disabled]="task.done"
+            pSize="small"
+            [(ngModel)]="item.name"
+            (blur)="onChecklistChange(item)"
+            class="ml-2 raw-input"
+          />
+
+          <div class="text-xs white-space-nowrap text-400">
+          {{ item.updatedAt | date:'d MMMM y HH:mm'}}
+          </div>
+
+          <p-button
+            *ngIf="!task.done"
+            icon="pi pi-times"
+            variant="text"
+            size="small"
+            [rounded]="true"
+            severity="secondary"
+            class="ml-2"
+            (click)="deleteChecklistItem(item)"
+            title="Supprimer"
+          ></p-button>
+        </div>
+
+        <!-- add new -->
+        <div *ngIf="!task.done" class="flex align-items-center">
+          <input
+            pInputText
+            pSize="small"
+            [(ngModel)]="newItemName"
+            (keydown.enter)="addChecklistItem()"
+            placeholder="Ajouter un élément"
+            class="flex-grow-1"
+          />
+          <p-button
+            icon="pi pi-plus"
+            [rounded]="true"
+            size="small"
+            class="ml-2"
+            (click)="addChecklistItem()"
+            title="Ajouter"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="!task.done" class="flex justify-content-end gap-2 mt-2">
+    <p-button
+      label="Valider"
+      (click)="confirmation = true"
+    />
+  </div>
+</p-dialog>
+
+
+<p-dialog
+  [(visible)]="visible"
+  *ngIf="confirmation"
+  (onHide)="closed.emit()"
+  header="Détails de la tâche"
+  [modal]="true"
+  [style]="{ width: '35rem' }"
+  appendTo="body"
+>
+  <p class="mt-1 mb-5">
+    Voulez vous valider cette tâche ?
+  </p>
+  <app-image-manager
+    [(images)]="imageList"
+  />
+  <div class="text-red-500 mt-2" *ngIf="imageList.length === 0">
+    ⚠️ Au moins une image de preuve de réalisation de la tâche est requise pour la valider.
+  </div>
+  <div class="flex justify-content-end gap-2 mt-5">
+    <button pButton type="button" label="Annuler" severity="secondary" (click)="confirmation = false"></button>
+    <p-button
+      label="Valider"
+      (click)="onValidate()"
+    />
+  </div>
+</p-dialog>

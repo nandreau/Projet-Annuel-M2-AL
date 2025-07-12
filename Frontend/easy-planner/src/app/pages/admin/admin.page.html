@@ -35,7 +35,7 @@
                 severity="warn"
                 size="small"
                 (click)="openEdit()"
-                [disabled]="!selectedUsers?.length || selectedUsers.length > 1"
+                [disabled]="!selectedUsers.length || selectedUsers.length > 1"
               />
               <p-button
                 label="Supprimer"
@@ -43,7 +43,7 @@
                 severity="danger"
                 size="small"
                 (click)="openDelete()"
-                [disabled]="!selectedUsers?.length"
+                [disabled]="!selectedUsers.length"
               />
             </div>
             <p-iconField iconPosition="left">

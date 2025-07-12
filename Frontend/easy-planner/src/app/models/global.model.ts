@@ -14,6 +14,24 @@ export interface Role {
   name: string;
 }
 
+export interface UserAuth extends WithTimestamps {
+  id: number;
+  accessToken: string;
+  avatar?: string;
+  email: string;
+  firstname: string;
+  name: string;
+  refreshToken: string;
+  roles: RoleEnum[]
+}
+
+export enum RoleEnum {
+  ROLE_CLIENT    = 'ROLE_CLIENT',
+  ROLE_ARTISAN   = 'ROLE_ARTISAN',
+  ROLE_MODERATOR = 'ROLE_MODERATOR',
+  ROLE_ADMIN     = 'ROLE_ADMIN'
+}
+
 export interface Assignment extends WithTimestamps {
   id: number;
   taskId: number;
@@ -25,12 +43,21 @@ export interface Assignment extends WithTimestamps {
 export interface Task extends WithTimestamps {
   id: number;
   name: string;
+  description: string;
+  priority: 'Urgent' | 'Important' | 'Moyen' | 'Faible';
   done: boolean;
   dueDate?: string;
   doneDate?: string;
   images?: string[];
   assignments: Assignment[];
+  checklists: Checklist[];
   phaseId: number;
+}
+
+export interface Checklist extends WithTimestamps {
+  id: number;
+  name: string;
+  done: boolean;
 }
 
 export interface Phase extends WithTimestamps {
@@ -62,10 +89,10 @@ export interface ProblemMessage extends WithTimestamps {
 export interface Problem extends WithTimestamps {
   id: number;
   title: string;
-  urgency: 'Urgent' | 'Moyen' | 'Faible';
-  chantier: string;
-  phase: string;
-  task: string;
+  priority: 'Urgent' | 'Important' | 'Moyen' | 'Faible';
+  chantier: Chantier;
+  phaseLabel: string;
+  taskLabel: string;
   status: 'En cours' | 'Non résolu' | 'Résolu';
   description: string;
   user: User;

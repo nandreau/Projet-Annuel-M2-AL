@@ -16,7 +16,7 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   styleUrls: ['./dynamic-form-modal.component.scss'],
 })
 export class DynamicFormModalComponent<T> {
-  @Input() visible = false;
+  @Input() visible: boolean = false;
   @Input() mode: 'add' | 'edit' = 'add';
 
   @Input() model!: any;

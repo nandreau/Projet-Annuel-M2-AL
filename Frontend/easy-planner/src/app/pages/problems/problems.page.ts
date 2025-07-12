@@ -9,23 +9,25 @@ import { addIcons } from 'ionicons';
 import { camera } from 'ionicons/icons';
 import { firstValueFrom } from 'rxjs';
 import { FileUpload } from 'primeng/fileupload';
+import { ImageManagerComponent } from 'src/app/components/image-manager/image-manager.component';
 
 @Component({
   selector: 'app-problems',
   templateUrl: './problems.page.html',
   styleUrls: ['./problems.page.scss'],
   standalone: true,
-  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule],
+  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule, ImageManagerComponent],
 })
 export class ProblemsPage implements OnInit {
   problems: Problem[] = [];
   filteredProblems: Problem[] = [];
-  chantierOptions: { label: string; value: string | null }[] = [];
-  selectedChantier: string | null = null;
+  chantierOptions: { label: string; value: number | null }[] = [];
+  selectedChantier: number | null = null;
 
   // dropdown options
-  urgencyOptions = [
+  priorityOptions = [
     { label: 'Urgent', value: 'Urgent' },
+    { label: 'Important', value: 'Important' },
     { label: 'Moyen', value: 'Moyen' },
     { label: 'Faible', value: 'Faible' },
   ];
@@ -36,8 +38,7 @@ export class ProblemsPage implements OnInit {
   ];
 
   newComments: { [problemId: number]: string } = {};
-
-  activeProblem: number = 0;
+  activeProblem = 0;
 
   constructor(private request: RequestService) {
     addIcons({ camera });
@@ -49,24 +50,32 @@ export class ProblemsPage implements OnInit {
 
   private loadProblems(): void {
     this.request.get<Problem[]>('api/problems', false).subscribe({
-      next: (data) => {
+      next: data => {
         this.problems = data;
-        console.log(data)
-        const titres = Array.from(new Set(data.map(p => p.chantier)));
+        this.filteredProblems = [...data];
+
+        const map = new Map<number, string>();
+        data.forEach(p => {
+          if (p.chantier) {
+            map.set(p.chantier.id, p.chantier.title);
+          }
+        });
+
         this.chantierOptions = [
           { label: 'Tous les chantiers', value: null },
-          ...titres.map(t => ({ label: t, value: t }))
+          ...Array.from(map.entries()).map(([id, name]) => ({ label: name, value: id }))
         ];
-        this.filteredProblems = [...this.problems];
       },
-      error: (err) => console.error('Erreur chargement problèmes', err),
+      error: err => console.error('Erreur chargement problèmes', err),
     });
   }
 
+
   onChantierChange() {
-    if (this.selectedChantier) {
-      this.filteredProblems = this.problems
-        .filter(p => p.chantier === this.selectedChantier);
+    if (this.selectedChantier != null) {
+      this.filteredProblems = this.problems.filter(
+        p => p.chantier?.id === this.selectedChantier
+      );
     } else {
       this.filteredProblems = [...this.problems];
     }
@@ -102,7 +111,7 @@ export class ProblemsPage implements OnInit {
 
   updateMeta(problem: Problem) {
     const payload = {
-      urgency: problem.urgency,
+      priority: problem.priority,
       status: problem.status,
       images: problem.images,
     };
@@ -111,43 +120,9 @@ export class ProblemsPage implements OnInit {
       error: err => console.error('Échec mise à jour', err)
     });
   }
-
-  addPhoto(event: Event, problem: Problem) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      problem.images = problem.images || [];
-      problem.images.push(url);
-      this.updateMeta(problem);
-    };
-    reader.readAsDataURL(file);
-    input.value = '';
-  }
-
-  onFileUpload(
-    event: { files: File[] },
-    problem: Problem,
-    fileUpload: FileUpload
-  ) {
-    for (const file of event.files) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const url = reader.result as string;
-        problem.images = problem.images || [];
-        problem.images.push(url);
-        this.updateMeta(problem);
-      };
-      reader.readAsDataURL(file);
-    }
-    fileUpload.clear();
-  }
-
-  removePhoto(problem: Problem, index: number) {
-    if (!problem.images) return;
-    problem.images.splice(index, 1);
+  
+  onImagesChange(problem: Problem, images: string[]) {
+    problem.images = images;
     this.updateMeta(problem);
   }
 

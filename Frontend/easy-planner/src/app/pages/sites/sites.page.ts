@@ -122,6 +122,7 @@ export class SitesPage implements OnInit {
 
       if (found) {
         this.filteredChantier = found;
+        this.selectedChantierIndex = found.id;
         this.filteredChantierIndex = this.chantiers.indexOf(found);
       } else {
         this.filteredChantier = this.chantiers[0];
@@ -157,8 +158,8 @@ export class SitesPage implements OnInit {
       { key: 'name', label: 'Nom de phase', type: 'text', placeholder: 'Nom de la phase' },
     ];
     this.taskFields = [
-      { key: 'name',    label: 'Libellé',   type: 'text', placeholder: 'Nom de la tâche' },
-      { key: 'dueDate', label: 'Date cible', type: 'date', placeholder: '' },
+      { key: 'name',    label: 'Nom',   type: 'text', placeholder: 'Nom de la tâche' },
+      { key: 'dueDate', label: 'Fin prévue', type: 'date', placeholder: '' },
     ];
 
   }

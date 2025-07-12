@@ -37,8 +37,6 @@ export class DashboardPage implements OnInit {
   inProgressTasks = 0;
   completedTasks = 0;
   activeUsers = 0;
-  today = new Date();
-  todayStr!: string;
 
   // --- Data sources ---
   chantiers: Chantier[] = [];
@@ -55,6 +53,7 @@ export class DashboardPage implements OnInit {
   // --- Filters / selections ---
   historyChantierId: number | null = null;
   historyState: string | null = null;
+  historyPriority: string | null = null;
   problemChantierId: number | null = null;
   problemStatus: string | null = null;
   problemPriority: string | null = null;
@@ -72,7 +71,6 @@ export class DashboardPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.todayStr = this.today.toISOString().slice(0, 10);
     this.loadAllData();
   }
 
@@ -88,7 +86,6 @@ export class DashboardPage implements OnInit {
         this.tasks = tasks;
         this.problems = problems;
         this.users = users;
-        console.log(users)
 
         // Metrics
         this.activeChantiers = chantiers.length;
@@ -106,7 +103,7 @@ export class DashboardPage implements OnInit {
         // Dropdown options
         this.chantierOptions = chantiers.map(c => ({ label: c.title, value: c.id }));
         this.statusOptions    = ['En cours','Non résolu','Résolu'].map(s => ({ label: s, value: s }));
-        this.priorityOptions  = ['Urgent','Moyen','Faible'].map(p => ({ label: p, value: p }));
+        this.priorityOptions  = ['Urgent','Important','Moyen','Faible'].map(p => ({ label: p, value: p }));
         this.stateOptions = [
           { label: 'À faire',   value: 'À faire' },
           { label: 'En cours',  value: 'En cours' },
@@ -127,38 +124,25 @@ export class DashboardPage implements OnInit {
   }
 
   get filteredProblems(): Problem[] {
-    const chantierLabel = this.chantierOptions.find(o => o.value === this.problemChantierId)?.label;
-    console.log(this.problemChantierId, this.problemStatus, this.problemPriority);
-        console.log(this.problems);
     return this.problems.filter(p =>
-      (!this.problemChantierId || p.chantier === chantierLabel) &&
-      (!this.problemStatus     || p.status  === this.problemStatus) &&
-      (!this.problemPriority   || p.urgency === this.problemPriority)
+      (!this.problemChantierId || p.chantier?.id === this.problemChantierId) &&
+      (!this.problemStatus     || p.status   === this.problemStatus) &&
+      (!this.problemPriority   || p.priority === this.problemPriority)
     );
   }
 
   get historyTasks(): Task[] {
-    if (!this.historyChantierId) {
-      return [];
-    }
+    const chantier = this.chantiers.find(c => c.id === this.historyChantierId);
+    const phaseIds = chantier?.phases.map(p => p.id) || [];
 
-    const phaseIds = this.chantiers
-      .find(c => c.id === this.historyChantierId)
-      ?.phases.map(ph => ph.id) || [];
-    let tasks = this.tasks.filter(t => phaseIds.includes(t.phaseId));
-
-    if (this.historyState) {
-      tasks = tasks.filter(t =>
-        this.utils.getTaskState(t, this.todayStr) === this.historyState
-      );
-    }
-
-    return tasks;
+    return this.tasks.filter(t =>
+      (!this.historyChantierId || phaseIds.includes(t.phaseId)) &&
+      (!this.historyState      || this.utils.getTaskState(t) === this.historyState) &&
+      (!this.historyPriority   || t.priority === this.historyPriority)
+    );
   }
 
-  isLate(task: Task): boolean {
-    return !!task.dueDate && !task.done && task.dueDate < this.todayStr;
-  }
+
 
   private initChart() {
     const style = getComputedStyle(document.documentElement);
@@ -174,7 +158,7 @@ export class DashboardPage implements OnInit {
 
     const counts1: Record<string, number> = { 'À faire':0,'En cours':0,'Terminée':0,'En retard':0 };
     allTasks.forEach(t => {
-      const key = this.utils.getTaskState(t, this.todayStr);
+      const key = this.utils.getTaskState(t);
       counts1[key]++;
     });
     const labels1 = Object.keys(counts1);

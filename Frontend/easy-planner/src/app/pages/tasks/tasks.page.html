@@ -1,0 +1,97 @@
+<app-header></app-header>
+<ion-content [fullscreen]="true">
+  <div class="container">
+    <div class="header-container flex justify-content-between align-items-center">
+      <div class="header-container-title">Liste des tâches</div>
+    </div>
+
+    <div class="form">
+      <p-table
+        #dt
+        [value]="tasks"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10,25,50]"
+        [globalFilterFields]="globalFilterFields"
+        [customSort]="true"
+        (sortFunction)="customSort($event)"
+        styleClass="p-datatable-gridlines"
+      >
+        <!-- Search bar -->
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-end">
+            <p-iconField iconPosition="left">
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+              <input
+                pInputText
+                type="text"
+                (input)="applyGlobalFilter($event)"
+                placeholder="Rechercher un utilisateur"
+              />
+            </p-iconField>
+          </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{ col.header }}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-task>
+          <tr>
+            <td>{{ task.name }}</td>
+            <td>
+              <p-tag
+                [value]="task.priority"
+                [severity]="utils.getPrioritySeverity(task.priority)"
+              ></p-tag>
+            </td>
+            <td>
+              <p-tag
+                [value]="utils.getTaskState(task)"
+                [severity]="utils.getTaskSeverity(task)"
+              ></p-tag>
+            </td>
+            <td>{{ (task.doneDate | date:'yyyy-MM-dd') || '—' }}</td>
+            <td>{{ task.dueDate | date:'yyyy-MM-dd' }}</td>
+            <td>
+              <p-button
+                [rounded]="true" 
+                variant="text"
+                icon="pi pi-pencil"
+                (click)="openEdit(task)"
+                title="Modifier"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Empty -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">Aucune tâche trouvée</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <app-task-modal
+    *ngIf="visibleDetail"
+    [visible]="visibleDetail"
+    [task]="selectedTask"
+    [phases]="[]"
+    (closed)="visibleDetail = false"
+    (submitted)="onDetailSave($event)"
+  ></app-task-modal>
+
+</ion-content>

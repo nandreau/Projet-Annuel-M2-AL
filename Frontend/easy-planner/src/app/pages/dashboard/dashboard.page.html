@@ -98,7 +98,7 @@
       <!-- HISTORIQUE DES MISSIONS -->
       <div class="mt-2 xl:col-6 col-12">
         <div class="card">
-          <div class="card-title">Nouvelles Tâches</div>
+          <div class="card-title">Liste des Tâches</div>
           <div class="flex gap-2">
             <p-select
               [options]="chantierOptions"
@@ -116,14 +116,23 @@
               filter
               placeholder="État"
             ></p-select>
+            <p-select
+              [options]="priorityOptions"
+              [(ngModel)]="historyPriority"
+              optionLabel="label"
+              optionValue="value"
+              filter
+              placeholder="Priorité"
+            ></p-select>
           </div>
           <div class="mt-3">
-            <p-table [value]="historyTasks">
+            <p-table [value]="historyTasks" [rows]="5" [paginator]="true">
               <ng-template pTemplate="header">
                 <tr>
                   <th>Description</th>
                   <th>Responsable</th>
                   <th>Date de fin</th>
+                  <th>Priorité</th>
                   <th>État</th>
                 </tr>
               </ng-template>
@@ -135,9 +144,15 @@
                   </td>
                   <td>{{ task.doneDate || task.dueDate | date:'d MMMM y' }}</td>
                   <td>
+                    <p-tag [value]="task.priority"
+                      [severity]="utils.getPrioritySeverity(task.priority)"
+                      class="text-xs">
+                    </p-tag>
+                  </td>
+                  <td>
                     <p-tag
-                      [value]="utils.getTaskState(task, todayStr)"
-                      [severity]="utils.getTaskSeverity(task, todayStr)"
+                      [value]="utils.getTaskState(task)"
+                      [severity]="utils.getTaskSeverity(task)"
                       class="text-xs"
                     ></p-tag>
                   </td>
@@ -186,7 +201,7 @@
             ></p-select>
           </div>
           <div class="mt-3">
-            <p-table [value]="filteredProblems">
+            <p-table [value]="filteredProblems" [rows]="5" [paginator]="true">
               <ng-template pTemplate="header">
                 <tr>
                   <th>Problème</th>
@@ -202,8 +217,8 @@
                   <td>{{ p.user.firstname }}</td>
                   <td>{{ p.createdAt | date:'d MMMM y' }}</td>
                   <td>
-                    <p-tag [value]="p.urgency"
-                      [severity]="utils.getPrioritySeverity(p.urgency)"
+                    <p-tag [value]="p.priority"
+                      [severity]="utils.getPrioritySeverity(p.priority)"
                       class="text-xs">
                     </p-tag>
                   </td>

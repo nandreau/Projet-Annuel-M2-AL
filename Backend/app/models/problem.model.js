@@ -8,17 +8,14 @@ module.exports = (sequelize, Sequelize) => {
     title: {
       type: Sequelize.STRING,
     },
-    urgency: {
-      type: Sequelize.ENUM("Urgent", "Moyen", "Faible"),
-    },
-    chantier: {
+    phaseLabel: {
       type: Sequelize.STRING,
     },
-    phase: {
+    taskLabel: {
       type: Sequelize.STRING,
     },
-    task: {
-      type: Sequelize.STRING,
+    priority: {
+      type: Sequelize.ENUM("Urgent", "Important", "Moyen", "Faible"),
     },
     status: {
       type: Sequelize.ENUM("En cours", "Non résolu", "Résolu"),

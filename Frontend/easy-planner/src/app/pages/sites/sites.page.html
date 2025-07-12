@@ -115,10 +115,10 @@
                   </div>
                   <div class="flex align-items-center">
                     <div class="text-right text-xs ml-2 text-gray-500">
-                      <ng-container *ngIf="t.doneDate">
+                      <ng-container *ngIf="t.done">
                         Terminé le {{ t.doneDate | date:'d MMMM y' }}
                       </ng-container>
-                      <ng-container *ngIf="!t.doneDate && t.dueDate">
+                      <ng-container *ngIf="!t.done">
                         À faire le {{ t.dueDate | date:'d MMMM y' }}
                       </ng-container>
                     </div>

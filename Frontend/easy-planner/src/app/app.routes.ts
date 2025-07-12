@@ -20,7 +20,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/register/register.page').then((m) => m.RegisterPage),
   },
-
   {
     path: 'dashboard',
     loadComponent: () =>
@@ -34,14 +33,17 @@ export const routes: Routes = [
       import('./pages/planning/planning.page').then((m) => m.PlanningPage),
     canActivate: [AuthGuard],
   },
-
+  {
+    path: 'tasks',
+    loadComponent: () => import('./pages/tasks/tasks.page').then( m => m.TasksPage),
+    canActivate: [AuthGuard],
+  },
   {
     path: 'problems',
     loadComponent: () =>
       import('./pages/problems/problems.page').then((m) => m.ProblemsPage),
     canActivate: [AuthGuard],
   },
-
   {
     path: 'sites',
     loadComponent: () =>
@@ -55,19 +57,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'history',
-    loadComponent: () =>
-      import('./pages/history/history.page').then((m) => m.HistoryPage),
-    canActivate: [AuthGuard],
-  },
-
-  {
     path: 'admin',
     loadComponent: () =>
       import('./pages/admin/admin.page').then((m) => m.AdminPage),
     canActivate: [AuthGuard, AdminGuard],
   },
-
   {
     path: 'not-authorized',
     loadComponent: () =>

@@ -14,6 +14,16 @@ module.exports = function (app) {
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
     controller.update,
   );
+  app.put(
+    "/api/tasks/:id/meta",
+    [ authJwt.verifyToken, authJwt.isArtisanOrModeratorOrAdmin ],
+    controller.updateMeta
+  );
+  app.put(
+    "/api/tasks/:id/validate",
+    [ authJwt.verifyToken, authJwt.isArtisanOrModeratorOrAdmin ],
+    controller.validate
+  );
   app.delete(
     "/api/tasks/:id",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],

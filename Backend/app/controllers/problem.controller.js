@@ -3,6 +3,7 @@ const Problem        = db.Problem;
 const ProblemMessage = db.ProblemMessage;
 const User           = db.User;
 const Role           = db.Role;
+const Chantier       = db.Chantier;
 
 exports.findAll = async (req, res) => {
   try {
@@ -27,6 +28,10 @@ exports.findAll = async (req, res) => {
               ]
             }
           ]
+        },
+        {
+          model: Chantier,
+          attributes: { exclude: [] } 
         }
       ],
       order: [
@@ -61,6 +66,10 @@ exports.findOne = async (req, res) => {
               include: [{ model: Role, through: { attributes: [] } }]
             }
           ]
+        },
+        {
+          model: Chantier,
+          attributes: { exclude: [] } 
         }
       ],
       order: [
@@ -80,17 +89,17 @@ exports.findOne = async (req, res) => {
 };
 
 exports.updateMeta = async (req, res) => {
-  const { status, urgency, images } = req.body;
+  const { status, priority, images } = req.body;
   try {
     const [updatedCount] = await Problem.update(
-      { status, urgency, images },
+      { status, priority, images },
       { where: { id: req.params.id } }
     );
     if (!updatedCount) {
       return res.status(404).json({ message: "Problem not found" });
     }
     const updated = await Problem.findByPk(req.params.id, {
-      attributes: ["id","status","urgency","images"]
+      attributes: ["id","status","priority","images"]
     });
     res.json({ message: "Meta updated", data: updated });
   } catch (err) {

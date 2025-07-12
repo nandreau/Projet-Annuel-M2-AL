@@ -9,7 +9,7 @@ import { ButtonModule, ButtonSeverity } from 'primeng/button';
   templateUrl: './confirm-modal.component.html',
 })
 export class ConfirmModalComponent {
-  @Input() visible = false;
+  @Input() visible: boolean = false;
   @Input() header = 'Confirmation';
   @Input() subtitle = '';
   @Input() color: ButtonSeverity = 'primary';

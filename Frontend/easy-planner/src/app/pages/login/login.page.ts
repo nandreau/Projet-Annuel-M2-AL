@@ -33,17 +33,7 @@ export class LoginPage {
       .subscribe({
         next: (res) => {
           localStorage.setItem('accessToken', res.accessToken);
-          localStorage.setItem(
-            'currentUser',
-            JSON.stringify({
-              id: res.id,
-              firstname: res.firstname,
-              name: res.name,
-              email: res.email,
-              roles: res.roles,
-              avatar: res.avatar,
-            }),
-          );
+          localStorage.setItem('currentUser', JSON.stringify(res));
           this.router.navigate(['/']);
         },
         error: (err) => {
