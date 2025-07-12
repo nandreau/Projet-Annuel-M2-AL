@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Chantier, Phase, Task, User } from 'src/app/models/global.model';
+import { Chantier, Phase, RoleEnum, Task, User, UserAuth } from 'src/app/models/global.model';
 
 @Injectable({
   providedIn: 'root'
@@ -78,5 +78,31 @@ export class UtilitiesService {
       default:           return 'info';
     }
   }
-  
+
+  /** Gets the current user from localStorage */
+  getCurrentUser(): UserAuth | null {
+    const raw = localStorage.getItem('currentUser');
+    return raw ? JSON.parse(raw) as UserAuth : null;
+  }
+
+  /** Role checks */
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.roles.includes(RoleEnum.ROLE_ADMIN) ?? false;
+  }
+
+  isModeratorOrAdmin(): boolean {
+    const user = this.getCurrentUser();
+    const roles = user?.roles ?? [];
+    return roles.includes(RoleEnum.ROLE_ADMIN) || roles.includes(RoleEnum.ROLE_MODERATOR);
+  }
+
+  isArtisanOrModeratorOrAdmin(): boolean {
+    const user = this.getCurrentUser();
+    const roles = user?.roles ?? [];
+    return roles.includes(RoleEnum.ROLE_ADMIN) ||
+           roles.includes(RoleEnum.ROLE_MODERATOR) ||
+           roles.includes(RoleEnum.ROLE_ARTISAN);
+  }
+
 }

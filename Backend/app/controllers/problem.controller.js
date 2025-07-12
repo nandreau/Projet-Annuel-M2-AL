@@ -3,42 +3,126 @@ const Problem        = db.Problem;
 const ProblemMessage = db.ProblemMessage;
 const User           = db.User;
 const Role           = db.Role;
-const Chantier       = db.Chantier;
+const Chantier   = db.Chantier;
+const Phase      = db.Phase;
+const Task       = db.Task;
+const Assignment = db.Assignment;
 
 exports.findAll = async (req, res) => {
   try {
-    const problems = await Problem.findAll({
-      include: [
-        {
-          model: User,
-          attributes: { exclude: ["password"] },
-          include: [
-            { model: Role, through: { attributes: [] } }
-          ]
-        },
-        {
-          model: ProblemMessage,
-          attributes: { exclude: ["userId"] },
-          include: [
-            {
-              model: User,
-              attributes: { exclude: ["password"] },
-              include: [
-                { model: Role, through: { attributes: [] } }
-              ]
-            }
-          ]
-        },
-        {
-          model: Chantier,
-          attributes: { exclude: [] } 
-        }
-      ],
-      order: [
-        ["createdAt", "DESC"],
-        [ ProblemMessage, "id",  "ASC" ]
-      ]
+    const userId = req.userId;
+
+    const user = await User.findByPk(userId, {
+      include: ['roles']
     });
+
+    const roleNames = user.roles.map(role => role.name);
+    const isAdmin = roleNames.includes('admin');
+    const isModerator = roleNames.includes('moderator');
+    const isClient = roleNames.includes('client');
+
+    const includeConfig = [
+      {
+        model: User,
+        attributes: { exclude: ["password"] },
+        include: [
+          { model: Role, through: { attributes: [] } }
+        ]
+      },
+      {
+        model: ProblemMessage,
+        attributes: { exclude: ["userId"] },
+        include: [
+          {
+            model: User,
+            attributes: { exclude: ["password"] },
+            include: [
+              { model: Role, through: { attributes: [] } }
+            ]
+          }
+        ]
+      },
+      {
+        model: Chantier,
+        attributes: { exclude: [] }
+      }
+    ];
+
+    let problems;
+
+    if (isAdmin || isModerator) {
+      // Admins and moderators: all problems
+      problems = await Problem.findAll({
+        include: includeConfig,
+        order: [
+          ["createdAt", "DESC"],
+          [ProblemMessage, "id", "ASC"]
+        ]
+      });
+    } else if (isClient) {
+      // Clients: only problems where they are the client of the chantier
+      problems = await Problem.findAll({
+        include: [
+          ...includeConfig,
+          {
+            model: Chantier,
+            required: true,
+            where: { clientId: userId }
+          }
+        ],
+        order: [
+          ["createdAt", "DESC"],
+          [ProblemMessage, "id", "ASC"]
+        ],
+        distinct: true
+      });
+    } else {
+      // Other roles: problems where user is the creator OR assigned to the chantier
+      problems = await Problem.findAll({
+        where: {
+          [db.Sequelize.Op.or]: [
+            { userId: userId }
+          ]
+        },
+        include: [
+          ...includeConfig,
+          {
+            model: Chantier,
+            required: false,
+            include: [
+              {
+                model: Phase,
+                required: true,
+                include: [
+                  {
+                    model: Task,
+                    required: true,
+                    include: [
+                      {
+                        model: Assignment,
+                        required: true,
+                        include: [
+                          {
+                            model: User,
+                            required: true,
+                            where: { id: userId }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        order: [
+          ["createdAt", "DESC"],
+          [ProblemMessage, "id", "ASC"]
+        ],
+        distinct: true
+      });
+    }
 
     res.json(problems);
   } catch (err) {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { addIcons } from 'ionicons';
 import {
   listOutline,
@@ -18,17 +18,52 @@ import {
 import { IonicModule } from './shared/ionic.module';
 import { ToastModule } from 'primeng/toast';
 import { RoleEnum, UserAuth } from './models/global.model';
+import { FormsModule } from '@angular/forms';
+import { IonSplitPane, MenuController } from '@ionic/angular';
+import { UtilitiesService } from './services/utilities.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [RouterLink, RouterLinkActive, IonicModule, ToastModule],
+  imports: [RouterLink, RouterLinkActive, IonicModule, ToastModule, FormsModule],
 })
 export class AppComponent implements OnInit {
+  @ViewChild('ionSplitPane') ionSplitPane!: IonSplitPane;
   public pages: Page[] = [];
 
-  constructor() {
+  constructor(
+    private router: Router,
+    private menuCtrl: MenuController,
+    private utils: UtilitiesService
+  ) {
+    const allowedRoutes = [
+      '/dashboard',
+      '/sites',
+      '/tasks',
+      '/planning',
+      '/problems',
+      '/admin',
+    ];
+
+    this.router.events.subscribe(async (event) => {
+      if (event instanceof NavigationEnd) {
+        const isAllowed = allowedRoutes.some(route =>
+          event.urlAfterRedirects.startsWith(route)
+        );
+        this.checkPages();
+        if (isAllowed && this.pages.length > 1) {
+          this.ionSplitPane.disabled = false;
+          await this.menuCtrl.enable(true);
+          await this.menuCtrl.open('main-menu');
+        } else {
+          this.ionSplitPane.disabled = true;
+          await this.menuCtrl.close('main-menu');
+          await this.menuCtrl.enable(false);
+        }
+      }
+    });
+
     addIcons({
       homeSharp,
       businessSharp,
@@ -46,25 +81,32 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.checkPages();
+  }
 
-    const raw = localStorage.getItem('currentUser');
-    let user: UserAuth | null;
-    let isAdmin: boolean = false;
-    if (raw) {
-      user = JSON.parse(raw);
-      isAdmin = user?.roles.includes(RoleEnum.ROLE_ADMIN) ? true:false;
-    }
-    
+  checkPages() {
+    const isAdmin = this.utils.isAdmin();
+    const isModeratorOrAdmin = this.utils.isModeratorOrAdmin();
+    const isArtisanOrModeratorOrAdmin = this.utils.isArtisanOrModeratorOrAdmin();
+
     this.pages = [
       { title: 'Tableau de bord', url: '/dashboard', icon: 'home' },
-      { title: isAdmin ? 'Tout les chantiers' : 'Mes chantiers', url: '/sites', icon: 'business' },
-       { title: isAdmin ? 'Toute les taches' : 'Mes tâches', url: '/tasks', icon: 'list' },
-      { title: 'Planning', url: '/planning', icon: 'calendar' },
-      { title: 'Problèmes', url: '/problems', icon: 'warning' },
-      { title: 'Administration', url: '/admin', icon: 'people' },
-      { title: 'Login', url: '/login', icon: 'people' },
-      { title: 'Register', url: '/register', icon: 'people' },
     ];
+    if (isModeratorOrAdmin) {
+      this.pages.push(
+        { title: 'Tout les chantiers', url: '/sites', icon: 'business' },
+      );
+    }
+    if (isArtisanOrModeratorOrAdmin) {
+      this.pages.push(
+        { title: isModeratorOrAdmin ? 'Toute les taches' : 'Mes tâches', url: '/tasks', icon: 'list' },
+        { title: 'Planning', url: '/planning', icon: 'calendar' },
+        { title: 'Problèmes', url: '/problems', icon: 'warning' },
+      );
+    }
+    if (isAdmin) {
+      this.pages.push({ title: 'Administration', url: '/admin', icon: 'people' });
+    }
   }
 }
 

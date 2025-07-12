@@ -1,4 +1,6 @@
 const db = require("../models");
+const Chantier   = db.Chantier;
+const Phase      = db.Phase;
 const Task       = db.Task;
 const Assignment = db.Assignment;
 const Checklist  = db.Checklist;
@@ -14,8 +16,19 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = async (req, res) => {
-  const list = await Task.findAll({
-    include: [
+  try {
+    const userId = req.userId;
+
+    const user = await User.findByPk(userId, {
+      include: ['roles']
+    });
+
+    const roleNames = user.roles.map(role => role.name);
+    const isAdmin = roleNames.includes('admin');
+    const isModerator = roleNames.includes('moderator');
+    const isClient = roleNames.includes('client');
+
+    const includeConfig = [
       {
         model: Checklist
       },
@@ -29,14 +42,75 @@ exports.findAll = async (req, res) => {
           }
         ]
       }
-    ],
-    order: [
-      ["id", "ASC"],
-      [ Assignment, "id", "ASC" ],
-      [ Checklist, "id", "ASC" ]
-    ]
-  });
-  res.json(list);
+    ];
+
+    let tasks;
+
+    if (isAdmin || isModerator) {
+      // Admin and moderator get all tasks
+      tasks = await Task.findAll({
+        include: includeConfig,
+        order: [
+          ["id", "ASC"],
+          [Assignment, "id", "ASC"],
+          [Checklist, "id", "ASC"]
+        ]
+      });
+    } else if (isClient) {
+      // Client: tasks from their own chantiers
+      tasks = await Task.findAll({
+        include: [
+          ...includeConfig,
+          {
+            model: Phase,
+            required: true,
+            include: [
+              {
+                model: Chantier,
+                required: true,
+                where: { clientId: userId }
+              }
+            ]
+          }
+        ],
+        order: [
+          ["id", "ASC"],
+          [Assignment, "id", "ASC"],
+          [Checklist, "id", "ASC"]
+        ],
+        distinct: true
+      });
+    } else {
+      // Other users: only tasks where they're assigned
+      tasks = await Task.findAll({
+        include: [
+          ...includeConfig,
+          {
+            model: Assignment,
+            required: true,
+            include: [
+              {
+                model: User,
+                required: true,
+                where: { id: userId }
+              }
+            ]
+          }
+        ],
+        order: [
+          ["id", "ASC"],
+          [Assignment, "id", "ASC"],
+          [Checklist, "id", "ASC"]
+        ],
+        distinct: true
+      });
+    }
+
+    res.json(tasks);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
 };
 
 exports.findOne = async (req, res) => {

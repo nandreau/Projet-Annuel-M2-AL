@@ -19,50 +19,123 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-    const list = await Chantier.findAll({
-      include: [
-        { 
-          model: User, 
-          as: "client", 
-          attributes: { exclude: ["password"] } 
-        },
-        {
-          model: Phase,
-          include: [
-            {
-              model: Task,
-              include: [
-                {
-                  model: Checklist
-                },
-                {
-                  model: Assignment,
-                  include: [
-                    {
-                      model: User,
-                      through: { attributes: [] },
-                      attributes: { exclude: ["password"] }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      order: [
-        ["id", "ASC"],
-        [ Phase,       "id",    "ASC" ],
-        [ Phase, Task, "updatedAt", "ASC"],
-        [ Phase, Task, "id",    "ASC" ],
-        [ Phase, Task, Assignment, "id", "ASC" ],
-        [ Phase, Task, Checklist, "id", "ASC" ]
-      ]
+    const userId = req.userId;
+
+    const user = await User.findByPk(userId, {
+      include: ['roles']
     });
-    const withIntervenants = list.map(ct => {
+
+    const roleNames = user.roles.map(role => role.name);
+    const isAdmin = roleNames.includes('admin');
+    const isModerator = roleNames.includes('moderator');
+    const isClient = roleNames.includes('client');
+
+    const includeConfig = [
+      {
+        model: User,
+        as: "client",
+        attributes: { exclude: ["password"] }
+      },
+      {
+        model: Phase,
+        include: [
+          {
+            model: Task,
+            include: [
+              {
+                model: Checklist
+              },
+              {
+                model: Assignment,
+                include: [
+                  {
+                    model: User,
+                    through: { attributes: [] },
+                    attributes: { exclude: ["password"] }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    let chantiers;
+
+    if (isAdmin || isModerator) {
+      // Admin or Moderator: return all chantiers
+      chantiers = await Chantier.findAll({
+        include: includeConfig,
+        order: [
+          ["id", "ASC"],
+          [Phase, "id", "ASC"],
+          [Phase, Task, "updatedAt", "ASC"],
+          [Phase, Task, "id", "ASC"],
+          [Phase, Task, Assignment, "id", "ASC"],
+          [Phase, Task, Checklist, "id", "ASC"]
+        ]
+      });
+    } else if (isClient) {
+      // Client: only chantiers where the user is the client
+      chantiers = await Chantier.findAll({
+        where: { clientId: userId },
+        include: includeConfig,
+        order: [
+          ["id", "ASC"],
+          [Phase, "id", "ASC"],
+          [Phase, Task, "updatedAt", "ASC"],
+          [Phase, Task, "id", "ASC"],
+          [Phase, Task, Assignment, "id", "ASC"],
+          [Phase, Task, Checklist, "id", "ASC"]
+        ]
+      });
+    } else {
+      // Other roles: only chantiers where user is assigned to a task
+      chantiers = await Chantier.findAll({
+        include: [
+          ...includeConfig,
+          {
+            model: Phase,
+            required: true,
+            include: [
+              {
+                model: Task,
+                required: true,
+                include: [
+                  {
+                    model: Assignment,
+                    required: true,
+                    include: [
+                      {
+                        model: User,
+                        required: true,
+                        where: { id: userId }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        distinct: true,
+        order: [
+          ["id", "ASC"],
+          [Phase, "id", "ASC"],
+          [Phase, Task, "updatedAt", "ASC"],
+          [Phase, Task, "id", "ASC"],
+          [Phase, Task, Assignment, "id", "ASC"],
+          [Phase, Task, Checklist, "id", "ASC"]
+        ]
+      });
+    }
+
+    const withIntervenants = chantiers.map(ct => {
       ct.dataValues.intervenants = extractIntervenants(ct);
       return ct;
     });
+
     res.json(withIntervenants);
   } catch (err) {
     console.error(err);

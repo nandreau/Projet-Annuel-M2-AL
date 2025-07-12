@@ -474,6 +474,11 @@ module.exports = async function loadFakeData() {
     ? await artisanRole.getUsers({ attributes: ['id'] })
     : [];
 
+  const clientRole = await Role.findOne({ where: { name: 'client' } });
+  const clientUsers = clientRole
+    ? await clientRole.getUsers({ attributes: ['id'] })
+    : [];
+
   // 3) chantiers / phases / tâches / plannings
   for (let i = 0; i < 5; i++) {
     const chantier = await Chantier.create({
@@ -484,7 +489,7 @@ module.exports = async function loadFakeData() {
       images: Array.from({ length: 3 }, () =>
         `https://picsum.photos/seed/${faker.string.uuid()}/800/600`
       ),
-      clientId: faker.number.int({ min: 1, max: 100 }),
+      clientId: faker.helpers.arrayElement(clientUsers).id,
     });
 
     for (let p = 0; p < faker.number.int({ min: 2, max: 4 }); p++) {

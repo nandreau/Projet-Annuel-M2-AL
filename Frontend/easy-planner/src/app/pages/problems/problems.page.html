@@ -124,4 +124,10 @@
       </p-accordion-panel>
     </p-accordion>
   </div>
+  <div
+      *ngIf="filteredProblems.length === 0"
+      class="text-center text-lg font-semibold text-gray-500 absolute-center"
+    >
+      Aucun problème en cours
+  </div>
 </ion-content>
