@@ -1,17 +1,17 @@
 const db = require("../models");
-const Chantier   = db.Chantier;
-const Phase      = db.Phase;
-const Task       = db.Task;
+const Chantier = db.Chantier;
+const Phase = db.Phase;
+const Task = db.Task;
 const Assignment = db.Assignment;
-const Checklist  = db.Checklist;
-const User       = db.User;
+const Checklist = db.Checklist;
+const User = db.User;
 
 exports.create = async (req, res) => {
   try {
-    await Task.create(req.body);
-    res.status(201).json({ message: "Created successfully" });
+    const task = await Task.create(req.body);
+    res.status(201).json({ message: "Tâche créée avec succès", data: task });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ message: `Erreur lors de la création : ${err.message}` });
   }
 };
 
@@ -19,9 +19,8 @@ exports.findAll = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findByPk(userId, {
-      include: ['roles']
-    });
+    const user = await User.findByPk(userId, { include: ['roles'] });
+    if (!user || !user.roles) throw new Error("Utilisateur ou rôles introuvables");
 
     const roleNames = user.roles.map(role => role.name);
     const isAdmin = roleNames.includes('admin');
@@ -29,79 +28,56 @@ exports.findAll = async (req, res) => {
     const isClient = roleNames.includes('client');
 
     const includeConfig = [
-      {
-        model: Checklist
-      },
+      { model: Checklist },
       {
         model: Assignment,
-        include: [
-          {
-            model: User,
-            through: { attributes: [] },
-            attributes: { exclude: ["password"] }
-          }
-        ]
+        include: [{
+          model: User,
+          through: { attributes: [] },
+          attributes: { exclude: ["password"] }
+        }]
       }
     ];
 
     let tasks;
 
     if (isAdmin || isModerator) {
-      // Admin and moderator get all tasks
       tasks = await Task.findAll({
         include: includeConfig,
-        order: [
-          ["id", "ASC"],
-          [Assignment, "id", "ASC"],
-          [Checklist, "id", "ASC"]
-        ]
+        order: [["id", "ASC"], [Assignment, "id", "ASC"], [Checklist, "id", "ASC"]]
       });
     } else if (isClient) {
-      // Client: tasks from their own chantiers
       tasks = await Task.findAll({
         include: [
           ...includeConfig,
           {
             model: Phase,
             required: true,
-            include: [
-              {
-                model: Chantier,
-                required: true,
-                where: { clientId: userId }
-              }
-            ]
+            include: [{
+              model: Chantier,
+              required: true,
+              where: { clientId: userId }
+            }]
           }
         ],
-        order: [
-          ["id", "ASC"],
-          [Assignment, "id", "ASC"],
-          [Checklist, "id", "ASC"]
-        ],
+        order: [["id", "ASC"], [Assignment, "id", "ASC"], [Checklist, "id", "ASC"]],
         distinct: true
       });
     } else {
-      // Other users: only tasks where they're assigned
       tasks = await Task.findAll({
         include: [
           ...includeConfig,
           {
             model: Assignment,
             required: true,
-            include: [
-              {
-                model: User,
-                required: true,
-                where: { id: userId }
-              }
-            ]
+            include: [{
+              model: User,
+              required: true,
+              where: { id: userId }
+            }]
           }
         ],
-        order: [
-          ["id", "ASC"],
-          [Assignment, "id", "ASC"],
-          [Checklist, "id", "ASC"]
-        ],
+        order: [["id", "ASC"], [Assignment, "id", "ASC"], [Checklist, "id", "ASC"]],
         distinct: true
       });
     }
@@ -109,47 +85,54 @@ exports.findAll = async (req, res) => {
     res.json(tasks);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
 exports.findOne = async (req, res) => {
-  const t = await Task.findByPk(req.params.id, {
-    include: [
-      {
-        model: Checklist
-      },
-      {
-        model: Assignment,
-        include: [
-          {
+  try {
+    const t = await Task.findByPk(req.params.id, {
+      include: [
+        { model: Checklist },
+        {
+          model: Assignment,
+          include: [{
             model: User,
             through: { attributes: [] },
             attributes: { exclude: ["password"] }
-          }
-        ]
-      }
-    ],
-    order: [
-      [ Assignment, "id", "ASC" ],
-      [ Checklist, "id", "ASC" ]
-    ]
-  });
-  if (!t) return res.status(404).json({ message: "Not found" });
-  res.json(t);
+          }]
+        }
+      ],
+      order: [[Assignment, "id", "ASC"], [Checklist, "id", "ASC"]]
+    });
+
+    if (!t) return res.status(404).json({ message: "Tâche non trouvée" });
+
+    res.json(t);
+  } catch (err) {
+    console.error("Erreur dans findOne :", err);
+    res.status(500).json({ message: `Erreur : ${err.message}` });
+  }
 };
 
 exports.update = async (req, res) => {
-  const [updated] = await Task.update(req.body, {
-    where: { id: req.params.id },
-  });
-  if (!updated) return res.status(404).json({ message: "Not found" });
-  res.json({ message: "Updated successfully" });
+  try {
+    const [updated] = await Task.update(req.body, {
+      where: { id: req.params.id }
+    });
+
+    if (!updated) return res.status(404).json({ message: "Tâche non trouvée" });
+
+    const task = await Task.findByPk(req.params.id);
+    res.json({ message: "Tâche mise à jour avec succès", data: task });
+  } catch (err) {
+    console.error("Erreur dans update :", err);
+    res.status(500).json({ message: `Erreur : ${err.message}` });
+  }
 };
 
 exports.updateMeta = async (req, res) => {
-  const allowed = ['priority','dueDate', 'name', 'description'];
-  // pick only allowed fields
+  const allowed = ['priority', 'dueDate', 'name', 'description'];
   const updates = {};
   for (const key of allowed) {
     if (req.body[key] !== undefined) {
@@ -160,41 +143,41 @@ exports.updateMeta = async (req, res) => {
   try {
     const actualTask = await Task.findByPk(req.params.id);
     if (actualTask.done) {
-      return res.status(404).json({ message: "Task Cannot be modified while done" });
+      return res.status(400).json({ message: "Tâche déjà validée, modification interdite" });
     }
+
     const [updated] = await Task.update(updates, {
       where: { id: req.params.id }
     });
-    if (!updated) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-    // return the full, fresh task (including associations if you like)
+
+    if (!updated) return res.status(404).json({ message: "Tâche non trouvée" });
+
     const task = await Task.findByPk(req.params.id, {
       include: [
         { model: Checklist },
-        { 
+        {
           model: Assignment,
-          include: [{ model: User, through: { attributes: [] }, attributes: { exclude: ['password'] } }]
+          include: [{
+            model: User,
+            through: { attributes: [] },
+            attributes: { exclude: ["password"] }
+          }]
         }
       ]
     });
-    res.json(task);
+
+    res.json({ message: "Tâche mise à jour avec succès", data: task });
   } catch (err) {
-    console.error("Error in updateMeta:", err);
-    res.status(500).json({ message: err.message });
+    console.error("Erreur dans updateMeta :", err);
+    res.status(500).json({ message: `Erreur : ${err.message}` });
   }
 };
 
 exports.validate = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-
-    if (task.done) {
-      return res.status(400).json({ message: "Task was already validated" });
-    }
+    if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
+    if (task.done) return res.status(400).json({ message: "Tâche déjà validée" });
 
     const images = req.body.images;
     if (images && Array.isArray(images)) {
@@ -203,9 +186,7 @@ exports.validate = async (req, res) => {
 
     const imgs = task.images || [];
     if (!Array.isArray(imgs) || imgs.length < 1) {
-      return res.status(400).json({ 
-        message: "Cannot validate: at least one image is required." 
-      });
+      return res.status(400).json({ message: "Validation impossible : au moins une image est requise" });
     }
 
     task.done = true;
@@ -217,28 +198,29 @@ exports.validate = async (req, res) => {
         { model: Checklist },
         {
           model: Assignment,
-          include: [
-            {
-              model: User,
-              through: { attributes: [] },
-              attributes: { exclude: ["password"] }
-            }
-          ]
+          include: [{
+            model: User,
+            through: { attributes: [] },
+            attributes: { exclude: ["password"] }
+          }]
         }
       ]
     });
 
-    res.json({ message: "Task was validated", data: updated, });
+    res.json({ message: "Tâche validée avec succès", data: updated });
   } catch (err) {
-    console.error("Error in validate:", err);
-    res.status(500).json({ message: err.message });
+    console.error("Erreur dans validate :", err);
+    res.status(500).json({ message: `Erreur : ${err.message}` });
   }
 };
 
 exports.delete = async (req, res) => {
-  const deleted = await Task.destroy({
-    where: { id: req.params.id },
-  });
-  if (!deleted) return res.status(404).json({ message: "Not found" });
-  res.json({ message: "Deleted successfully" });
+  try {
+    const deleted = await Task.destroy({ where: { id: req.params.id } });
+    if (!deleted) return res.status(404).json({ message: "Tâche non trouvée" });
+    res.json({ message: "Tâche supprimée avec succès" });
+  } catch (err) {
+    console.error("Erreur dans delete :", err);
+    res.status(500).json({ message: `Erreur : ${err.message}` });
+  }
 };

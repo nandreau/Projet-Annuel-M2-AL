@@ -10,7 +10,21 @@
     "format:check": "prettier --check \"**/*.{js,json,ts}\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "echo \"No tests yet, passing CI\" && exit 0"
+    "test": "jest --ci --runInBand --coverage"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["json", "lcov", "text", "clover"],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    },
+    "testEnvironment": "node"
   },
   "keywords": [
     "node js",
@@ -35,6 +49,7 @@
   },
   "devDependencies": {
     "eslint": "^8.40.0",
+    "jest": "^30.0.4",
     "prettier": "^3.6.0"
   }
 }
