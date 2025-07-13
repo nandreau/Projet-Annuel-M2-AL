@@ -64,6 +64,14 @@ Cette application vise à **optimiser la gestion des chantiers** en facilitant :
 ### 🐳 Avec Docker  
 - ```docker-compose up --build -d```
 
+## 📋 Utilisateurs de Test
+
+Pour vos essais, vous pouvez vous connecter avec l'une des adresses suivantes qui représentent chacun des rôles, en utilisant **Azerty123** comme mot de passe commun :
+- admin@gmail.com
+- moderator@gmail.com
+- artisan@gmail.com
+- client@gmail.comjs
+
 ## ✅ Tests
 
 ### 📦 Technologies de test utilisées
