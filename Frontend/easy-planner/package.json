@@ -12,7 +12,7 @@
     "lint:fix": "ng lint --fix",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
-    "test": "ng test --watch=false --browsers=ChromeHeadlessCI",
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
     "build": "ng build --configuration production",
     "cypress:open": "ng serve & npx cypress open",
     "cypress:run": "ng serve & npx cypress run --browser chrome"
