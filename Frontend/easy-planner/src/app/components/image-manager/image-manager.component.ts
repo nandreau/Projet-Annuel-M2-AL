@@ -10,7 +10,7 @@ import { PrimengModule } from 'src/app/shared/primeng.module';
   templateUrl: './image-manager.component.html',
   styleUrls: ['./image-manager.component.scss'],
 })
-export class ImageManagerComponent  {
+export class ImageManagerComponent {
   @Input() images: string[] = [];
   @Output() imagesChange = new EventEmitter<string[]>();
 

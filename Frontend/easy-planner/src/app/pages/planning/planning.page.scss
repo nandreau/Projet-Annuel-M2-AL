@@ -45,7 +45,7 @@
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
 }
-.planning-header-cell:first-child  {
+.planning-header-cell:first-child {
   border-left: 1px solid var(--border-color);
 }
 
@@ -97,7 +97,7 @@
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
 }
-.planning-task-row > *:first-child  {
+.planning-task-row > *:first-child {
   border-left: 1px solid var(--border-color);
 }
 .planning-task-cell {
@@ -109,10 +109,18 @@
 }
 
 /* Task icons */
-.icon-done    { color: #10b981; }
-.icon-overdue { color: #ef4444; }
-.icon-ongoing { color: #f59e0b; }
-.icon-todo    { color: #9ca3af; }
+.icon-done {
+  color: #10b981;
+}
+.icon-overdue {
+  color: #ef4444;
+}
+.icon-ongoing {
+  color: #f59e0b;
+}
+.icon-todo {
+  color: #9ca3af;
+}
 .task-name {
   margin-left: 0.5rem;
 }
@@ -141,17 +149,18 @@
   position: relative;
 }
 
-.today-cell .day-name-short, .today-cell .day-name-full {
-  color: var(--color-primary); 
+.today-cell .day-name-short,
+.today-cell .day-name-full {
+  color: var(--color-primary);
 }
 
 .today-cell .day-number {
   font-weight: 700;
-  color: var(--color-primary); 
+  color: var(--color-primary);
 }
 
 .today-cell::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 6px;
   left: 50%;
@@ -164,9 +173,15 @@
 
 /* Responsive */
 @media screen and (max-width: 768px) {
-  .day-name-short { display: block; }
-  .day-name-full  { display: none; }
-  .day-number     { font-size: 1rem; }
+  .day-name-short {
+    display: block;
+  }
+  .day-name-full {
+    display: none;
+  }
+  .day-number {
+    font-size: 1rem;
+  }
   .planning-header-cell {
     padding: 0.5rem 0.25rem;
   }
@@ -176,9 +191,14 @@
   .assignment-block {
     padding: 0.25rem;
   }
-  .assignment-time { font-size: 0.75rem; }
-  .assignment-icon { font-size: 0.75rem; margin-left: 0.25rem; }
-  
+  .assignment-time {
+    font-size: 0.75rem;
+  }
+  .assignment-icon {
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+  }
+
   .today-cell::after {
     display: none;
   }

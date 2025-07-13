@@ -7,7 +7,9 @@ exports.findAll = async (req, res) => {
     res.json(roles);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -20,7 +22,9 @@ exports.findOne = async (req, res) => {
     res.json(role);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -37,14 +41,19 @@ exports.create = async (req, res) => {
     res.status(201).json({ message: "Rôle créé avec succès", data: role });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: `Erreur lors de la création : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la création : ${err.message}` });
   }
 };
 
 exports.update = async (req, res) => {
   try {
     const { name } = req.body;
-    const [updated] = await Role.update({ name }, { where: { id: req.params.id } });
+    const [updated] = await Role.update(
+      { name },
+      { where: { id: req.params.id } },
+    );
 
     if (!updated) {
       return res.status(404).json({ message: "Rôle non trouvé" });
@@ -54,7 +63,9 @@ exports.update = async (req, res) => {
     res.json({ message: "Rôle mis à jour avec succès", data: role });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: `Erreur lors de la mise à jour : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la mise à jour : ${err.message}` });
   }
 };
 
@@ -69,6 +80,8 @@ exports.delete = async (req, res) => {
     res.json({ message: "Rôle supprimé avec succès" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la suppression : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la suppression : ${err.message}` });
   }
 };

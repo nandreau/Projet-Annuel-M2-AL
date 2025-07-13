@@ -43,12 +43,18 @@ exports.signup = async (req, res) => {
       job: Array.isArray(job) ? job : [],
     });
 
-    const defaultRole = await Role.findOne({ where: { name: "user" } });
+    const defaultRole = await Role.findOne({ where: { name: "client" } });
     await user.setRoles([defaultRole]);
 
-    res.status(201).send({ message: "Utilisateur enregistré avec succès avec le rôle USER !" });
+    res
+      .status(201)
+      .send({
+        message: "Utilisateur enregistré avec succès avec le rôle USER !",
+      });
   } catch (err) {
-    res.status(400).send({ message: `Erreur lors de l'enregistrement : ${err.message}` });
+    res
+      .status(400)
+      .send({ message: `Erreur lors de l'enregistrement : ${err.message}` });
   }
 };
 
@@ -56,7 +62,8 @@ exports.signin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(404).send({ message: "Utilisateur non trouvé." });
+    if (!user)
+      return res.status(404).send({ message: "Utilisateur non trouvé." });
 
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(401).send({ message: "Mot de passe invalide !" });
@@ -66,7 +73,7 @@ exports.signin = async (req, res) => {
     const refreshToken = await generateRefreshToken(user);
 
     const roles = (await user.getRoles()).map(
-      r => `ROLE_${r.name.toUpperCase()}`
+      (r) => `ROLE_${r.name.toUpperCase()}`,
     );
 
     res.status(200).send({
@@ -80,7 +87,9 @@ exports.signin = async (req, res) => {
       refreshToken,
     });
   } catch (err) {
-    res.status(500).send({ message: `Erreur lors de la connexion : ${err.message}` });
+    res
+      .status(500)
+      .send({ message: `Erreur lors de la connexion : ${err.message}` });
   }
 };
 
@@ -91,13 +100,21 @@ exports.verify = (req, res) => {
 exports.refreshToken = async (req, res) => {
   const { refreshToken: incoming } = req.body;
   if (!incoming) {
-    return res.status(400).send({ message: "Le jeton d'actualisation est requis." });
+    return res
+      .status(400)
+      .send({ message: "Le jeton d'actualisation est requis." });
   }
 
   try {
     const stored = await RefreshToken.findOne({ where: { token: incoming } });
-    if (!stored || stored.expiryDate < new Date() || stored.revokedAt !== null) {
-      return res.status(403).send({ message: "Jeton d'actualisation invalide ou expiré." });
+    if (
+      !stored ||
+      stored.expiryDate < new Date() ||
+      stored.revokedAt !== null
+    ) {
+      return res
+        .status(403)
+        .send({ message: "Jeton d'actualisation invalide ou expiré." });
     }
 
     const decoded = jwt.verify(incoming, config.secret);
@@ -126,7 +143,7 @@ exports.signout = async (req, res) => {
   if (incoming) {
     await RefreshToken.update(
       { revokedAt: new Date() },
-      { where: { token: incoming } }
+      { where: { token: incoming } },
     );
   }
   res.status(200).send({ message: "Déconnexion réussie !" });

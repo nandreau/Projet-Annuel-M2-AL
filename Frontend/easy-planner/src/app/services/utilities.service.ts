@@ -1,29 +1,37 @@
 import { Injectable } from '@angular/core';
-import { Chantier, Phase, RoleEnum, Task, User, UserAuth } from 'src/app/models/global.model';
+import {
+  Chantier,
+  Phase,
+  RoleEnum,
+  Task,
+  User,
+  UserAuth,
+} from 'src/app/models/global.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilitiesService {
   /** % of done tasks in a phase */
   getPhaseProgress(ph: Phase): number {
     const total = ph.tasks?.length ?? 0;
     if (total === 0) return 0;
-    const done = ph.tasks!.filter(t => t.done).length;
+    const done = ph.tasks!.filter((t) => t.done).length;
     return Math.round((done / total) * 100);
   }
 
   /** % of done tasks across all phases of a chantier */
   getChantierProgress(ct: Chantier): number {
-    const allTasks = ct.phases?.reduce<Task[]>((arr, ph) => {
-      return arr.concat(ph.tasks ?? []);
-    }, []) ?? [];
+    const allTasks =
+      ct.phases?.reduce<Task[]>((arr, ph) => {
+        return arr.concat(ph.tasks ?? []);
+      }, []) ?? [];
     if (allTasks.length === 0) return 0;
-    const done = allTasks.filter(t => t.done).length;
+    const done = allTasks.filter((t) => t.done).length;
     return Math.round((done / allTasks.length) * 100);
   }
 
-   /**
+  /**
    * Returns one of 'À faire' | 'En cours' | 'Terminée' | 'En retard'
    * based on done, dueDate, assignments, and a current date string.
    */
@@ -46,24 +54,36 @@ export class UtilitiesService {
   getTaskSeverity(task: Task): 'success' | 'warn' | 'danger' | 'secondary' {
     const state = this.getTaskState(task);
     switch (state) {
-      case 'Terminée':  return 'success';
-      case 'En retard': return 'danger';
-      case 'En cours':  return 'warn';
-      case 'À faire':   return 'secondary';
-      default:          return 'secondary';
+      case 'Terminée':
+        return 'success';
+      case 'En retard':
+        return 'danger';
+      case 'En cours':
+        return 'warn';
+      case 'À faire':
+        return 'secondary';
+      default:
+        return 'secondary';
     }
   }
 
   /**
    * Returns PrimeNG severity for a given problem priority.
    */
-  getPrioritySeverity(priority: string): 'danger' | 'warn' | 'info' | 'secondary' {
+  getPrioritySeverity(
+    priority: string,
+  ): 'danger' | 'warn' | 'info' | 'secondary' {
     switch (priority) {
-      case 'Urgent': return 'danger';
-      case 'Important': return 'warn';
-      case 'Moyen':  return 'info';
-      case 'Faible': return 'secondary';
-      default:       return 'info';
+      case 'Urgent':
+        return 'danger';
+      case 'Important':
+        return 'warn';
+      case 'Moyen':
+        return 'info';
+      case 'Faible':
+        return 'secondary';
+      default:
+        return 'info';
     }
   }
 
@@ -72,17 +92,21 @@ export class UtilitiesService {
    */
   getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' {
     switch (status) {
-      case 'Résolu':     return 'success';
-      case 'En cours':   return 'warn';
-      case 'Non résolu': return 'danger';
-      default:           return 'info';
+      case 'Résolu':
+        return 'success';
+      case 'En cours':
+        return 'warn';
+      case 'Non résolu':
+        return 'danger';
+      default:
+        return 'info';
     }
   }
 
   /** Gets the current user from localStorage */
   getCurrentUser(): UserAuth | null {
     const raw = localStorage.getItem('currentUser');
-    return raw ? JSON.parse(raw) as UserAuth : null;
+    return raw ? (JSON.parse(raw) as UserAuth) : null;
   }
 
   /** Role checks */
@@ -94,15 +118,19 @@ export class UtilitiesService {
   isModeratorOrAdmin(): boolean {
     const user = this.getCurrentUser();
     const roles = user?.roles ?? [];
-    return roles.includes(RoleEnum.ROLE_ADMIN) || roles.includes(RoleEnum.ROLE_MODERATOR);
+    return (
+      roles.includes(RoleEnum.ROLE_ADMIN) ||
+      roles.includes(RoleEnum.ROLE_MODERATOR)
+    );
   }
 
   isArtisanOrModeratorOrAdmin(): boolean {
     const user = this.getCurrentUser();
     const roles = user?.roles ?? [];
-    return roles.includes(RoleEnum.ROLE_ADMIN) ||
-           roles.includes(RoleEnum.ROLE_MODERATOR) ||
-           roles.includes(RoleEnum.ROLE_ARTISAN);
+    return (
+      roles.includes(RoleEnum.ROLE_ADMIN) ||
+      roles.includes(RoleEnum.ROLE_MODERATOR) ||
+      roles.includes(RoleEnum.ROLE_ARTISAN)
+    );
   }
-
 }

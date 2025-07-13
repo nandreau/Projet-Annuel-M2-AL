@@ -1,9 +1,8 @@
-
 <div class="grid">
   <div
     class="relative"
-    [ngClass]="images.length < 3 ? 'col-6':'col-3'"
-    *ngFor="let image of images; let idx=index"
+    [ngClass]="images.length < 3 ? 'col-6' : 'col-3'"
+    *ngFor="let image of images; let idx = index"
   >
     <img [src]="image" class="border-round-md object-cover rounded w-full" />
     <p-button
@@ -37,4 +36,4 @@
       </div>
     </ng-template>
   </p-fileUpload>
-  </div>
+</div>

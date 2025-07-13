@@ -9,7 +9,11 @@ module.exports = function (app) {
   );
   app.get("/api/chantiers", [authJwt.verifyToken], controller.findAll);
   app.get("/api/chantiers/:id", [authJwt.verifyToken], controller.findOne);
-  app.get('/api/chantiers/:id/assigned-users', [authJwt.verifyToken], controller.findAssignedUsers);
+  app.get(
+    "/api/chantiers/:id/assigned-users",
+    [authJwt.verifyToken],
+    controller.findAssignedUsers,
+  );
   app.put(
     "/api/chantiers/:id",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],

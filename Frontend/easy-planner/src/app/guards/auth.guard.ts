@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  Router,
-  UrlTree,
-} from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { RequestService } from '../services/request.service';
@@ -12,7 +8,7 @@ import { RequestService } from '../services/request.service';
 export class AuthGuard implements CanActivate {
   constructor(
     private request: RequestService,
-    private router: Router
+    private router: Router,
   ) {}
 
   canActivate(): Observable<boolean | UrlTree> {
@@ -25,9 +21,7 @@ export class AuthGuard implements CanActivate {
       .get<{ id: number; message: string }>('api/auth/verify')
       .pipe(
         map(() => true),
-        catchError(() =>
-          of(this.router.createUrlTree(['/login']))
-        )
+        catchError(() => of(this.router.createUrlTree(['/login']))),
       );
   }
 }

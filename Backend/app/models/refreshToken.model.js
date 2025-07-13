@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
     },
-    { timestamps: false }
+    { timestamps: false },
   );
 
   return RefreshToken;

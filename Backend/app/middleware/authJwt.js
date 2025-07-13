@@ -1,6 +1,6 @@
-const jwt    = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
-const db     = require("../models");
+const db = require("../models");
 
 const User = db.User;
 
@@ -23,10 +23,10 @@ const verifyToken = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) return res.status(404).send({ message: "User not found." });
-    user.getRoles().then(roles => {
-      if (roles.some(r => r.name === "admin")) {
+    user.getRoles().then((roles) => {
+      if (roles.some((r) => r.name === "admin")) {
         next();
       } else {
         res.status(403).send({ message: "Require Admin Role!" });
@@ -36,10 +36,10 @@ const isAdmin = (req, res, next) => {
 };
 
 const isModerator = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) return res.status(404).send({ message: "User not found." });
-    user.getRoles().then(roles => {
-      if (roles.some(r => r.name === "moderator")) {
+    user.getRoles().then((roles) => {
+      if (roles.some((r) => r.name === "moderator")) {
         next();
       } else {
         res.status(403).send({ message: "Require Moderator Role!" });
@@ -49,10 +49,10 @@ const isModerator = (req, res, next) => {
 };
 
 const isModeratorOrAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) return res.status(404).send({ message: "User not found." });
-    user.getRoles().then(roles => {
-      if (roles.some(r => ["moderator","admin"].includes(r.name))) {
+    user.getRoles().then((roles) => {
+      if (roles.some((r) => ["moderator", "admin"].includes(r.name))) {
         next();
       } else {
         res.status(403).send({ message: "Require Moderator or Admin Role!" });
@@ -62,13 +62,17 @@ const isModeratorOrAdmin = (req, res, next) => {
 };
 
 const isArtisanOrModeratorOrAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.userId).then((user) => {
     if (!user) return res.status(404).send({ message: "User not found." });
-    user.getRoles().then(roles => {
-      if (roles.some(r => ["artisan", "moderator","admin"].includes(r.name))) {
+    user.getRoles().then((roles) => {
+      if (
+        roles.some((r) => ["artisan", "moderator", "admin"].includes(r.name))
+      ) {
         next();
       } else {
-        res.status(403).send({ message: "Require Artisan or Moderator or Admin Role!" });
+        res
+          .status(403)
+          .send({ message: "Require Artisan or Moderator or Admin Role!" });
       }
     });
   });

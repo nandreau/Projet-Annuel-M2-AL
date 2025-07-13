@@ -11,9 +11,13 @@ const Assignment = db.Assignment;
 exports.create = async (req, res) => {
   try {
     const problem = await Problem.create(req.body);
-    res.status(201).json({ message: "Problème créé avec succès", data: problem });
+    res
+      .status(201)
+      .json({ message: "Problème créé avec succès", data: problem });
   } catch (err) {
-    res.status(400).json({ message: `Erreur lors de la création : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la création : ${err.message}` });
   }
 };
 
@@ -21,17 +25,17 @@ exports.findAll = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findByPk(userId, { include: ['roles'] });
-    const roleNames = user.roles.map(role => role.name);
-    const isAdmin = roleNames.includes('admin');
-    const isModerator = roleNames.includes('moderator');
-    const isClient = roleNames.includes('client');
+    const user = await User.findByPk(userId, { include: ["roles"] });
+    const roleNames = user.roles.map((role) => role.name);
+    const isAdmin = roleNames.includes("admin");
+    const isModerator = roleNames.includes("moderator");
+    const isClient = roleNames.includes("client");
 
     const includeConfig = [
       {
         model: User,
         attributes: { exclude: ["password"] },
-        include: [{ model: Role, through: { attributes: [] } }]
+        include: [{ model: Role, through: { attributes: [] } }],
       },
       {
         model: ProblemMessage,
@@ -40,14 +44,14 @@ exports.findAll = async (req, res) => {
           {
             model: User,
             attributes: { exclude: ["password"] },
-            include: [{ model: Role, through: { attributes: [] } }]
-          }
-        ]
+            include: [{ model: Role, through: { attributes: [] } }],
+          },
+        ],
       },
       {
         model: Chantier,
-        attributes: { exclude: [] }
-      }
+        attributes: { exclude: [] },
+      },
     ];
 
     let problems;
@@ -57,8 +61,8 @@ exports.findAll = async (req, res) => {
         include: includeConfig,
         order: [
           ["createdAt", "DESC"],
-          [ProblemMessage, "id", "ASC"]
-        ]
+          [ProblemMessage, "id", "ASC"],
+        ],
       });
     } else if (isClient) {
       problems = await Problem.findAll({
@@ -67,19 +71,19 @@ exports.findAll = async (req, res) => {
           {
             model: Chantier,
             required: true,
-            where: { clientId: userId }
-          }
+            where: { clientId: userId },
+          },
         ],
         order: [
           ["createdAt", "DESC"],
-          [ProblemMessage, "id", "ASC"]
+          [ProblemMessage, "id", "ASC"],
         ],
-        distinct: true
+        distinct: true,
       });
     } else {
       problems = await Problem.findAll({
         where: {
-          [db.Sequelize.Op.or]: [{ userId: userId }]
+          [db.Sequelize.Op.or]: [{ userId: userId }],
         },
         include: [
           ...includeConfig,
@@ -102,29 +106,31 @@ exports.findAll = async (req, res) => {
                           {
                             model: User,
                             required: true,
-                            where: { id: userId }
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
+                            where: { id: userId },
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         ],
         order: [
           ["createdAt", "DESC"],
-          [ProblemMessage, "id", "ASC"]
+          [ProblemMessage, "id", "ASC"],
         ],
-        distinct: true
+        distinct: true,
       });
     }
 
     res.json(problems);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -135,7 +141,7 @@ exports.findOne = async (req, res) => {
         {
           model: User,
           attributes: { exclude: ["password"] },
-          include: [{ model: Role, through: { attributes: [] } }]
+          include: [{ model: Role, through: { attributes: [] } }],
         },
         {
           model: ProblemMessage,
@@ -144,16 +150,16 @@ exports.findOne = async (req, res) => {
             {
               model: User,
               attributes: { exclude: ["password"] },
-              include: [{ model: Role, through: { attributes: [] } }]
-            }
-          ]
+              include: [{ model: Role, through: { attributes: [] } }],
+            },
+          ],
         },
         {
           model: Chantier,
-          attributes: { exclude: [] }
-        }
+          attributes: { exclude: [] },
+        },
       ],
-      order: [[ProblemMessage, "id", "ASC"]]
+      order: [[ProblemMessage, "id", "ASC"]],
     });
 
     if (!p) {
@@ -163,7 +169,9 @@ exports.findOne = async (req, res) => {
     res.json(p);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -172,13 +180,13 @@ exports.updateMeta = async (req, res) => {
   try {
     const [updatedCount] = await Problem.update(
       { status, priority, images },
-      { where: { id: req.params.id } }
+      { where: { id: req.params.id } },
     );
     if (!updatedCount) {
       return res.status(404).json({ message: "Problème non trouvé" });
     }
     const updated = await Problem.findByPk(req.params.id, {
-      attributes: ["id", "status", "priority", "images"]
+      attributes: ["id", "status", "priority", "images"],
     });
     res.json({ message: "Métadonnées mises à jour", data: updated });
   } catch (err) {
@@ -190,24 +198,30 @@ exports.updateMeta = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const [updated] = await Problem.update(req.body, {
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     });
 
-    if (!updated) return res.status(404).json({ message: "Problème non trouvé" });
+    if (!updated)
+      return res.status(404).json({ message: "Problème non trouvé" });
 
     const problem = await Problem.findByPk(req.params.id);
     res.json({ message: "Problème mis à jour avec succès", data: problem });
   } catch (err) {
-    res.status(400).json({ message: `Erreur lors de la mise à jour : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la mise à jour : ${err.message}` });
   }
 };
 
 exports.delete = async (req, res) => {
   try {
     const deleted = await Problem.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ message: "Problème non trouvé" });
+    if (!deleted)
+      return res.status(404).json({ message: "Problème non trouvé" });
     res.json({ message: "Suppression réussie" });
   } catch (err) {
-    res.status(500).json({ message: `Erreur lors de la suppression : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la suppression : ${err.message}` });
   }
 };

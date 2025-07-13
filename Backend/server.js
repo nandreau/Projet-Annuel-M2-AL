@@ -3,6 +3,13 @@ const cors = require("cors");
 const db = require("./app/models");
 const app = express();
 
+app.use(
+  require("cors")({
+    origin: true,
+    credentials: true,
+  }),
+);
+
 // CORS configuration
 const corsOptions = {
   origin: "http://localhost:8081",
@@ -18,8 +25,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Body parsers
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // Sync database and load roles
 db.sequelize.sync({ force: true }).then(async () => {

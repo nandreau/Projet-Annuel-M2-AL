@@ -1,8 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { Task, Phase, Checklist, ApiResponse } from 'src/app/models/global.model';
+import {
+  Task,
+  Phase,
+  Checklist,
+  ApiResponse,
+} from 'src/app/models/global.model';
 import { RequestService } from 'src/app/services/request.service';
 import { UtilitiesService } from 'src/app/services/utilities.service';
 import { PrimengModule } from 'src/app/shared/primeng.module';
@@ -11,36 +16,31 @@ import { ImageManagerComponent } from '../image-manager/image-manager.component'
 @Component({
   selector: 'app-task-modal',
   standalone: true,
-  imports: [
-    FormsModule,
-    CommonModule,
-    PrimengModule,
-    ImageManagerComponent
-  ],
+  imports: [FormsModule, CommonModule, PrimengModule, ImageManagerComponent],
   templateUrl: './task-modal.component.html',
   styleUrls: ['./task-modal.component.scss'],
 })
-export class TaskModalComponent  implements OnInit {
+export class TaskModalComponent {
   @Input() visible: boolean = false;
   @Input() task!: Task;
   @Input() phases: Phase[] = [];
 
   @Output() submitted = new EventEmitter<any>();
-  @Output() closed   = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
 
   // dropdown options
   progressionOptions: Option[] = [
     { label: 'Non démarrées', value: 'À faire' },
-    { label: 'En cours',      value: 'En cours' },
-    { label: 'Terminée',      value: 'Terminée' },
-    { label: 'En retard',     value: 'En retard' }
+    { label: 'En cours', value: 'En cours' },
+    { label: 'Terminée', value: 'Terminée' },
+    { label: 'En retard', value: 'En retard' },
   ];
 
   priorityOptions: Option[] = [
-    { label: 'Urgent',    value: 'Urgent' },
+    { label: 'Urgent', value: 'Urgent' },
     { label: 'Important', value: 'Important' },
-    { label: 'Moyen',     value: 'Moyen' },
-    { label: 'Faible',    value: 'Faible' }
+    { label: 'Moyen', value: 'Moyen' },
+    { label: 'Faible', value: 'Faible' },
   ];
 
   newItemName = '';
@@ -49,21 +49,19 @@ export class TaskModalComponent  implements OnInit {
 
   constructor(
     private request: RequestService,
-    public utils: UtilitiesService
+    public utils: UtilitiesService,
   ) {}
-
-  ngOnInit() {}
 
   /** Generic field update */
   async onFieldChange<K extends keyof Task>(field: K, value: Task[K]) {
     try {
-      console.log(value,field)
+      console.log(value, field);
       const updated = await firstValueFrom(
         this.request.put<Task>(
           `api/tasks/${this.task.id}/meta`,
           { [field]: value },
-          false
-        )
+          false,
+        ),
       );
       this.task = updated;
     } catch (err) {
@@ -80,8 +78,8 @@ export class TaskModalComponent  implements OnInit {
         this.request.post<Checklist>(
           'api/checklist',
           { taskId: this.task.id, name },
-          false
-        )
+          false,
+        ),
       );
       this.task.checklists = [...(this.task.checklists || []), item];
       this.newItemName = '';
@@ -91,17 +89,17 @@ export class TaskModalComponent  implements OnInit {
   }
 
   /** Update an existing checklist item */
-   async onChecklistChange(item: Checklist) {
+  async onChecklistChange(item: Checklist) {
     try {
       const updated = await firstValueFrom(
         this.request.put<Checklist>(
           `api/checklist/${item.id}`,
           { name: item.name, done: item.done },
-          false
-        )
+          false,
+        ),
       );
-      this.task.checklists = this.task.checklists!.map(i =>
-        i.id === updated.id ? updated : i
+      this.task.checklists = this.task.checklists!.map((i) =>
+        i.id === updated.id ? updated : i,
       );
     } catch (err) {
       console.error('Erreur mise à jour checklist item', err);
@@ -112,10 +110,11 @@ export class TaskModalComponent  implements OnInit {
   async deleteChecklistItem(item: Checklist) {
     try {
       await firstValueFrom(
-        this.request.delete<void>(`api/checklist/${item.id}`, false)
+        this.request.delete<void>(`api/checklist/${item.id}`, false),
       );
-      this.task.checklists = this.task.checklists!
-        .filter(i => i.id !== item.id);
+      this.task.checklists = this.task.checklists!.filter(
+        (i) => i.id !== item.id,
+      );
     } catch (err) {
       console.error('Erreur suppression checklist item', err);
     }
@@ -132,8 +131,8 @@ export class TaskModalComponent  implements OnInit {
         this.request.put(
           `api/tasks/${this.task.id}/validate`,
           { images: [...this.imageList] },
-          true
-        )
+          true,
+        ),
       );
 
       this.task = validated.data;

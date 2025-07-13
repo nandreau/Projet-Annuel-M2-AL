@@ -1,7 +1,7 @@
 <p-dialog
   [(visible)]="visible"
   (onHide)="closed.emit()"
-  [header]="mode==='add'? addTitle : editTitle"
+  [header]="mode === 'add' ? addTitle : editTitle"
   [modal]="true"
   [style]="{ width: dialogWidth }"
   appendTo="body"
@@ -14,7 +14,7 @@
 
       <!-- text/email/password -->
       <input
-        *ngIf="f.type==='text' || f.type==='email' || f.type==='password'"
+        *ngIf="f.type === 'text' || f.type === 'email' || f.type === 'password'"
         [type]="f.type"
         pInputText
         [(ngModel)]="model[f.key]"
@@ -24,7 +24,7 @@
 
       <!-- numeric input -->
       <p-inputNumber
-        *ngIf="f.type==='number'"
+        *ngIf="f.type === 'number'"
         [(ngModel)]="model[f.key]"
         [min]="f.min"
         [max]="f.max"
@@ -35,7 +35,7 @@
 
       <!-- time with mask -->
       <p-inputMask
-        *ngIf="f.type==='time'"
+        *ngIf="f.type === 'time'"
         mask="99:99"
         slotChar="0"
         [(ngModel)]="model[f.key]"
@@ -45,7 +45,7 @@
 
       <!-- multiselect -->
       <p-multiSelect
-        *ngIf="f.type==='multiselect'"
+        *ngIf="f.type === 'multiselect'"
         [options]="f.options"
         [(ngModel)]="model[f.key]"
         [optionLabel]="f.optionLabel"
@@ -58,7 +58,7 @@
 
       <!-- chips -->
       <p-chips
-        *ngIf="f.type==='chips'"
+        *ngIf="f.type === 'chips'"
         [(ngModel)]="model[f.key]"
         [placeholder]="f.placeholder"
         [separator]="separator"
@@ -67,7 +67,7 @@
 
       <!-- date -->
       <p-datePicker
-        *ngIf="f.type==='date'"
+        *ngIf="f.type === 'date'"
         class="w-full"
         [(ngModel)]="model[f.key]"
         dateFormat="dd/mm/yy"
@@ -91,9 +91,9 @@
   </ng-container>
 
   <div class="flex justify-content-end gap-2 mt-2">
-    <p-button label="Annuler" severity="secondary" (click)="closed.emit()"/>
+    <p-button label="Annuler" severity="secondary" (click)="closed.emit()" />
     <p-button
-      [label]="mode==='add'? addButtonLabel : editButtonLabel"
+      [label]="mode === 'add' ? addButtonLabel : editButtonLabel"
       (click)="submitted.emit(model)"
     />
   </div>

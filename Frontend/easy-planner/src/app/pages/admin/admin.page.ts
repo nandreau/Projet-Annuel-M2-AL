@@ -50,7 +50,7 @@ export class AdminPage implements OnInit {
 
   constructor(
     private tableService: TableService,
-    private request: RequestService
+    private request: RequestService,
   ) {
     this.resetUserForm();
   }
@@ -62,47 +62,58 @@ export class AdminPage implements OnInit {
   }
 
   private loadUsers(): Promise<void> {
-    return firstValueFrom(
-      this.request.get<User[]>('api/users')
-    ).then(data => {
-      this.users = data.map(user => ({
-        ...user,
-        rolesString: user.roles.map(r => r.name).join(' ')
-      }));
-      this.initialValues = [...this.users];
-    }).catch(err => {
-      console.error('Erreur chargement utilisateurs', err);
-    });
+    return firstValueFrom(this.request.get<User[]>('api/users'))
+      .then((data) => {
+        this.users = data.map((user) => ({
+          ...user,
+          rolesString: user.roles.map((r) => r.name).join(' '),
+        }));
+        this.initialValues = [...this.users];
+      })
+      .catch((err) => {
+        console.error('Erreur chargement utilisateurs', err);
+      });
   }
 
   private loadRoles(): Promise<void> {
-    return firstValueFrom(
-      this.request.get<Role[]>('api/roles')
-    ).then(data => {
-      this.availableRoles = data;
-    }).catch(err => {
-      console.error('Erreur chargement roles', err);
-    });
+    return firstValueFrom(this.request.get<Role[]>('api/roles'))
+      .then((data) => {
+        this.availableRoles = data;
+      })
+      .catch((err) => {
+        console.error('Erreur chargement roles', err);
+      });
   }
 
   private defineFields() {
     this.allFields = [
-      { key: 'firstname', label: 'Prénom',         type: 'text',        placeholder: '' },
-      { key: 'name',      label: 'Nom',            type: 'text',        placeholder: '' },
+      { key: 'firstname', label: 'Prénom', type: 'text', placeholder: '' },
+      { key: 'name', label: 'Nom', type: 'text', placeholder: '' },
       {
         key: 'roles',
         label: 'Rôles',
         type: 'multiselect',
         options: this.availableRoles,
+        optionLabel: 'name',
         placeholder: 'Sélectionner des rôles',
       },
-      { key: 'job',       label: 'Métier',         type: 'chips',       placeholder: 'Ajouter un métier' },
-      { key: 'email',     label: 'Email',          type: 'email',       placeholder: '' },
-      { key: 'password',  label: 'Mot de passe',    type: 'password',    placeholder: '' },
+      {
+        key: 'job',
+        label: 'Métier',
+        type: 'chips',
+        placeholder: 'Ajouter un métier',
+      },
+      { key: 'email', label: 'Email', type: 'email', placeholder: '' },
+      {
+        key: 'password',
+        label: 'Mot de passe',
+        type: 'password',
+        placeholder: '',
+      },
     ];
 
     this.addFields = [...this.allFields];
-    this.editFields = this.allFields.filter(f => f.key !== 'password');
+    this.editFields = this.allFields.filter((f) => f.key !== 'password');
   }
 
   applyGlobalFilter(event: any) {
@@ -116,7 +127,7 @@ export class AdminPage implements OnInit {
       this.users,
       this.initialValues,
       this.isSorted,
-      this.dt
+      this.dt,
     );
   }
 
@@ -141,28 +152,40 @@ export class AdminPage implements OnInit {
 
   // handlers for modal outputs
   async handleAdd(u: User) {
-    await firstValueFrom(this.request.post('api/users', {
-      ...u,
-      roles: u.roles.map(r => r.name),
-    }, true));
+    await firstValueFrom(
+      this.request.post(
+        'api/users',
+        {
+          ...u,
+          roles: u.roles.map((r) => r.name),
+        },
+        true,
+      ),
+    );
     this.visibleAdd = false;
     await this.loadUsers();
   }
 
   async handleEdit(u: User) {
-    await firstValueFrom(this.request.put(`api/users/${u.id}`, {
-      ...u,
-      roles: u.roles.map(r => r.name),
-    }, true));
+    await firstValueFrom(
+      this.request.put(
+        `api/users/${u.id}`,
+        {
+          ...u,
+          roles: u.roles.map((r) => r.name),
+        },
+        true,
+      ),
+    );
     this.visibleEdit = false;
     await this.loadUsers();
   }
 
   async handleDelete() {
     await Promise.all(
-      this.selectedUsers.map(u =>
-        firstValueFrom(this.request.delete(`api/users/${u.id}`, true))
-      )
+      this.selectedUsers.map((u) =>
+        firstValueFrom(this.request.delete(`api/users/${u.id}`, true)),
+      ),
     );
     this.visibleDelete = false;
     await this.loadUsers();

@@ -4,14 +4,14 @@
  */
 function extractIntervenants(chantier) {
   const seen = new Map();
-  (chantier.phases || []).forEach(phase =>
-    (phase.tasks || []).forEach(task =>
-      (task.assignments || []).forEach(assign =>
-        (assign.users || []).forEach(u => {
+  (chantier.phases || []).forEach((phase) =>
+    (phase.tasks || []).forEach((task) =>
+      (task.assignments || []).forEach((assign) =>
+        (assign.users || []).forEach((u) => {
           if (!seen.has(u.id)) seen.set(u.id, u);
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
   return Array.from(seen.values());
 }

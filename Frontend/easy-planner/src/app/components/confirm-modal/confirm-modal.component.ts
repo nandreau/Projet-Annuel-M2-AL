@@ -15,5 +15,5 @@ export class ConfirmModalComponent {
   @Input() color: ButtonSeverity = 'primary';
 
   @Output() submitted = new EventEmitter<any>();
-  @Output() closed   = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
 }

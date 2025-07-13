@@ -1,34 +1,34 @@
 const { authJwt } = require("../middleware");
-const controller  = require("../controllers/role.controller");
+const controller = require("../controllers/role.controller");
 
 module.exports = (app) => {
   app.get(
     "/api/roles",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-    controller.findAll
+    controller.findAll,
   );
 
   app.get(
     "/api/roles/:id",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-    controller.findOne
+    controller.findOne,
   );
 
   app.post(
     "/api/roles",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-    controller.create
+    controller.create,
   );
 
   app.put(
     "/api/roles/:id",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-    controller.update
+    controller.update,
   );
 
   app.delete(
     "/api/roles/:id",
     [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
-    controller.delete
+    controller.delete,
   );
 };

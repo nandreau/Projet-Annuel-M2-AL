@@ -9,8 +9,8 @@ describe('ConfirmModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConfirmModalComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ConfirmModalComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmModalComponent);

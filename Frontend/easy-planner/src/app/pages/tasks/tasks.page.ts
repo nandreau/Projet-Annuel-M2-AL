@@ -17,7 +17,13 @@ import { Task } from 'src/app/models/global.model';
   templateUrl: './tasks.page.html',
   styleUrls: ['./tasks.page.scss'],
   standalone: true,
-  imports: [IonicModule, PrimengModule, HeaderComponent, FormsModule, TaskModalComponent],
+  imports: [
+    IonicModule,
+    PrimengModule,
+    HeaderComponent,
+    FormsModule,
+    TaskModalComponent,
+  ],
 })
 export class TasksPage implements OnInit {
   @ViewChild('dt') dt!: Table;
@@ -33,7 +39,7 @@ export class TasksPage implements OnInit {
   constructor(
     private tableService: TableService,
     private request: RequestService,
-    public utils: UtilitiesService
+    public utils: UtilitiesService,
   ) {}
 
   async ngOnInit() {
@@ -43,24 +49,24 @@ export class TasksPage implements OnInit {
 
   private loadTasks(): Promise<void> {
     return firstValueFrom(this.request.get<Task[]>('api/tasks'))
-      .then(data => {
+      .then((data) => {
         this.tasks = data;
         this.initialValues = [...data];
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Erreur chargement tâches', err);
       });
   }
 
   private defineFields() {
     this.columns = [
-      { field: 'name',        header: 'Nom' },
-      { field: 'priority',    header: 'Priorité' },
-      { field: 'done',        header: 'État' },
-      { field: 'doneDate',    header: 'Terminé le' },
-      { field: 'dueDate',     header: 'Fin prévue' },
+      { field: 'name', header: 'Nom' },
+      { field: 'priority', header: 'Priorité' },
+      { field: 'done', header: 'État' },
+      { field: 'doneDate', header: 'Terminé le' },
+      { field: 'dueDate', header: 'Fin prévue' },
     ];
-    this.globalFilterFields = this.columns.map(col => col.field);
+    this.globalFilterFields = this.columns.map((col) => col.field);
   }
 
   applyGlobalFilter(event: any) {

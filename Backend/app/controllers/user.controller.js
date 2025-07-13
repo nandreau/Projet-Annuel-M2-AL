@@ -11,15 +11,17 @@ exports.findAll = async (req, res) => {
         {
           model: Role,
           through: { attributes: [] },
-          attributes: ["name"]
-        }
+          attributes: ["name", "id"],
+        },
       ],
       order: [["id", "ASC"]],
     });
     res.json(users);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -31,15 +33,18 @@ exports.findOne = async (req, res) => {
         {
           model: Role,
           through: { attributes: [] },
-          attributes: ["name"]
-        }
-      ]
+          attributes: ["name", "id"],
+        },
+      ],
     });
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     res.json(user);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -55,7 +60,7 @@ exports.create = async (req, res) => {
       email,
       password: hash,
       job: Array.isArray(job) ? job : [],
-      avatar: avatar || null
+      avatar: avatar || null,
     });
 
     // Handle roles: use provided or default to 'user'
@@ -63,7 +68,7 @@ exports.create = async (req, res) => {
       const roleRecords = await Role.findAll({ where: { name: roles } });
       await user.setRoles(roleRecords);
     } else {
-      const defaultRole = await Role.findOne({ where: { name: 'user' } });
+      const defaultRole = await Role.findOne({ where: { name: "user" } });
       await user.setRoles([defaultRole]);
     }
 
@@ -73,15 +78,19 @@ exports.create = async (req, res) => {
         {
           model: Role,
           through: { attributes: [] },
-          attributes: ["name"]
-        }
-      ]
+          attributes: ["name", "id"],
+        },
+      ],
     });
 
-    res.status(201).json({ message: "Utilisateur créé avec succès", data: out });
+    res
+      .status(201)
+      .json({ message: "Utilisateur créé avec succès", data: out });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: `Erreur lors de la création : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la création : ${err.message}` });
   }
 };
 
@@ -96,12 +105,12 @@ exports.update = async (req, res) => {
       updateData.password = hash;
     }
 
-    const [updated] = await User.update(
-      updateData,
-      { where: { id: req.params.id } }
-    );
+    const [updated] = await User.update(updateData, {
+      where: { id: req.params.id },
+    });
 
-    if (!updated) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    if (!updated)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
 
     const user = await User.findByPk(req.params.id);
     // Handle roles update if provided
@@ -116,25 +125,30 @@ exports.update = async (req, res) => {
         {
           model: Role,
           through: { attributes: [] },
-          attributes: ["name"]
-        }
-      ]
+          attributes: ["name", "id"],
+        },
+      ],
     });
 
     res.json({ message: "Utilisateur mis à jour avec succès", data: out });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: `Erreur lors de la mise à jour : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la mise à jour : ${err.message}` });
   }
 };
 
 exports.delete = async (req, res) => {
   try {
     const deleted = await User.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    if (!deleted)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     res.json({ message: "Utilisateur supprimé avec succès" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la suppression : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la suppression : ${err.message}` });
   }
 };

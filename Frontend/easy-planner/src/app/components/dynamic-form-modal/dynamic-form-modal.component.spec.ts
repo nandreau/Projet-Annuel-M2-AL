@@ -9,8 +9,8 @@ describe('DynamicFormModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicFormModalComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [DynamicFormModalComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DynamicFormModalComponent);

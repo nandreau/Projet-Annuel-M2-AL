@@ -22,14 +22,14 @@ export interface UserAuth extends WithTimestamps {
   firstname: string;
   name: string;
   refreshToken: string;
-  roles: RoleEnum[]
+  roles: RoleEnum[];
 }
 
 export enum RoleEnum {
-  ROLE_CLIENT    = 'ROLE_CLIENT',
-  ROLE_ARTISAN   = 'ROLE_ARTISAN',
+  ROLE_CLIENT = 'ROLE_CLIENT',
+  ROLE_ARTISAN = 'ROLE_ARTISAN',
   ROLE_MODERATOR = 'ROLE_MODERATOR',
-  ROLE_ADMIN     = 'ROLE_ADMIN'
+  ROLE_ADMIN = 'ROLE_ADMIN',
 }
 
 export interface Assignment extends WithTimestamps {
@@ -82,8 +82,8 @@ export interface ProblemMessage extends WithTimestamps {
   id: number;
   user: User;
   content: string;
-  images?: string[]
-  problemId: number
+  images?: string[];
+  problemId: number;
 }
 
 export interface Problem extends WithTimestamps {
@@ -120,7 +120,16 @@ export interface ApiResponse {
   data: any;
 }
 
-export type FieldType = 'text' | 'number' | 'time' | 'email' | 'password' | 'multiselect' | 'chips' | 'date' | 'select';
+export type FieldType =
+  | 'text'
+  | 'number'
+  | 'time'
+  | 'email'
+  | 'password'
+  | 'multiselect'
+  | 'chips'
+  | 'date'
+  | 'select';
 
 export interface FormField<T = any> {
   key: keyof T;

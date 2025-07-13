@@ -61,7 +61,10 @@
           <div class="card-title">Tout les chantier</div>
           <div class="grid mt-1">
             <div *ngFor="let ct of chantiers" class="col-12 xl:col-6">
-              <div [routerLink]="['/sites', ct.id]" class="cursor-pointer p-md-4 flex border-round-lg bg-white">
+              <div
+                [routerLink]="['/sites', ct.id]"
+                class="cursor-pointer p-md-4 flex border-round-lg bg-white"
+              >
                 <img
                   [src]="ct.images?.[0]"
                   alt="img"
@@ -140,13 +143,16 @@
                 <tr>
                   <td>{{ task.name }}</td>
                   <td>
-                    {{ task.assignments[0]?.users[0]?.firstname || '—'}} {{ task.assignments[0]?.users[0]?.name}}
+                    {{ task.assignments[0]?.users[0]?.firstname || '—'}} {{
+                    task.assignments[0]?.users[0]?.name}}
                   </td>
                   <td>{{ task.doneDate || task.dueDate | date:'d MMMM y' }}</td>
                   <td>
-                    <p-tag [value]="task.priority"
+                    <p-tag
+                      [value]="task.priority"
                       [severity]="utils.getPrioritySeverity(task.priority)"
-                      class="text-xs">
+                      class="text-xs"
+                    >
                     </p-tag>
                   </td>
                   <td>
@@ -217,15 +223,19 @@
                   <td>{{ p.user.firstname }}</td>
                   <td>{{ p.createdAt | date:'d MMMM y' }}</td>
                   <td>
-                    <p-tag [value]="p.priority"
+                    <p-tag
+                      [value]="p.priority"
                       [severity]="utils.getPrioritySeverity(p.priority)"
-                      class="text-xs">
+                      class="text-xs"
+                    >
                     </p-tag>
                   </td>
                   <td>
-                    <p-tag [value]="p.status"
+                    <p-tag
+                      [value]="p.status"
                       [severity]="utils.getStatusSeverity(p.status)"
-                      class="text-xs">
+                      class="text-xs"
+                    >
                     </p-tag>
                   </td>
                 </tr>

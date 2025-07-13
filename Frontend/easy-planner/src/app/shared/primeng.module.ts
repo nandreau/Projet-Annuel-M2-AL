@@ -181,7 +181,7 @@ import { DropdownModule } from 'primeng/dropdown';
     StyleClassModule,
     IconField,
     InputIcon,
-    DropdownModule
+    DropdownModule,
   ],
   exports: [
     AvatarModule,
@@ -272,7 +272,7 @@ import { DropdownModule } from 'primeng/dropdown';
     StyleClassModule,
     IconField,
     InputIcon,
-    DropdownModule
+    DropdownModule,
   ],
 })
 export class PrimengModule {}

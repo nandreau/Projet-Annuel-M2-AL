@@ -62,9 +62,50 @@ Cette application vise à **optimiser la gestion des chantiers** en facilitant :
    ```node Backend/loadFakeData.js```  
 
 ### 🐳 Avec Docker  
-- ```docker-compose up --build -d```  
+- ```docker-compose up --build -d```
+
+## ✅ Tests
+
+### 📦 Technologies de test utilisées
+- Jest pour les tests unitaires
+- Supertest pour les tests HTTP (si applicable)
+
+### 📁 Structure des tests
+Les tests unitaires sont situés dans le dossier :
+__tests__/controllers/
+
+### 🚀 Exécution des tests
+1. Accède au dossier du backend :
+   ```cd Backend```
+
+2. Lance tous les tests :
+   ```npm run test```
+
+3. Ou exécute un test spécifique :
+   ```npx jest __tests__/controllers/user.controller.test.js```
+
+### 🧪 Bonnes pratiques
+- Chaque contrôleur a son propre fichier de test.
+- Les dépendances (modèles Sequelize, bcrypt, etc.) sont **mockées**.
+- Les tests couvrent les cas de succès ✅ et d’échec ❌ (ex. : DB non disponible, utilisateur introuvable, etc.).
+- Le retour JSON et les codes HTTP (200, 201, 400, 404, 500) sont systématiquement vérifiés.
+
+### 📊 Objectif de couverture
+La couverture minimale est définie dans le fichier package.json :
+
+```json
+"coverageThreshold": {
+  "global": {
+    "branches": 70,
+    "functions": 70,
+    "lines": 70,
+    "statements": 70
+  }
+}```
 
 ## 🔄 Intégration Continue & Déploiement (CI/CD)  
-La pipeline GitHub Actions se trouve dans le fichier ```.github/workflows/ci.yml```. Elle se déclenche sur chaque push ou pull_request vers la branche ```main``` et comporte trois jobs : frontend-ci, backend-ci et deploy.  
-
+La pipeline GitHub Actions se trouve dans le fichier ```.github/workflows/ci.yml```. Elle se déclenche sur chaque push ou pull_request vers la branche ```main``` et comporte trois jobs : 
+- frontend-ci
+- backend-ci
+- deploy.  
 

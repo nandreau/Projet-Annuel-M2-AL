@@ -28,15 +28,20 @@
                 {{ problem.id }} — {{ problem.title }} ({{ problem.priority }})
               </div>
               <div class="problem-meta font-normal mt-2">
-                <span><b>Chantier:</b> {{ problem.chantier.title || '—' }}</span>
+                <span
+                  ><b>Chantier:</b> {{ problem.chantier.title || '—' }}</span
+                >
                 <span><b>Phase:</b> {{ problem.phaseLabel }}</span>
                 <span><b>Tâche:</b> {{ problem.taskLabel }}</span>
-                <span><b>Signalé le</b> {{ problem.createdAt | date:'d MMMM y HH:mm' }}</span>
+                <span
+                  ><b>Signalé le</b> {{ problem.createdAt | date:'d MMMM y
+                  HH:mm' }}</span
+                >
               </div>
             </div>
             <p-tag
               [value]="problem.status"
-              [severity]="problem.status == 'En cours' ? 'warn' : problem.status == 'Non résolu' ? 'danger':'success'"
+              [severity]="problem.status === 'En cours' ? 'warn' : problem.status === 'Non résolu' ? 'danger':'success'"
               class="mr-3"
               rounded="true"
             ></p-tag>
@@ -75,8 +80,13 @@
             <label class="font-bold">Description</label>
             <div class="mt-1 mb-2">{{ problem.description }}</div>
             <!-- Messages history -->
-            <div class="problem-messages mt-4" *ngIf="problem.problem_messages.length">
-              <div class="problem-messages-title mb-2">Historique des messages</div>
+            <div
+              class="problem-messages mt-4"
+              *ngIf="problem.problem_messages.length"
+            >
+              <div class="problem-messages-title mb-2">
+                Historique des messages
+              </div>
               <div
                 *ngFor="let group of groupMessages(problem.problem_messages)"
                 [ngClass]="{ 'align-items-end': group.side === 'right' }"
@@ -84,12 +94,17 @@
               >
                 <div class="message-header mb-1">
                   <ng-container *ngIf="group.side === 'left'">
-                    <strong>{{ group.user.firstname }} {{ group.user.name }}</strong>
+                    <strong
+                      >{{ group.user.firstname }} {{ group.user.name }}</strong
+                    >
                     · <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span>
                   </ng-container>
                   <ng-container *ngIf="group.side === 'right'">
                     <span>{{ group.createdAt | date:'d MMMM y HH:mm' }}</span>
-                    · <strong>{{ group.user.firstname }} {{ group.user.name }}</strong>
+                    ·
+                    <strong
+                      >{{ group.user.firstname }} {{ group.user.name }}</strong
+                    >
                   </ng-container>
                 </div>
                 <div
@@ -105,8 +120,6 @@
                 </div>
               </div>
             </div>
-
-
 
             <form class="problem-comment-box" (ngSubmit)="sendMessage(problem)">
               <textarea
@@ -125,9 +138,9 @@
     </p-accordion>
   </div>
   <div
-      *ngIf="filteredProblems.length === 0"
-      class="text-center text-lg font-semibold text-gray-500 absolute-center"
-    >
-      Aucun problème en cours
+    *ngIf="filteredProblems.length === 0"
+    class="text-center text-lg font-semibold text-gray-500 absolute-center"
+  >
+    Aucun problème en cours
   </div>
 </ion-content>

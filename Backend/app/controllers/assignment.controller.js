@@ -13,12 +13,16 @@ exports.create = async (req, res) => {
     }
 
     const full = await Assignment.findByPk(assignment.id, {
-      include: [{ model: User, through: { attributes: [] } }]
+      include: [{ model: User, through: { attributes: [] } }],
     });
 
-    res.status(201).json({ message: "Assignement créé avec succès !", data: full });
+    res
+      .status(201)
+      .json({ message: "Assignement créé avec succès !", data: full });
   } catch (err) {
-    res.status(400).json({ message: `Erreur lors de la création : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la création : ${err.message}` });
   }
 };
 
@@ -29,14 +33,16 @@ exports.findAll = async (req, res) => {
         {
           model: User,
           through: { attributes: [] },
-          attributes: { exclude: ["password"] }
-        }
+          attributes: { exclude: ["password"] },
+        },
       ],
-      order: [["id", "ASC"]]
+      order: [["id", "ASC"]],
     });
     res.json(list);
   } catch (err) {
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -47,18 +53,22 @@ exports.findOne = async (req, res) => {
         {
           model: User,
           through: { attributes: [] },
-          attributes: { exclude: ["password"] }
-        }
-      ]
+          attributes: { exclude: ["password"] },
+        },
+      ],
     });
 
     if (!assignment) {
-      return res.status(404).json({ message: "Aucun assignement trouvé avec cet identifiant." });
+      return res
+        .status(404)
+        .json({ message: "Aucun assignement trouvé avec cet identifiant." });
     }
 
     res.json(assignment);
   } catch (err) {
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -70,7 +80,9 @@ exports.update = async (req, res) => {
     });
 
     if (!updated) {
-      return res.status(404).json({ message: "Aucun assignement trouvé à mettre à jour." });
+      return res
+        .status(404)
+        .json({ message: "Aucun assignement trouvé à mettre à jour." });
     }
 
     if (Array.isArray(assignment_users)) {
@@ -79,16 +91,17 @@ exports.update = async (req, res) => {
     }
 
     const fullAssignment = await Assignment.findByPk(req.params.id, {
-      include: [{ model: User, through: { attributes: [] } }]
+      include: [{ model: User, through: { attributes: [] } }],
     });
 
     res.json({
       message: "Assignement mis à jour avec succès !",
-      data: fullAssignment
+      data: fullAssignment,
     });
-
   } catch (err) {
-    res.status(400).json({ message: `Erreur lors de la mise à jour : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la mise à jour : ${err.message}` });
   }
 };
 
@@ -97,11 +110,15 @@ exports.delete = async (req, res) => {
     const deleted = await Assignment.destroy({ where: { id: req.params.id } });
 
     if (!deleted) {
-      return res.status(404).json({ message: "Aucun assignement trouvé à supprimer." });
+      return res
+        .status(404)
+        .json({ message: "Aucun assignement trouvé à supprimer." });
     }
 
     res.json({ message: "Assignement supprimé avec succès !" });
   } catch (err) {
-    res.status(500).json({ message: `Erreur lors de la suppression : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la suppression : ${err.message}` });
   }
 };

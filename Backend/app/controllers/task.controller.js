@@ -11,7 +11,9 @@ exports.create = async (req, res) => {
     const task = await Task.create(req.body);
     res.status(201).json({ message: "Tâche créée avec succès", data: task });
   } catch (err) {
-    res.status(400).json({ message: `Erreur lors de la création : ${err.message}` });
+    res
+      .status(400)
+      .json({ message: `Erreur lors de la création : ${err.message}` });
   }
 };
 
@@ -19,24 +21,27 @@ exports.findAll = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findByPk(userId, { include: ['roles'] });
-    if (!user || !user.roles) throw new Error("Utilisateur ou rôles introuvables");
+    const user = await User.findByPk(userId, { include: ["roles"] });
+    if (!user || !user.roles)
+      throw new Error("Utilisateur ou rôles introuvables");
 
-    const roleNames = user.roles.map(role => role.name);
-    const isAdmin = roleNames.includes('admin');
-    const isModerator = roleNames.includes('moderator');
-    const isClient = roleNames.includes('client');
+    const roleNames = user.roles.map((role) => role.name);
+    const isAdmin = roleNames.includes("admin");
+    const isModerator = roleNames.includes("moderator");
+    const isClient = roleNames.includes("client");
 
     const includeConfig = [
       { model: Checklist },
       {
         model: Assignment,
-        include: [{
-          model: User,
-          through: { attributes: [] },
-          attributes: { exclude: ["password"] }
-        }]
-      }
+        include: [
+          {
+            model: User,
+            through: { attributes: [] },
+            attributes: { exclude: ["password"] },
+          },
+        ],
+      },
     ];
 
     let tasks;
@@ -44,7 +49,11 @@ exports.findAll = async (req, res) => {
     if (isAdmin || isModerator) {
       tasks = await Task.findAll({
         include: includeConfig,
-        order: [["id", "ASC"], [Assignment, "id", "ASC"], [Checklist, "id", "ASC"]]
+        order: [
+          ["id", "ASC"],
+          [Assignment, "id", "ASC"],
+          [Checklist, "id", "ASC"],
+        ],
       });
     } else if (isClient) {
       tasks = await Task.findAll({
@@ -53,15 +62,21 @@ exports.findAll = async (req, res) => {
           {
             model: Phase,
             required: true,
-            include: [{
-              model: Chantier,
-              required: true,
-              where: { clientId: userId }
-            }]
-          }
+            include: [
+              {
+                model: Chantier,
+                required: true,
+                where: { clientId: userId },
+              },
+            ],
+          },
         ],
-        order: [["id", "ASC"], [Assignment, "id", "ASC"], [Checklist, "id", "ASC"]],
-        distinct: true
+        order: [
+          ["id", "ASC"],
+          [Assignment, "id", "ASC"],
+          [Checklist, "id", "ASC"],
+        ],
+        distinct: true,
       });
     } else {
       tasks = await Task.findAll({
@@ -70,22 +85,30 @@ exports.findAll = async (req, res) => {
           {
             model: Assignment,
             required: true,
-            include: [{
-              model: User,
-              required: true,
-              where: { id: userId }
-            }]
-          }
+            include: [
+              {
+                model: User,
+                required: true,
+                where: { id: userId },
+              },
+            ],
+          },
         ],
-        order: [["id", "ASC"], [Assignment, "id", "ASC"], [Checklist, "id", "ASC"]],
-        distinct: true
+        order: [
+          ["id", "ASC"],
+          [Assignment, "id", "ASC"],
+          [Checklist, "id", "ASC"],
+        ],
+        distinct: true,
       });
     }
 
     res.json(tasks);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: `Erreur lors de la récupération : ${err.message}` });
+    res
+      .status(500)
+      .json({ message: `Erreur lors de la récupération : ${err.message}` });
   }
 };
 
@@ -96,14 +119,19 @@ exports.findOne = async (req, res) => {
         { model: Checklist },
         {
           model: Assignment,
-          include: [{
-            model: User,
-            through: { attributes: [] },
-            attributes: { exclude: ["password"] }
-          }]
-        }
+          include: [
+            {
+              model: User,
+              through: { attributes: [] },
+              attributes: { exclude: ["password"] },
+            },
+          ],
+        },
       ],
-      order: [[Assignment, "id", "ASC"], [Checklist, "id", "ASC"]]
+      order: [
+        [Assignment, "id", "ASC"],
+        [Checklist, "id", "ASC"],
+      ],
     });
 
     if (!t) return res.status(404).json({ message: "Tâche non trouvée" });
@@ -118,7 +146,7 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const [updated] = await Task.update(req.body, {
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     });
 
     if (!updated) return res.status(404).json({ message: "Tâche non trouvée" });
@@ -132,7 +160,7 @@ exports.update = async (req, res) => {
 };
 
 exports.updateMeta = async (req, res) => {
-  const allowed = ['priority', 'dueDate', 'name', 'description'];
+  const allowed = ["priority", "dueDate", "name", "description"];
   const updates = {};
   for (const key of allowed) {
     if (req.body[key] !== undefined) {
@@ -143,11 +171,13 @@ exports.updateMeta = async (req, res) => {
   try {
     const actualTask = await Task.findByPk(req.params.id);
     if (actualTask.done) {
-      return res.status(400).json({ message: "Tâche déjà validée, modification interdite" });
+      return res
+        .status(400)
+        .json({ message: "Tâche déjà validée, modification interdite" });
     }
 
     const [updated] = await Task.update(updates, {
-      where: { id: req.params.id }
+      where: { id: req.params.id },
     });
 
     if (!updated) return res.status(404).json({ message: "Tâche non trouvée" });
@@ -157,13 +187,15 @@ exports.updateMeta = async (req, res) => {
         { model: Checklist },
         {
           model: Assignment,
-          include: [{
-            model: User,
-            through: { attributes: [] },
-            attributes: { exclude: ["password"] }
-          }]
-        }
-      ]
+          include: [
+            {
+              model: User,
+              through: { attributes: [] },
+              attributes: { exclude: ["password"] },
+            },
+          ],
+        },
+      ],
     });
 
     res.json({ message: "Tâche mise à jour avec succès", data: task });
@@ -177,7 +209,8 @@ exports.validate = async (req, res) => {
   try {
     const task = await Task.findByPk(req.params.id);
     if (!task) return res.status(404).json({ message: "Tâche non trouvée" });
-    if (task.done) return res.status(400).json({ message: "Tâche déjà validée" });
+    if (task.done)
+      return res.status(400).json({ message: "Tâche déjà validée" });
 
     const images = req.body.images;
     if (images && Array.isArray(images)) {
@@ -186,7 +219,11 @@ exports.validate = async (req, res) => {
 
     const imgs = task.images || [];
     if (!Array.isArray(imgs) || imgs.length < 1) {
-      return res.status(400).json({ message: "Validation impossible : au moins une image est requise" });
+      return res
+        .status(400)
+        .json({
+          message: "Validation impossible : au moins une image est requise",
+        });
     }
 
     task.done = true;
@@ -198,13 +235,15 @@ exports.validate = async (req, res) => {
         { model: Checklist },
         {
           model: Assignment,
-          include: [{
-            model: User,
-            through: { attributes: [] },
-            attributes: { exclude: ["password"] }
-          }]
-        }
-      ]
+          include: [
+            {
+              model: User,
+              through: { attributes: [] },
+              attributes: { exclude: ["password"] },
+            },
+          ],
+        },
+      ],
     });
 
     res.json({ message: "Tâche validée avec succès", data: updated });

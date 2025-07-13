@@ -51,9 +51,13 @@
   --gray-800: #1f2937;
   --gray-700: #374151;
   --gray-100: #f9f9fa;
-  --p-inputtext-disabled-background: var(--p-select-filled-background) !important;
+  --p-inputtext-disabled-background: var(
+    --p-select-filled-background
+  ) !important;
   --p-select-disabled-background: var(--p-select-filled-background) !important;
-  --p-textarea-disabled-background: var(--p-select-filled-background) !important;
+  --p-textarea-disabled-background: var(
+    --p-select-filled-background
+  ) !important;
 }
 
 // global
@@ -98,7 +102,6 @@
   font-weight: 600;
 }
 
-
 @media screen and (max-width: 768px) {
   .container {
     padding: 1rem 0.75rem;
@@ -140,7 +143,6 @@ ion-badge {
 .p-datepicker {
   width: 100%;
 }
-
 
 .p-multiselect-label-container {
   display: grid;

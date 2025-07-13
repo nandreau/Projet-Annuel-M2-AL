@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  Router,
-  UrlTree,
-} from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { RequestService } from '../services/request.service';
@@ -13,7 +9,7 @@ import { AuthResponse } from '../models/global.model';
 export class AdminGuard implements CanActivate {
   constructor(
     private request: RequestService,
-    private router: Router
+    private router: Router,
   ) {}
 
   canActivate(): Observable<boolean | UrlTree> {
@@ -37,9 +33,7 @@ export class AdminGuard implements CanActivate {
             ? true
             : this.router.createUrlTree(['/not-authorized']);
         }),
-        catchError(() =>
-          of(this.router.createUrlTree(['/login']))
-        )
+        catchError(() => of(this.router.createUrlTree(['/login']))),
       );
   }
 }

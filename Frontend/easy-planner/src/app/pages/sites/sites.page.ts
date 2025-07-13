@@ -2,7 +2,13 @@
 import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
-import { Chantier, FormField, Phase, Task, User } from 'src/app/models/global.model';
+import {
+  Chantier,
+  FormField,
+  Phase,
+  Task,
+  User,
+} from 'src/app/models/global.model';
 import { RequestService } from 'src/app/services/request.service';
 
 import { IonicModule } from 'src/app/shared/ionic.module';
@@ -38,7 +44,12 @@ export class SitesPage implements OnInit {
   /** Modals Chantier */
   visibleAddChantier = false;
   visibleDeleteChantier = false;
-  newChantier = { title: '', address: '', start: null as Date|null, end: null as Date|null };
+  newChantier = {
+    title: '',
+    address: '',
+    start: null as Date | null,
+    end: null as Date | null,
+  };
   selectedChantierIndex = 0;
 
   /** Modals Phase */
@@ -50,7 +61,7 @@ export class SitesPage implements OnInit {
   /** Modals Task */
   visibleAddTask = false;
   visibleDeleteTask = false;
-  newTask = { name: '', dueDate: null as Date|null };
+  newTask = { name: '', dueDate: null as Date | null };
   selectedTaskIndex = 0;
 
   selectedChantierName: string = '';
@@ -62,42 +73,46 @@ export class SitesPage implements OnInit {
   phaseFields: FormField<any>[] = [];
   taskFields: FormField<any>[] = [];
 
-  constructor(private request: RequestService, public utils: UtilitiesService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private request: RequestService,
+    public utils: UtilitiesService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     const paramId = Number(this.route.snapshot.paramMap.get('id'));
 
-    Promise.all([
-      this.loadClients(),
-      this.loadChantiers()
-    ]).then(() => {
-      this.loadFields();
+    Promise.all([this.loadClients(), this.loadChantiers()])
+      .then(() => {
+        this.loadFields();
 
-      if (paramId) {
-        const idx = this.chantiers.findIndex(ct => ct.id === paramId);
-        if (idx >= 0) {
-          this.filteredChantierIndex = idx;
-          this.filteredChantier = this.chantiers[idx];
-        } else {
-          this.router.navigate(['/sites']);
+        if (paramId) {
+          const idx = this.chantiers.findIndex((ct) => ct.id === paramId);
+          if (idx >= 0) {
+            this.filteredChantierIndex = idx;
+            this.filteredChantier = this.chantiers[idx];
+          } else {
+            this.router.navigate(['/sites']);
+          }
         }
-      }
-    }).catch(err => {
-      console.error('Initialization error', err);
-    });
+      })
+      .catch((err) => {
+        console.error('Initialization error', err);
+      });
   }
 
   /** Charge uniquement les users qui ont le rôle "client" */
   private async loadClients() {
     try {
       const allUsers = await firstValueFrom(
-        this.request.get<User[]>('api/users')
+        this.request.get<User[]>('api/users'),
       );
       this.clients = allUsers
-        .filter(u => u.roles.some(r => r.name === 'client'))
-        .map(u => ({
+        .filter((u) => u.roles.some((r) => r.name === 'client'))
+        .map((u) => ({
           ...u,
-          fullname: `${u.firstname} ${u.name}`
+          fullname: `${u.firstname} ${u.name}`,
         }));
     } catch (err) {
       console.error('Erreur chargement clients', err);
@@ -107,18 +122,17 @@ export class SitesPage implements OnInit {
   private async loadChantiers(): Promise<void> {
     try {
       this.chantiers = await firstValueFrom(
-        this.request.get<Chantier[]>('api/chantiers')
+        this.request.get<Chantier[]>('api/chantiers'),
       );
 
-
-      this.chantierOptions = this.chantiers.map(ct => ({
+      this.chantierOptions = this.chantiers.map((ct) => ({
         label: ct.title,
-        value: ct.id
+        value: ct.id,
       }));
 
       const param = this.route.snapshot.paramMap.get('id');
       const wantedId = param ? Number(param) : this.chantiers[0]?.id;
-      const found = this.chantiers.find(ct => ct.id === wantedId);
+      const found = this.chantiers.find((ct) => ct.id === wantedId);
 
       if (found) {
         this.filteredChantier = found;
@@ -133,17 +147,27 @@ export class SitesPage implements OnInit {
       console.error('Erreur chargement chantiers', err);
     }
   }
-  
+
   onChantierChange() {
     this.filteredChantier = this.chantiers[this.selectedChantierIndex];
   }
 
   private loadFields() {
     this.chantierFields = [
-      { key: 'title',   label: 'Titre',       type: 'text',  placeholder: 'Titre du chantier' },
-      { key: 'address', label: 'Adresse',     type: 'text',  placeholder: 'Adresse' },
-      { key: 'start',   label: 'Début',       type: 'date',  placeholder: '' },
-      { key: 'end',     label: 'Fin estimée', type: 'date',  placeholder: '' },
+      {
+        key: 'title',
+        label: 'Titre',
+        type: 'text',
+        placeholder: 'Titre du chantier',
+      },
+      {
+        key: 'address',
+        label: 'Adresse',
+        type: 'text',
+        placeholder: 'Adresse',
+      },
+      { key: 'start', label: 'Début', type: 'date', placeholder: '' },
+      { key: 'end', label: 'Fin estimée', type: 'date', placeholder: '' },
       {
         key: 'clientId',
         label: 'Client',
@@ -151,17 +175,26 @@ export class SitesPage implements OnInit {
         options: this.clients,
         optionValue: 'id',
         optionLabel: 'fullname',
-        placeholder: 'Sélectionner un client'
+        placeholder: 'Sélectionner un client',
       },
     ];
     this.phaseFields = [
-      { key: 'name', label: 'Nom de phase', type: 'text', placeholder: 'Nom de la phase' },
+      {
+        key: 'name',
+        label: 'Nom de phase',
+        type: 'text',
+        placeholder: 'Nom de la phase',
+      },
     ];
     this.taskFields = [
-      { key: 'name',    label: 'Nom',   type: 'text', placeholder: 'Nom de la tâche' },
+      {
+        key: 'name',
+        label: 'Nom',
+        type: 'text',
+        placeholder: 'Nom de la tâche',
+      },
       { key: 'dueDate', label: 'Fin prévue', type: 'date', placeholder: '' },
     ];
-
   }
 
   // ----- Chantier -----
@@ -174,13 +207,17 @@ export class SitesPage implements OnInit {
   async handleAddChantier(ch: any) {
     try {
       await firstValueFrom(
-        this.request.post('api/chantiers', {
-          title:   ch.title,
-          address: ch.address,
-          start:   ch.start,
-          end:     ch.end,
-          clientId: ch.clientId 
-        }, true)
+        this.request.post(
+          'api/chantiers',
+          {
+            title: ch.title,
+            address: ch.address,
+            start: ch.start,
+            end: ch.end,
+            clientId: ch.clientId,
+          },
+          true,
+        ),
       );
       this.visibleAddChantier = false;
       await this.loadChantiers();
@@ -190,7 +227,7 @@ export class SitesPage implements OnInit {
   }
 
   openDeleteChantier(ch: number) {
-    this.selectedChantierIndex  = ch;
+    this.selectedChantierIndex = ch;
     this.selectedChantierName = this.chantiers[ch].title;
     this.visibleDeleteChantier = true;
   }
@@ -198,7 +235,10 @@ export class SitesPage implements OnInit {
   async confirmDeleteChantier() {
     try {
       await firstValueFrom(
-        this.request.delete(`api/chantiers/${this.chantiers[this.selectedChantierIndex].id}`, true)
+        this.request.delete(
+          `api/chantiers/${this.chantiers[this.selectedChantierIndex].id}`,
+          true,
+        ),
       );
       this.visibleDeleteChantier = false;
       await this.loadChantiers();
@@ -218,10 +258,14 @@ export class SitesPage implements OnInit {
   async handleAddPhase(p: { name: string }) {
     try {
       await firstValueFrom(
-        this.request.post('api/phases', {
-          name: p.name,
-          chantierId: this.chantiers[this.selectedChantierIndex].id
-        }, true)
+        this.request.post(
+          'api/phases',
+          {
+            name: p.name,
+            chantierId: this.chantiers[this.selectedChantierIndex].id,
+          },
+          true,
+        ),
       );
       this.visibleAddPhase = false;
       await this.loadChantiers();
@@ -232,17 +276,18 @@ export class SitesPage implements OnInit {
 
   openDeletePhase(chIndex: number, phaseIndex: number) {
     this.selectedChantierIndex = chIndex;
-    this.selectedPhaseIndex    = phaseIndex;
-    this.selectedPhaseName     = this.chantiers[chIndex].phases[phaseIndex].name;
-    this.visibleDeletePhase    = true;
+    this.selectedPhaseIndex = phaseIndex;
+    this.selectedPhaseName = this.chantiers[chIndex].phases[phaseIndex].name;
+    this.visibleDeletePhase = true;
   }
 
   async confirmDeletePhase() {
     try {
-      const phase = this.chantiers[this.selectedChantierIndex].phases[this.selectedPhaseIndex];
-      await firstValueFrom(
-        this.request.delete(`api/phases/${phase.id}`, true)
-      );
+      const phase =
+        this.chantiers[this.selectedChantierIndex].phases[
+          this.selectedPhaseIndex
+        ];
+      await firstValueFrom(this.request.delete(`api/phases/${phase.id}`, true));
       this.visibleDeletePhase = false;
       await this.loadChantiers();
     } catch (err) {
@@ -254,25 +299,25 @@ export class SitesPage implements OnInit {
 
   openAddTask(chIndex: number, phaseIndex: number) {
     this.selectedChantierIndex = chIndex;
-    this.selectedPhaseIndex    = phaseIndex;
+    this.selectedPhaseIndex = phaseIndex;
     this.newTask = { name: '', dueDate: null };
     this.visibleAddTask = true;
   }
 
-  async handleAddTask(t: { name: string, dueDate: Date|null }) {
-    console.log(t.dueDate,t.name)
+  async handleAddTask(t: { name: string; dueDate: Date | null }) {
+    console.log(t.dueDate, t.name);
     try {
       const payload = {
-        name:    t.name,
-        done:    false,
+        name: t.name,
+        done: false,
         dueDate: t.dueDate ? t.dueDate.toISOString() : null,
-        phaseId: this.chantiers[this.selectedChantierIndex]
-                        .phases[this.selectedPhaseIndex].id
+        phaseId:
+          this.chantiers[this.selectedChantierIndex].phases[
+            this.selectedPhaseIndex
+          ].id,
       };
 
-      await firstValueFrom(
-        this.request.post('api/tasks', payload, true)
-      );
+      await firstValueFrom(this.request.post('api/tasks', payload, true));
 
       this.visibleAddTask = false;
       await this.loadChantiers();
@@ -281,23 +326,22 @@ export class SitesPage implements OnInit {
     }
   }
 
-
   openDeleteTask(chIndex: number, phaseIndex: number, taskIndex: number) {
     this.selectedChantierIndex = chIndex;
-    this.selectedPhaseIndex    = phaseIndex;
-    this.selectedTaskIndex     = taskIndex;
-    this.selectedTaskName      = this.chantiers[chIndex].phases[phaseIndex].tasks[taskIndex].name;
-    this.visibleDeleteTask     = true;
+    this.selectedPhaseIndex = phaseIndex;
+    this.selectedTaskIndex = taskIndex;
+    this.selectedTaskName =
+      this.chantiers[chIndex].phases[phaseIndex].tasks[taskIndex].name;
+    this.visibleDeleteTask = true;
   }
 
   async confirmDeleteTask() {
     try {
-      const task = this.chantiers[this.selectedChantierIndex]
-                          .phases[this.selectedPhaseIndex]
-                          .tasks[this.selectedTaskIndex];
-      await firstValueFrom(
-        this.request.delete(`api/tasks/${task.id}`, true)
-      );
+      const task =
+        this.chantiers[this.selectedChantierIndex].phases[
+          this.selectedPhaseIndex
+        ].tasks[this.selectedTaskIndex];
+      await firstValueFrom(this.request.delete(`api/tasks/${task.id}`, true));
       this.visibleDeleteTask = false;
       await this.loadChantiers();
     } catch (err) {

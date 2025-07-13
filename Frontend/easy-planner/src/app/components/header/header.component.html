@@ -4,12 +4,10 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
 
-    <ion-title>
-      {{ user?.firstname }} {{ user?.name }}
-    </ion-title>
+    <ion-title> {{ user?.firstname }} {{ user?.name }} </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="logout()">
+      <ion-button data-testid="logout-button" fill="clear" (click)="logout()">
         <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>

@@ -31,10 +31,17 @@
               [src]="filteredChantier.images?.[0]"
               class="image-chantier"
             ></ion-img>
-            <div class="ml-3 mr-6 sm:mr-0  flex flex-column justify-content-evenly">
-              <div class="text-xl font-semibold mb-2">{{ filteredChantier.title }}</div>
+            <div
+              class="ml-3 mr-6 sm:mr-0 flex flex-column justify-content-evenly"
+            >
+              <div class="text-xl font-semibold mb-2">
+                {{ filteredChantier.title }}
+              </div>
               <div class="text-sm text-gray-600">
-                <div>Client : {{ filteredChantier.client.firstname }} {{ filteredChantier.client.name }}</div>
+                <div>
+                  Client : {{ filteredChantier.client.firstname }} {{
+                  filteredChantier.client.name }}
+                </div>
                 <div class="mt-1">Adresse : {{ filteredChantier.address }}</div>
               </div>
             </div>
@@ -42,7 +49,9 @@
           <div class="md:mt-0 mt-3 sm:text-right flex flex-column">
             <div class="flex align-items-center sm:justify-content-end">
               <div>
-                <div class="text-sm text-gray-600">Début : {{ filteredChantier.start | date:'d MMMM y' }}</div>
+                <div class="text-sm text-gray-600">
+                  Début : {{ filteredChantier.start | date:'d MMMM y' }}
+                </div>
                 <div class="text-sm text-gray-600 mt-1">
                   Fin estimée : {{ filteredChantier.end | date:'d MMMM y' }}
                 </div>
@@ -57,7 +66,9 @@
               ></p-button>
             </div>
 
-            <div class="flex align-items-center mt-1 sm:mt-3 sm:justify-content-end">
+            <div
+              class="flex align-items-center mt-1 sm:mt-3 sm:justify-content-end"
+            >
               <span class="mr-2 text-sm text-gray-600">Avancement global</span>
               <p-progressBar
                 [value]="utils.getChantierProgress(filteredChantier)"
@@ -73,7 +84,10 @@
 
         <!-- Phases en grille 2 colonnes -->
         <div class="grid">
-          <div class="sm:col-6 col-12" *ngFor="let ph of filteredChantier.phases; index as j;">
+          <div
+            class="sm:col-6 col-12"
+            *ngFor="let ph of filteredChantier.phases; index as j;"
+          >
             <div class="phase justify-content-between flex flex-column">
               <div>
                 <div
@@ -132,7 +146,10 @@
                     ></p-button>
                   </div>
                 </div>
-                <p-button variant="text" (click)="openAddTask(filteredChantierIndex, j)">
+                <p-button
+                  variant="text"
+                  (click)="openAddTask(filteredChantierIndex, j)"
+                >
                   + Ajouter une tâche
                 </p-button>
               </div>
@@ -145,12 +162,17 @@
                   [showValue]="false"
                   class="phase-progress-bar"
                 ></p-progressBar>
-                <span class="text-sm font-medium">{{ utils.getPhaseProgress(ph) }}%</span>
+                <span class="text-sm font-medium"
+                  >{{ utils.getPhaseProgress(ph) }}%</span
+                >
               </div>
             </div>
           </div>
           <div class="sm:col-6 col-12">
-            <div (click)="openAddPhase(filteredChantierIndex)" class="phase phase-add">
+            <div
+              (click)="openAddPhase(filteredChantierIndex)"
+              class="phase phase-add"
+            >
               <i class="pi pi-plus text-gray-500 text-xl"></i>
             </div>
           </div>
@@ -165,13 +187,12 @@
             ></ion-img>
             <div
               *ngIf="filteredChantier.intervenants.length > 5"
-              class=" flex align-items-center justify-content-center bg-gray-200 text-xs text-gray-500 font-semibold"
+              class="flex align-items-center justify-content-center bg-gray-200 text-xs text-gray-500 font-semibold"
             >
               +{{ filteredChantier.intervenants.length - 5 }}
             </div>
           </div>
         </div>
-
       </div>
     </ng-container>
   </div>

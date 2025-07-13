@@ -9,8 +9,8 @@ describe('ImageManagerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ImageManagerComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ImageManagerComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ImageManagerComponent);

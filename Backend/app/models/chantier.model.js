@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
     images: {
       type: Sequelize.JSON,
       allowNull: true,
-    }
+    },
   });
   return Chantier;
 };

@@ -1,5 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import { addIcons } from 'ionicons';
 import {
   listOutline,
@@ -26,7 +31,13 @@ import { UtilitiesService } from './services/utilities.service';
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [RouterLink, RouterLinkActive, IonicModule, ToastModule, FormsModule],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    IonicModule,
+    ToastModule,
+    FormsModule,
+  ],
 })
 export class AppComponent implements OnInit {
   @ViewChild('ionSplitPane') ionSplitPane!: IonSplitPane;
@@ -35,7 +46,7 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private menuCtrl: MenuController,
-    private utils: UtilitiesService
+    private utils: UtilitiesService,
   ) {
     const allowedRoutes = [
       '/dashboard',
@@ -48,8 +59,8 @@ export class AppComponent implements OnInit {
 
     this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
-        const isAllowed = allowedRoutes.some(route =>
-          event.urlAfterRedirects.startsWith(route)
+        const isAllowed = allowedRoutes.some((route) =>
+          event.urlAfterRedirects.startsWith(route),
         );
         this.checkPages();
         if (isAllowed && this.pages.length > 1) {
@@ -87,25 +98,36 @@ export class AppComponent implements OnInit {
   checkPages() {
     const isAdmin = this.utils.isAdmin();
     const isModeratorOrAdmin = this.utils.isModeratorOrAdmin();
-    const isArtisanOrModeratorOrAdmin = this.utils.isArtisanOrModeratorOrAdmin();
+    const isArtisanOrModeratorOrAdmin =
+      this.utils.isArtisanOrModeratorOrAdmin();
 
     this.pages = [
       { title: 'Tableau de bord', url: '/dashboard', icon: 'home' },
     ];
     if (isModeratorOrAdmin) {
-      this.pages.push(
-        { title: 'Tout les chantiers', url: '/sites', icon: 'business' },
-      );
+      this.pages.push({
+        title: 'Tout les chantiers',
+        url: '/sites',
+        icon: 'business',
+      });
     }
     if (isArtisanOrModeratorOrAdmin) {
       this.pages.push(
-        { title: isModeratorOrAdmin ? 'Toute les taches' : 'Mes tâches', url: '/tasks', icon: 'list' },
+        {
+          title: isModeratorOrAdmin ? 'Toute les taches' : 'Mes tâches',
+          url: '/tasks',
+          icon: 'list',
+        },
         { title: 'Planning', url: '/planning', icon: 'calendar' },
         { title: 'Problèmes', url: '/problems', icon: 'warning' },
       );
     }
     if (isAdmin) {
-      this.pages.push({ title: 'Administration', url: '/admin', icon: 'people' });
+      this.pages.push({
+        title: 'Administration',
+        url: '/admin',
+        icon: 'people',
+      });
     }
   }
 }
