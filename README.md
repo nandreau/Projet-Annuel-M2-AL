@@ -64,6 +64,8 @@ Cette application vise à **optimiser la gestion des chantiers** en facilitant :
 ### 🐳 Avec Docker  
 - ```docker-compose up --build -d```
 
+Et voilà vous pouvez maintenant visiter localhost:4200 pour voir la partie frontend !
+
 ## 📋 Utilisateurs de Test
 
 Pour vos essais, vous pouvez vous connecter avec l'une des adresses suivantes qui représentent chacun des rôles, en utilisant **Azerty123** comme mot de passe commun :
@@ -109,7 +111,8 @@ La couverture minimale est définie dans le fichier package.json :
     "lines": 70,
     "statements": 70
   }
-}```
+}
+```
 
 ## 🔄 Intégration Continue & Déploiement (CI/CD)  
 La pipeline GitHub Actions se trouve dans le fichier ```.github/workflows/ci.yml```. Elle se déclenche sur chaque push ou pull_request vers la branche ```main``` et comporte trois jobs : 
