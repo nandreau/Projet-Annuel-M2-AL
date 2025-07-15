@@ -28,6 +28,7 @@ services:
     stdin_open: true
     tty: true
 
+<<<<<<< HEAD
 #  frontend:
 #    depends_on:
 #      - app
@@ -40,3 +41,17 @@ services:
 
 volumes:
   db:
+=======
+  frontend:
+    depends_on:
+      - app
+    build:
+      context: ./Frontend/easy-planner
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+
+volumes:
+  db:
+>>>>>>> a16c701e6cc1ce933ecaa7168ea8ac7c807bf4f3
