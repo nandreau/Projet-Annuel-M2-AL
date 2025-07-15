@@ -37,3 +37,6 @@ services:
     restart: unless-stopped
     ports:
       - "4200:4200"
+
+volumes:
+  db:
