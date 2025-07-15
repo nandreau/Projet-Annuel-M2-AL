@@ -114,7 +114,7 @@ export class AppComponent implements OnInit {
     if (isArtisanOrModeratorOrAdmin) {
       this.pages.push(
         {
-          title: isModeratorOrAdmin ? 'Toute les taches' : 'Mes tâches',
+          title: isModeratorOrAdmin ? 'Toute les tâches' : 'Mes tâches',
           url: '/tasks',
           icon: 'list',
         },

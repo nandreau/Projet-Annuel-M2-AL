@@ -12,6 +12,7 @@
         panelStyleClass="w-full"
         (onChange)="onChantierChange()"
       ></p-select>
+
       <p-select
         [options]="groupOptions"
         [(ngModel)]="selectedGroup"
@@ -21,7 +22,18 @@
         placeholder="Artisan"
         panelStyleClass="w-full"
       ></p-select>
+
+      <p-select
+        [options]="taskOptions"
+        [(ngModel)]="selectedTask"
+        optionLabel="name"
+        optionValue="id"
+        filter
+        placeholder="Tâche"
+        panelStyleClass="w-full"
+      ></p-select>
     </div>
+
 
     <!-- Week navigation -->
     <div class="flex gap-2 align-items-center mb-2">
@@ -51,7 +63,7 @@
 
     <!-- Per-phase sections -->
     <ng-container *ngIf="selectedChantier">
-      <ng-container *ngFor="let phase of selectedChantier.phases">
+      <ng-container *ngFor="let phase of getVisiblePhases()">
         <!-- Phase header -->
         <div class="planning-chantier">
           <div class="flex align-items-center items-center gap-2">
@@ -90,7 +102,7 @@
 
           <!-- Task rows -->
           <div
-            *ngFor="let task of phase.tasks"
+            *ngFor="let task of getVisibleTasks(phase)"
             class="planning-grid planning-task-row"
           >
             <div class="planning-task-cell">

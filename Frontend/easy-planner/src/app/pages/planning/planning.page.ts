@@ -39,6 +39,8 @@ export class PlanningPage implements OnInit {
   selectedChantier?: Chantier;
   groupOptions: { name: string; id: number | null }[] = [];
   selectedGroup: number | null = null;
+  taskOptions: { name: string; id: number }[] = [];
+  selectedTask: number | null = null;
 
   weekRange = '';
   today: Date = new Date();
@@ -62,6 +64,7 @@ export class PlanningPage implements OnInit {
     this.initWeekDays();
     await this.loadChantiers();
     this.updateGroupOptions();
+    this.updateTaskOptions();
   }
 
   private initWeekDays() {
@@ -120,6 +123,7 @@ export class PlanningPage implements OnInit {
 
   onChantierChange() {
     this.updateGroupOptions();
+    this.updateTaskOptions();
   }
 
   private updateGroupOptions() {
@@ -155,6 +159,45 @@ export class PlanningPage implements OnInit {
           time: `${pad(s.getHours())}h${pad(s.getMinutes())} – ${pad(e.getHours())}h${pad(e.getMinutes())}`,
         };
       });
+  }
+
+  
+  private updateTaskOptions(): void {
+    if (!this.selectedChantier) {
+      this.taskOptions = [];
+      this.selectedTask = null;
+      return;
+    }
+
+    const allTasks: Task[] = this.selectedChantier.phases.reduce(
+      (acc: Task[], phase: Phase) => acc.concat(phase.tasks),
+      []
+    );
+
+    this.taskOptions = allTasks.map((t: Task) => ({
+      id: t.id,
+      name: t.name,
+    }));
+
+    this.taskOptions.unshift({ id: null as any, name: 'Toutes les tâches' });
+
+    this.selectedTask = null;
+  }
+
+  getVisiblePhases(): Phase[] {
+    if (!this.selectedChantier) {
+      return [];
+    }
+    return this.selectedChantier.phases.filter(phase =>
+      this.getVisibleTasks(phase).length > 0
+    );
+  }
+
+  getVisibleTasks(phase: Phase): Task[] {
+    if (!this.selectedTask) {
+      return phase.tasks;
+    }
+    return phase.tasks.filter(t => t.id === this.selectedTask);
   }
 
   isToday(date: Date): boolean {
