@@ -55,15 +55,14 @@ export class TaskModalComponent {
   /** Generic field update */
   async onFieldChange<K extends keyof Task>(field: K, value: Task[K]) {
     try {
-      console.log(value, field);
-      const updated = await firstValueFrom(
-        this.request.put<Task>(
+      const updated: ApiResponse = await firstValueFrom(
+        this.request.put(
           `api/tasks/${this.task.id}/meta`,
           { [field]: value },
           false,
         ),
       );
-      this.task = updated;
+      this.task = updated.data;
     } catch (err) {
       console.error('Erreur mise à jour tâche', err);
     }
@@ -74,14 +73,14 @@ export class TaskModalComponent {
     const name = this.newItemName.trim();
     if (!name) return;
     try {
-      const item = await firstValueFrom(
-        this.request.post<Checklist>(
+      const item: ApiResponse = await firstValueFrom(
+        this.request.post(
           'api/checklist',
           { taskId: this.task.id, name },
           false,
         ),
       );
-      this.task.checklists = [...(this.task.checklists || []), item];
+      this.task.checklists = [...(this.task.checklists || []), item.data];
       this.newItemName = '';
     } catch (err) {
       console.error('Erreur création checklist item', err);

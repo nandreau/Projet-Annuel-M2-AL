@@ -62,6 +62,7 @@ export class AdminPage implements OnInit {
   }
 
   private loadUsers(): Promise<void> {
+    this.selectedUsers = [];
     return firstValueFrom(this.request.get<User[]>('api/users'))
       .then((data) => {
         this.users = data.map((user) => ({
